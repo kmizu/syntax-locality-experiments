@@ -30,7 +30,7 @@ The repository's byte-preserved `report-project.zip` contains the report generat
 
 The default output is `site/index.html`. All public input artifacts are copied byte-for-byte to `site/data/`. The report includes their SHA-256 hashes and downloadable links. Given identical data, generator source, and build metadata, output is byte-identical: it has no clock time, absolute workspace path, external assets, analytics, or network fetches. If input artifacts are removed, use a fresh output directory before deployment so removed files are not retained.
 
-The optional environment variable `SYNTAX_P2_TEST_VERIFIED=true` is reserved for the publication workflow after its separate, current experiment-test job succeeds. It requires `SYNTAX_REPORT_WORKFLOW_URL` identifying the actual GitHub Actions run. Without that evidence the page retains the unverified implementation status. `site/build-provenance.json` records the supplied status and link; a passing build never changes P2's zero model measurements. The copied `data/status.json` remains the earlier data-snapshot state.
+The optional environment variable `SYNTAX_P2_TEST_VERIFIED=true` is reserved for the publication workflow after its prior required full experiment-test step succeeds. It requires `SYNTAX_REPORT_WORKFLOW_URL` identifying the actual GitHub Actions run. Without that evidence the page retains the unverified implementation status. `site/build-provenance.json` records the supplied status and link; a passing build never changes P2's zero model measurements. Test-suite mock fixtures are distinct from the unexecuted standalone P2 pilot mock workflow and live measurements. The copied `data/status.json` remains the earlier data-snapshot state.
 
 ## Required data
 
