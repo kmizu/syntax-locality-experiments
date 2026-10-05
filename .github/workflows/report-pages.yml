@@ -9,12 +9,12 @@ permissions:
   contents: read
 
 concurrency:
-  group: syntax-report-pages
+  group: syntax-report-pages-linux
   cancel-in-progress: false
 
 jobs:
   verify-experiment:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     timeout-minutes: 25
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
@@ -25,6 +25,9 @@ jobs:
         with:
           distribution: temurin
           java-version: '21'
+      - name: Preserve the Windows wrapper entry point on Linux
+        shell: bash
+        run: ln -s "$JAVA_HOME/bin/java" "$JAVA_HOME/bin/java.exe"
       - name: Required full Scala experiment tests
         shell: pwsh
         working-directory: experiment
@@ -34,7 +37,7 @@ jobs:
 
   build:
     needs: verify-experiment
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     timeout-minutes: 20
     permissions:
       contents: read
@@ -48,6 +51,9 @@ jobs:
         with:
           distribution: temurin
           java-version: '21'
+      - name: Preserve the Windows wrapper entry point on Linux
+        shell: bash
+        run: ln -s "$JAVA_HOME/bin/java" "$JAVA_HOME/bin/java.exe"
       - name: Generate HTML from saved reports
         shell: pwsh
         env:
