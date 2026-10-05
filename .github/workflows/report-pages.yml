@@ -1,0 +1,92 @@
+name: Verify experiment and publish report
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: syntax-report-pages
+  cancel-in-progress: false
+
+jobs:
+  verify-experiment:
+    runs-on: windows-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - name: Expand byte-preserved publication snapshot
+        shell: pwsh
+        run: Expand-Archive -LiteralPath report-project.zip -DestinationPath . -Force
+      - uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 # v6
+        with:
+          distribution: temurin
+          java-version: '21'
+      - name: Required full Scala experiment tests
+        shell: pwsh
+        working-directory: experiment
+        run: |
+          $env:SYNTAX_JAVA_HOME = $env:JAVA_HOME
+          ./scripts/sbt.ps1 test
+
+  build:
+    needs: verify-experiment
+    runs-on: windows-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+      pages: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - name: Expand byte-preserved publication snapshot
+        shell: pwsh
+        run: Expand-Archive -LiteralPath report-project.zip -DestinationPath . -Force
+      - uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 # v6
+        with:
+          distribution: temurin
+          java-version: '21'
+      - name: Generate HTML from saved reports
+        shell: pwsh
+        env:
+          SYNTAX_P2_TEST_VERIFIED: 'true'
+          SYNTAX_REPORT_WORKFLOW_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          $env:SYNTAX_JAVA_HOME = $env:JAVA_HOME
+          ./scripts/sbt.ps1 "run data site" "run data site-reproduction"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          foreach ($artifact in @('index.html', 'build-provenance.json')) {
+            $original = (Get-FileHash -LiteralPath (Join-Path site $artifact) -Algorithm SHA256).Hash
+            $reproduced = (Get-FileHash -LiteralPath (Join-Path site-reproduction $artifact) -Algorithm SHA256).Hash
+            if ($original -ne $reproduced) { throw "HTML reproduction differs: $artifact" }
+          }
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+      - name: Upload reproducible report artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: syntax-html-report
+          path: site
+          retention-days: 14
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy report to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
