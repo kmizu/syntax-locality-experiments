@@ -1,0 +1,359 @@
+name: Verify full-program P2 offline mock
+
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/p2-mock.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: syntax-p2-offline-mock
+  cancel-in-progress: false
+
+jobs:
+  verify-p2-mock:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - name: Verify and expand preserved experiment source
+        shell: pwsh
+        run: |
+          $expected = '6cbe9d304d326c5dba3964adb63d07ebe911d89d2399f2f7cac55b1d5046fc81'
+          if ((Get-FileHash -LiteralPath report-project.zip -Algorithm SHA256).Hash.ToLowerInvariant() -ne $expected) { throw 'Source package changed; review before running a new protocol' }
+          Expand-Archive -LiteralPath report-project.zip -DestinationPath . -Force
+      - uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 # v6
+        with:
+          distribution: temurin
+          java-version: '21'
+      - name: Preserve unchanged wrapper entry point
+        shell: bash
+        run: ln -s "$JAVA_HOME/bin/java" "$JAVA_HOME/bin/java.exe"
+      - name: Required full experiment tests
+        shell: pwsh
+        working-directory: experiment
+        run: |
+          $env:SYNTAX_JAVA_HOME = $env:JAVA_HOME
+          ./scripts/sbt.ps1 test
+      - name: Full P2 plan audit mock score reproduction and zero-call resume
+        shell: pwsh
+        working-directory: experiment
+        run: |
+          $mockHelperText = @'
+          param(
+              [Parameter(Mandatory = $true)]
+              [ValidateSet('BeforeMock', 'Verify', 'Snapshot', 'ResumeVerify')]
+              [string]$Phase,
+              [Parameter(Mandatory = $true)][string]$RunDirectory,
+              [string]$ExperimentDirectory = (Get-Location).Path,
+              [string]$WitnessDirectory,
+              [string]$ResumeLog
+          )
+          
+          $ErrorActionPreference = 'Stop'
+          Set-StrictMode -Version Latest
+          $ExpectedSourceHash = '41ffc2647b8f3c3838a17c2425b0be97007fe611f5d0a68d3dd9d1c79e1b0b96'
+          $ReportNames = @('report.md', 'summary.csv', 'paired-comparisons.csv', 'errors.csv', 'scores.jsonl')
+          $Tasks = @('ast_to_source', 'source_to_ast')
+          $Styles = @('braces', 'generic_end', 'typed_end', 'named_end', 'padded_end')
+          $Regimes = @('natural', 'nonce')
+          $RunRoot = (Resolve-Path -LiteralPath $RunDirectory).Path
+          $ExperimentRoot = (Resolve-Path -LiteralPath $ExperimentDirectory).Path
+          
+          function Assert-Condition([bool]$Condition, [string]$Message) {
+              if (-not $Condition) { throw $Message }
+          }
+          
+          function Read-Utf8([string]$Path) {
+              # Preserve every decoded character, including any BOM, as Scala Files.readString does.
+              [Text.Encoding]::UTF8.GetString([IO.File]::ReadAllBytes($Path))
+          }
+          
+          function Get-TextHash([string]$Text) {
+              [Convert]::ToHexString([Security.Cryptography.SHA256]::HashData([Text.Encoding]::UTF8.GetBytes($Text))).ToLowerInvariant()
+          }
+          
+          function Read-Json([string]$Path) {
+              (Read-Utf8 $Path) | ConvertFrom-Json -AsHashtable -Depth 100
+          }
+          
+          function Read-JsonLines([string]$Name) {
+              $path = Join-Path $RunRoot $Name
+              if (-not (Test-Path -LiteralPath $path)) { return }
+              foreach ($line in [IO.File]::ReadAllLines($path, [Text.Encoding]::UTF8)) {
+                  if (-not [string]::IsNullOrWhiteSpace($line)) { $line | ConvertFrom-Json -AsHashtable -Depth 100 }
+              }
+          }
+          
+          function Get-SortedText([object[]]$Values) {
+              [string[]]$items = @($Values | ForEach-Object { [string]$_ })
+              [Array]::Sort($items, [StringComparer]::Ordinal)
+              $items -join "`n"
+          }
+          
+          function Assert-SameSet([object[]]$Actual, [object[]]$Expected, [string]$Message) {
+              Assert-Condition ((Get-SortedText $Actual) -ceq (Get-SortedText $Expected)) $Message
+          }
+          
+          function Get-SourceHash {
+              [string[]]$paths = @(
+                  foreach ($root in @('bench/src/main', 'llm-core/src/main')) {
+                      $absolute = Join-Path $ExperimentRoot $root
+                      if (Test-Path -LiteralPath $absolute) {
+                          Get-ChildItem -LiteralPath $absolute -Recurse -File -Filter '*.scala' | ForEach-Object {
+                              [IO.Path]::GetRelativePath($ExperimentRoot, $_.FullName)
+                          }
+                      }
+                  }
+                  'build.sbt'
+                  [IO.Path]::Combine('project', 'build.properties')
+              )
+              [Array]::Sort($paths, [StringComparer]::Ordinal)
+              $parts = @(foreach ($path in $paths) {
+                  $path.Replace('\', '/') + "`n" + (Get-TextHash (Read-Utf8 (Join-Path $ExperimentRoot $path)))
+              })
+              Get-TextHash ($parts -join "`n")
+          }
+          
+          function Assert-Plan {
+              $protocol = Read-Json (Join-Path $RunRoot 'protocol.json')
+              $manifest = Read-Json (Join-Path $RunRoot 'manifest.json')
+              $cases = @(Read-JsonLines 'cases.jsonl')
+              $families = @(Read-JsonLines 'families.jsonl')
+              $gold = @(Read-JsonLines 'gold.jsonl')
+              $schedule = @(Read-JsonLines 'schedule.jsonl')
+              Assert-Condition ((Get-SourceHash) -ceq $ExpectedSourceHash) 'Production source hash differs from the tested P2 snapshot.'
+              Assert-Condition ($protocol.config.sourceHash -ceq $ExpectedSourceHash) 'Saved protocol source hash differs from the tested P2 snapshot.'
+              Assert-Condition ($protocol.preset -ceq 'pilot' -and $protocol.phase -ceq 'p2') 'Expected the separate exploratory P2 pilot.'
+              Assert-Condition ($protocol.config.model -ceq 'gpt-5.6-terra') 'Unexpected planned model; pass an explicit --model override.'
+              Assert-Condition ($protocol.config.reasoningEffort -ceq 'low') 'Unexpected reasoning effort.'
+              Assert-Condition ($protocol.config.fewShotCount -eq 8 -and $protocol.config.replicates -eq 1) 'Unexpected examples or replicate count.'
+              Assert-Condition ($protocol.config.masterSeed -eq 2026100602 -and $protocol.config.bootstrapSeed -eq 2026100602) 'Unexpected saved seeds.'
+              Assert-Condition ($protocol.config.maxOutputTokensGeneration -eq 16384) 'Unexpected full-program output cap.'
+              Assert-Condition ($protocol.config.seedsPerCell -eq 4) 'Expected four structural families per cell.'
+              Assert-SameSet @($protocol.config.tasks) $Tasks 'Unexpected tasks.'
+              Assert-SameSet @($protocol.config.depths) @(2, 4, 8, 16) 'Unexpected depth grid.'
+              Assert-SameSet @($protocol.config.fillersGeneration) @(0, 8, 32) 'Unexpected filler grid.'
+              Assert-Condition ($manifest.planned -eq 960 -and $manifest.familyCount -eq 48) 'Manifest must contain 960 trials and 48 structural families.'
+              Assert-Condition ($cases.Count -eq 960 -and $families.Count -eq 48 -and $gold.Count -eq 960 -and $schedule.Count -eq 960) 'Saved plan cardinalities differ.'
+              $ids = @($cases | ForEach-Object { $_.id })
+              Assert-Condition (@($ids | Select-Object -Unique).Count -eq 960) 'Duplicate case trial IDs.'
+              Assert-SameSet @($gold | ForEach-Object { $_.id }) $ids 'Gold trial IDs differ from cases.'
+              Assert-SameSet @($schedule | ForEach-Object { $_.id }) $ids 'Schedule differs from the exact case permutation.'
+              Assert-SameSet @($schedule | ForEach-Object { $_.index }) @(0..959) 'Schedule indices differ.'
+              $familyIds = @($families | ForEach-Object { $_.id })
+              Assert-Condition (@($familyIds | Select-Object -Unique).Count -eq 48) 'Duplicate structural family IDs.'
+              Assert-SameSet @($cases | ForEach-Object { $_.familyId } | Select-Object -Unique) $familyIds 'Case family IDs differ from saved families.'
+              foreach ($task in $Tasks) {
+                  foreach ($style in $Styles) {
+                      $cell = @($cases | Where-Object { $_.task -ceq $task -and $_.style -ceq $style })
+                      Assert-Condition ($cell.Count -eq 96) "Expected 96 planned trials for $task/$style."
+                      foreach ($regime in $Regimes) {
+                          Assert-Condition (@($cell | Where-Object { $_.lexicalRegime -ceq $regime }).Count -eq 48) "Expected 48 trials for $task/$style/$regime."
+                      }
+                  }
+              }
+              foreach ($family in $families) {
+                  $bundle = @($cases | Where-Object { $_.familyId -ceq $family.id })
+                  Assert-Condition ($bundle.Count -eq 20) 'Each family must have exactly twenty paired trials.'
+                  $tuples = @($bundle | ForEach-Object { '{0}|{1}|{2}|{3}' -f $_.task, $_.lexicalRegime, $_.style, $_.replicate })
+                  Assert-Condition (@($tuples | Select-Object -Unique).Count -eq 20) 'Duplicate direction/regime/style/replicate within a family.'
+                  Assert-Condition (@($bundle | Where-Object { $_.lexicalRegime -ceq 'nonce' } | ForEach-Object { $_.lexiconSetId } | Select-Object -Unique).Count -eq 1) 'Directions/styles must share the family nonce mapping.'
+              }
+              foreach ($depth in @(2, 4, 8, 16)) {
+                  foreach ($filler in @(0, 8, 32)) {
+                      Assert-Condition (@($families | Where-Object { $_.peakDepth -eq $depth -and $_.fillerStatements -eq $filler }).Count -eq 4) 'Expected four structural families in every depth/filler cell.'
+                  }
+              }
+              foreach ($case in $cases) {
+                  Assert-Condition ($case.view -ceq 'complete' -and $case.replicate -eq 0) 'P2 must use complete programs and replicate zero.'
+                  $request = Read-Json (Join-Path $RunRoot "trials/$($case.id)/request.json")
+                  Assert-Condition ($request.model -ceq 'gpt-5.6-terra' -and $request.max_output_tokens -eq 16384) 'Unexpected saved request settings.'
+              }
+              $audit = Read-Json (Join-Path $RunRoot 'dataset-audit.json')
+              Assert-Condition ($audit.familyCount -eq 48) 'Saved dataset audit family count differs.'
+          }
+          
+          function Assert-Terminals {
+              foreach ($case in @(Read-JsonLines 'cases.jsonl')) {
+                  $terminal = Read-Json (Join-Path $RunRoot "trials/$($case.id)/terminal.json")
+                  Assert-Condition ($terminal.id -ceq $case.id -and $terminal.status -ceq 'completed') 'A synthetic trial is missing its completed terminal.'
+                  Assert-Condition ($terminal.generationAttempts -eq 1 -and $terminal.countAttempts -eq 1) 'Fresh mock must perform one count and one generation per trial.'
+                  Assert-Condition ($terminal.responseId.StartsWith('synthetic-mock-', [StringComparison]::Ordinal)) 'Unexpected non-synthetic response ID.'
+                  Assert-Condition ($terminal.returnedModel -ceq 'gpt-5.6-terra' -and @($terminal.refusals).Count -eq 0) 'Unexpected saved model/refusal.'
+                  Assert-Condition ($terminal.usage.totalTokens -gt 0) 'Mock usage must be preserved.'
+                  Assert-Condition (@($terminal.artifacts).Count -eq 3) 'Expected generation body/meta and count-request references for MockClient.'
+                  foreach ($reference in $terminal.artifacts) {
+                      $path = [IO.Path]::GetFullPath((Join-Path $RunRoot $reference.path))
+                      $relative = [IO.Path]::GetRelativePath($RunRoot, $path)
+                      Assert-Condition (-not [IO.Path]::IsPathRooted($relative) -and $relative -ne '..' -and -not $relative.StartsWith('..' + [IO.Path]::DirectorySeparatorChar, [StringComparison]::Ordinal)) 'Terminal artifact reference escapes the run directory.'
+                      Assert-Condition ((Get-TextHash (Read-Utf8 $path)) -ceq $reference.sha256) 'A terminal backing artifact differs from its saved reference.'
+                  }
+              }
+          }
+          
+          function Assert-CompleteMock {
+              Assert-Plan
+              $mode = Read-Json (Join-Path $RunRoot 'execution-mode.json')
+              Assert-Condition ($mode.synthetic_mock -is [bool] -and $mode.synthetic_mock) 'Execution mode must explicitly label the fixture synthetic.'
+              $scores = @(Read-JsonLines 'scores.jsonl')
+              $ids = @(Read-JsonLines 'cases.jsonl' | ForEach-Object { $_.id })
+              Assert-Condition ($scores.Count -eq 960) 'Expected 960 saved strict scores.'
+              Assert-SameSet @($scores | ForEach-Object { $_.trial_id }) $ids 'Score trial IDs differ from the saved plan.'
+              foreach ($score in $scores) {
+                  Assert-Condition ($score.outcome -ceq 'correct' -and $score.strict_correct -eq $true -and $score.model_evaluable -eq $true -and $score.infrastructure_missing -eq $false -and $score.syntax_valid -eq $true) 'Every synthetic result must have exact saved strict correctness.'
+              }
+              $events = @(Read-JsonLines 'events.jsonl')
+              $dispatch = @($events | Where-Object { $_.kind -ceq 'dispatch' })
+              $counts = @($events | Where-Object { $_.kind -ceq 'token_count_attempt' })
+              Assert-Condition ($dispatch.Count -eq 960 -and $counts.Count -eq 960) 'Expected 960 mock generation dispatches and 960 mock count attempts.'
+              Assert-SameSet @($dispatch | ForEach-Object { $_.trialId }) $ids 'Mock dispatch IDs differ.'
+              Assert-SameSet @($counts | ForEach-Object { $_.trialId }) $ids 'Mock count IDs differ.'
+              Assert-Condition (@($dispatch + $counts | Where-Object { $_.attempt -ne 1 }).Count -eq 0) 'Unexpected retries in the synthetic fixture.'
+              Assert-Condition (@($events | Where-Object { $_.kind -ceq 'retry' }).Count -eq 0) 'Synthetic fixture must not retry.'
+              Assert-Terminals
+              $summary = @(Import-Csv -LiteralPath (Join-Path $RunRoot 'summary.csv'))
+              $overall = @($summary | Where-Object { $_.task -ceq 'ALL' -and $_.view -ceq 'ALL' -and $_.style -ceq 'ALL' -and $_.lexical_regime -ceq 'ALL' -and $_.depth -ceq 'ALL' -and $_.filler -ceq 'ALL' })
+              Assert-Condition ($overall.Count -eq 1) 'Expected one overall summary denominator row.'
+              foreach ($field in @('planned', 'dispatched', 'terminal', 'model_evaluable', 'correct')) {
+                  Assert-Condition ([int]$overall[0].$field -eq 960) "Overall $field must be 960."
+              }
+              foreach ($field in @('infrastructure_missing', 'not_dispatched', 'incomplete', 'refusal', 'invalid_answer_format', 'wrong_answer', 'invalid_generated_syntax', 'valid_syntax_wrong_ast')) {
+                  Assert-Condition ([int]$overall[0].$field -eq 0) "Overall $field must be zero."
+              }
+              Assert-Condition ($overall[0].strict_accuracy -ceq '1.000' -and [int]$overall[0].http_attempts -eq 1920 -and [int]$overall[0].generation_attempts -eq 960) 'Unexpected synthetic accuracy or adapter attempt counts.'
+              foreach ($task in $Tasks) {
+                  foreach ($style in $Styles) {
+                      $cell = @($summary | Where-Object { $_.task -ceq $task -and $_.view -ceq 'complete' -and $_.style -ceq $style -and $_.lexical_regime -ceq 'ALL' -and $_.depth -ceq 'ALL' -and $_.filler -ceq 'ALL' })
+                      Assert-Condition ($cell.Count -eq 1 -and [int]$cell[0].planned -eq 96 -and [int]$cell[0].correct -eq 96) "Expected 96 saved correct mock results for $task/$style."
+                  }
+              }
+              $paired = @(Import-Csv -LiteralPath (Join-Path $RunRoot 'paired-comparisons.csv'))
+              Assert-Condition ($paired.Count -eq 10) 'Expected five exploratory contrasts per direction.'
+              foreach ($row in $paired) {
+                  Assert-Condition ($Tasks -ccontains $row.task -and $row.view -ceq 'complete' -and $row.classification -ceq 'exploratory' -and [int]$row.matched_families_available -eq 48 -and [int]$row.matched_families_planned -eq 48 -and $row.difference_percentage_points -ceq '0.000' -and $row.ci_status -ceq 'degenerate' -and [int]$row.bootstrap_iterations -eq 10000) 'Unexpected saved synthetic family-cluster comparison.'
+              }
+              Assert-Condition (@(Import-Csv -LiteralPath (Join-Path $RunRoot 'errors.csv')).Count -eq 0) 'Successful mock errors.csv must contain its header only.'
+              $report = Read-Utf8 (Join-Path $RunRoot 'report.md')
+              Assert-Condition ($report.Contains('synthetic_mock=true') -and $report.Contains('all planned trials terminal') -and $report.Contains('source_to_ast') -and $report.Contains('ast_to_source')) 'Saved Markdown report lacks synthetic/complete/direction labels.'
+              Assert-Condition (-not $report.Contains('## 4. Primary paired D−B comparison')) 'P2 must not inherit the reading primary estimand.'
+              foreach ($name in $ReportNames) { Assert-Condition (Test-Path -LiteralPath (Join-Path $RunRoot $name)) "Missing saved report file: $name" }
+          }
+          
+          function Get-ImmutableHashes {
+              $hashes = [ordered]@{}
+              $fixed = @('protocol.json', 'manifest.json', 'families.jsonl', 'cases.jsonl', 'gold.jsonl', 'schedule.jsonl', 'dataset-audit.json', 'capabilities.json', 'execution-mode.json', 'events.jsonl', 'usage-ledger.jsonl') + $ReportNames
+              [string[]]$paths = @(
+                  foreach ($name in $fixed) { Join-Path $RunRoot $name }
+                  foreach ($name in @('trials', 'token-count-cache')) {
+                      Get-ChildItem -LiteralPath (Join-Path $RunRoot $name) -Recurse -File | ForEach-Object { $_.FullName }
+                  }
+              )
+              [Array]::Sort($paths, [StringComparer]::Ordinal)
+              foreach ($path in $paths) {
+                  Assert-Condition (Test-Path -LiteralPath $path) 'Missing immutable saved run artifact.'
+                  $key = [IO.Path]::GetRelativePath($RunRoot, $path).Replace('\', '/')
+                  $hashes[$key] = (Get-FileHash -LiteralPath $path -Algorithm SHA256).Hash.ToLowerInvariant()
+              }
+              $hashes
+          }
+          
+          function Get-WitnessPath {
+              Assert-Condition (-not [string]::IsNullOrWhiteSpace($WitnessDirectory)) 'This phase requires --WitnessDirectory.'
+              [IO.Directory]::CreateDirectory([IO.Path]::GetFullPath($WitnessDirectory)) | Out-Null
+              Join-Path ([IO.Path]::GetFullPath($WitnessDirectory)) 'p2-mock-immutable-snapshot.json'
+          }
+          
+          switch ($Phase) {
+              'BeforeMock' {
+                  Assert-Plan
+                  Assert-Condition (-not (Test-Path -LiteralPath (Join-Path $RunRoot 'execution-mode.json'))) 'BeforeMock requires a fresh separate run.'
+                  Write-Output 'P2 source-bound plan verified: 960 trials, 48 structural families, 96 per direction/style.'
+              }
+              'Verify' {
+                  Assert-CompleteMock
+                  Write-Output 'P2 saved mock artifacts verified: 960 strict correct, synthetic_mock=true, 1920 simulated adapter attempts.'
+              }
+              'Snapshot' {
+                  Assert-CompleteMock
+                  $snapshot = [ordered]@{
+                      source_hash = $ExpectedSourceHash
+                      synthetic_mock = $true
+                      planned = 960
+                      family_count = 48
+                      report_files = $ReportNames
+                      external_http_calls = 0
+                      external_http_evidence = 'MockClient branch with --mock and without --execute; code-path inspection, not network packet observation.'
+                      hashes = (Get-ImmutableHashes)
+                  }
+                  $snapshotPath = Get-WitnessPath
+                  [IO.File]::WriteAllText($snapshotPath, ($snapshot | ConvertTo-Json -Depth 10), [Text.UTF8Encoding]::new($false))
+                  Write-Output "P2 immutable artifact/report snapshot saved: $snapshotPath"
+              }
+              'ResumeVerify' {
+                  Assert-Condition (-not [string]::IsNullOrWhiteSpace($ResumeLog)) 'ResumeVerify requires --ResumeLog.'
+                  $resumeText = Read-Utf8 (Resolve-Path -LiteralPath $ResumeLog).Path
+                  Assert-Condition ($resumeText -match 'Started 0 logical trials; 0 HTTP attempts; known=[0-9]+, unresolved=0 tokens') 'Resume log does not establish zero additional logical/adapter attempts and zero unresolved reservations.'
+                  Assert-CompleteMock
+                  $snapshot = Read-Json (Get-WitnessPath)
+                  Assert-Condition ($snapshot.source_hash -ceq $ExpectedSourceHash -and $snapshot.synthetic_mock -eq $true) 'Unexpected snapshot identity.'
+                  $after = Get-ImmutableHashes
+                  Assert-SameSet @($after.Keys) @($snapshot.hashes.Keys) 'Saved immutable artifact file set changed during report regeneration/resume.'
+                  foreach ($key in $after.Keys) {
+                      Assert-Condition ($after[$key] -ceq $snapshot.hashes[$key]) "Saved immutable artifact changed during report regeneration/resume: $key"
+                  }
+                  Write-Output 'P2 report regeneration/resume verified: all five reports and all immutable artifacts unchanged; zero additional logical/adapter attempts.'
+              }
+          }
+          '@
+          [IO.File]::WriteAllText('mock-assertions.ps1', $mockHelperText, [Text.UTF8Encoding]::new($false))
+          $ErrorActionPreference = 'Stop'
+          $env:SYNTAX_JAVA_HOME = $env:JAVA_HOME
+          New-Item -ItemType Directory -Force -Path mock-verification | Out-Null
+          $mockRun = 'runs/full-program-pilot-mock-v1'
+          ./scripts/sbt.ps1 "bench/run plan --preset pilot --phase p2 --config configs/full-program-pilot.json --model gpt-5.6-terra --out $mockRun" "bench/run audit --run $mockRun" 2>&1 | Tee-Object -FilePath mock-verification/plan-audit.log
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          ./mock-assertions.ps1 -Phase BeforeMock -RunDirectory $mockRun
+          ./scripts/sbt.ps1 "bench/run run --run $mockRun --mock --max-generation-calls 960 --max-http-attempts 1920 --local-token-cap 80000000" "bench/run score --run $mockRun" 2>&1 | Tee-Object -FilePath mock-verification/run-score.log
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          ./mock-assertions.ps1 -Phase Verify -RunDirectory $mockRun
+          ./mock-assertions.ps1 -Phase Snapshot -RunDirectory $mockRun -WitnessDirectory mock-verification
+          ./scripts/sbt.ps1 "bench/run report --run $mockRun" "bench/run resume --run $mockRun --mock --max-generation-calls 960 --max-http-attempts 1920 --local-token-cap 80000000" 2>&1 | Tee-Object -FilePath mock-verification/resume.log
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          ./mock-assertions.ps1 -Phase ResumeVerify -RunDirectory $mockRun -WitnessDirectory mock-verification -ResumeLog mock-verification/resume.log
+          $mockWitness = [ordered]@{
+            schemaVersion = 1
+            synthetic_mock = $true
+            workflowRunUrl = 'https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}'
+            sourceHash = '41ffc2647b8f3c3838a17c2425b0be97007fe611f5d0a68d3dd9d1c79e1b0b96'
+            planned = 960
+            families = 48
+            terminal = 960
+            strictCorrect = 960
+            simulatedAdapterAttempts = 1920
+            externalHttpCalls = 0
+            externalHttpEvidence = 'Explicit --mock without --execute uses MockClient; code-path evidence, not packet capture.'
+            reportFilesByteIdentical = $true
+            resumeAdditionalLogicalTrials = 0
+            resumeAdditionalAdapterAttempts = 0
+            unresolvedReservedTokens = 0
+            liveGenerations = 0
+            immutableArtifactsUnchanged = $true
+            checksPassed = $true
+          }
+          $mockWitness | ConvertTo-Json -Depth 10 | Set-Content -LiteralPath mock-verification/p2-mock-verification.json -Encoding utf8
+          Write-Output 'Complete labelled P2 mock pipeline passed; actual live model generations remain zero.'
+      - name: Retain labelled synthetic artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: full-program-p2-synthetic-mock
+          retention-days: 14
+          if-no-files-found: error
+          path: |
+            experiment/runs/full-program-pilot-mock-v1
+            experiment/mock-verification
+            experiment/mock-assertions.ps1
