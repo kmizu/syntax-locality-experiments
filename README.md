@@ -1,5 +1,7 @@
 # Syntax locality experiment: HTML report
 
+[HTML report on GitHub Pages](https://kmizu.github.io/syntax-locality-experiments/) · [Publication verification workflow](https://github.com/kmizu/syntax-locality-experiments/actions/workflows/report-pages.yml)
+
 This standalone publication project turns the saved, strictly graded Scala reports in `data/` into `site/index.html`. It does not send model requests, grade responses, resample families, or calculate confidence intervals. Percentages in the interactive table are exact ratios of persisted correct/evaluable counts; confidence intervals are copied from `paired-comparisons.csv` only.
 
 The page separates the completed exploratory P1 pilot, the interrupted frozen main run, and the unexecuted P2 whole-program parsing/generation extension. Prefix scope lookup and active-stack observations are explicitly distinguished from whole-program parsing. The original experiment and frozen implementation are outside this project.
