@@ -55,6 +55,45 @@ jobs:
             $reproduced = (Get-FileHash -LiteralPath (Join-Path site-reproduction $artifact) -Algorithm SHA256).Hash
             if ($original -ne $reproduced) { throw "HTML reproduction differs: $artifact" }
           }
+      - name: Verify saved mock evidence and fail-closed publication
+        shell: pwsh
+        env:
+          SYNTAX_P2_TEST_VERIFIED: 'true'
+          SYNTAX_REPORT_WORKFLOW_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          $env:SYNTAX_JAVA_HOME = $env:JAVA_HOME
+          $expectedWitnessHash = '224e9091619a7ce85cce16c663fff2238b3694161fc4f5540734bfd383b5c4dc'
+          $provenance = Get-Content -LiteralPath site/build-provenance.json -Raw | ConvertFrom-Json
+          if ($provenance.p2StandaloneMockVerified -ne $true -or $provenance.p2LiveGenerations -ne 0 -or $provenance.p2MockWitnessSha256 -ne $expectedWitnessHash) { throw 'Published mock evidence does not match the saved witness' }
+          $html = Get-Content -LiteralPath site/index.html -Raw
+          if (-not $html.Contains('P2 / MOCK VERIFIED · LIVE 0')) { throw 'Missing distinct mock/live status' }
+          $absentRoot = [IO.Path]::GetFullPath((Join-Path $PWD 'data-mock-witness-absent'))
+          $changedRoot = [IO.Path]::GetFullPath((Join-Path $PWD 'data-mock-witness-changed'))
+          foreach ($testRoot in @($absentRoot, $changedRoot)) {
+            if (Test-Path -LiteralPath $testRoot) { throw 'Evidence check requires a fresh copied input directory' }
+            Copy-Item -LiteralPath data -Destination $testRoot -Recurse
+          }
+          $absentWitness = [IO.Path]::GetFullPath((Join-Path $absentRoot 'supporting/p2-mock-verification.json'))
+          if (-not $absentWitness.StartsWith($absentRoot + [IO.Path]::DirectorySeparatorChar, [StringComparison]::Ordinal)) { throw 'Copied witness path escaped its test directory' }
+          Remove-Item -LiteralPath $absentWitness
+          ./scripts/sbt.ps1 'run data-mock-witness-absent site-mock-witness-absent'
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          $fallback = Get-Content -LiteralPath site-mock-witness-absent/build-provenance.json -Raw | ConvertFrom-Json
+          if ($fallback.p2StandaloneMockVerified -ne $false -or $null -ne $fallback.p2MockWitnessSha256) { throw 'Absent saved witness must not establish mock completion' }
+          $fallbackHtml = Get-Content -LiteralPath site-mock-witness-absent/index.html -Raw
+          if (-not $fallbackHtml.Contains('P2 / UNEXECUTED') -or $fallbackHtml.Contains('P2 / MOCK VERIFIED · LIVE 0')) { throw 'Absent witness must retain the unexecuted mock status' }
+          $changedWitness = [IO.Path]::GetFullPath((Join-Path $changedRoot 'supporting/p2-mock-verification.json'))
+          if (-not $changedWitness.StartsWith($changedRoot + [IO.Path]::DirectorySeparatorChar, [StringComparison]::Ordinal)) { throw 'Copied witness path escaped its test directory' }
+          [IO.File]::AppendAllText($changedWitness, ' ', [Text.UTF8Encoding]::new($false))
+          $PSNativeCommandUseErrorActionPreference = $false
+          ./scripts/sbt.ps1 'run data-mock-witness-changed site-mock-witness-changed' *> mock-witness-rejection.log
+          $rejectedExit = $LASTEXITCODE
+          if ($rejectedExit -eq 0) { throw 'Changed saved witness was incorrectly accepted' }
+          $rejection = Get-Content -LiteralPath mock-witness-rejection.log -Raw
+          if (-not $rejection.Contains('Unexpected P2 mock witness bytes')) { throw 'Changed witness failed for an unrelated reason' }
+          if (Test-Path -LiteralPath site-mock-witness-changed/index.html) { throw 'Changed witness must be rejected before HTML is written' }
+          Write-Output 'Saved mock witness accepted; absent witness remains unexecuted; changed bytes rejected before publication.'
+          exit 0
       - name: Configure Pages
         uses: actions/configure-pages@v5
       - name: Upload reproducible report artifact
