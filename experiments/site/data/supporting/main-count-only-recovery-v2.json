@@ -1,0 +1,67 @@
+{
+  "schemaVersion": 1,
+  "synthetic_mock": false,
+  "pass": true,
+  "capturedAt": "2026-10-06T10:17:44.935Z",
+  "measurementScope": "Actual saved operational count-only recovery, not model performance. Zero new transport calls do not establish zero billed usage or resolve the original missing response. Existing reservations remain conservatively retained.",
+  "witnessSource": "verification/main-count-only-recovery-v2/recovery-witness.json",
+  "witnessSourceSha256": "f2cc43f10db9b6af67856dec05fe7df5521a43a9d32971e43a7dbf54e934cdcf",
+  "sourceHash": "1d041fa5f4ae2a499b89151fb99958312a49b883a6315adad4d65e63307edca1",
+  "protocolHash": "f57aadd6b497ff6d05715753dd59802be050dce8ec5706ff41216721515e6f4a",
+  "externalHttpAttempts": 0,
+  "logicalCalls": 0,
+  "forbiddenClientInvocations": 0,
+  "priorTerminalCount": 1024,
+  "priorTerminalBytesUnchanged": true,
+  "recoveredTerminalCount": 1,
+  "recoveredTrialId": "dea5611a59249adf8adab67d8daf26e1d511bc7a8df7a04ab80c1844b06309b6",
+  "terminalDisposition": "not_dispatched",
+  "countAttempts": 1,
+  "generationAttempts": 0,
+  "rawCountHttpDurationMs": 257,
+  "tokenCountFinishedDurationMs": 263,
+  "originalCountDurationMs": 263,
+  "derivedCountDurationMs": 0,
+  "backupRetained": true,
+  "backupPrivateSource": "verification/main-count-only-recovery-v2/before",
+  "beforeManifestSha256": "e5c0a0fc3ae337b31ffa50bf94aba829af2d27228b7f08d2377b0a5dd38d4a49",
+  "originalDerivedCountBackupSha256": "1be1a02c07d209d99777535836abee93d3181386e6dede012aa4f6d0831aa31e",
+  "rawCountArtifactsByteUnchanged": true,
+  "rawCountArtifacts": [
+    {
+      "path": "trials/dea5611a59249adf8adab67d8daf26e1d511bc7a8df7a04ab80c1844b06309b6/count-attempt-001-request.json",
+      "sha256": "7bf7e8b42facf7c1e3c54182ec3d6a9b49836f83ca9e72cf7e872d9e0766d682",
+      "bytes": 13578
+    },
+    {
+      "path": "trials/dea5611a59249adf8adab67d8daf26e1d511bc7a8df7a04ab80c1844b06309b6/count-attempt-001-body.txt",
+      "sha256": "16980f26e14aa9e2f5948b90a0a56e4ffb45dd8ff6ff89efe8252521c59dcbe6",
+      "bytes": 63
+    },
+    {
+      "path": "trials/dea5611a59249adf8adab67d8daf26e1d511bc7a8df7a04ab80c1844b06309b6/count-attempt-001-meta.json",
+      "sha256": "3212fe611fcb1094720a16c8f731cca0f545047ac70e958369bae7e34d06a191",
+      "bytes": 134
+    }
+  ],
+  "ledgerBytesUnchanged": true,
+  "ledgerSha256": "1ac20514ae84f86dc40e3e1fbc46e66ecb8b588cc1d7b8b3ba86e00ad2ecae8f",
+  "knownUsageUtcWindow": "2026-10-06",
+  "knownTokens": 1024996,
+  "unresolvedReservedTokens": 28969,
+  "heldReservations": [
+    {
+      "reservationId": "f92a43fa61e8d13dc4204692d22ffc4633917aaaec83d778457701acae458a64/1",
+      "tokens": 14131,
+      "window": "2026-10-05",
+      "interpretation": "Original dispatched response unknown; retained"
+    },
+    {
+      "reservationId": "dea5611a59249adf8adab67d8daf26e1d511bc7a8df7a04ab80c1844b06309b6/1",
+      "tokens": 14838,
+      "window": "2026-10-06",
+      "interpretation": "Proven count-only no generation; frozen ledger conservatively retains pre-dispatch reservation"
+    }
+  ],
+  "acceptedBaseline": "Exact reviewed 1,024-terminal pre-recovery snapshot; one cached count-only trial had no generation dispatch. countAttempts=1 and generationAttempts=0 are independently checked by the unchanged verification Runner guard and the saved post-recovery checkpoint."
+}

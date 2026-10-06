@@ -52,8 +52,10 @@ sbt "bench / run --help"
 | 実験 | 内容と保存された状態 |
 | --- | --- |
 | P1 pilot | 1,800件の実モデル試行を完了、strict correctは1,622件。生成を含む探索的結果。prefixのscope lookup / active stackは全プログラムの解析ではない |
-| 凍結済みP1 main | 読解`scope_lookup / after_close`の別estimand。計画5,120件中、terminal 725件、評価可能722件、correct 629件の中断時点。推測統計のCIは未計算 |
+| 凍結済みP1 main | 読解`scope_lookup / after_close`の別estimand。2026-10-06 10:23:50 UTCの保存済み採点スナップショット：計画5,120件、送信1,022件、terminal 1,025件、評価可能1,021件、correct 890件。infra missing 1件、未送信4,098件（未着手4,095件＋count-only terminal 3件）。推測統計のCIは未計算 |
 | P2 | 全体の`ast_to_source`生成と`source_to_ast`解析。実装と960件の独立したsynthetic mockを検証済み。実モデルの進捗・成功率は別の保存済みP2 runから報告する |
+
+main行の数値は保存済みbatch-0の採点時点だけを示す。実際のMainは元のsource hash `1d041fa5f4ae2a499b89151fb99958312a49b883a6315adad4d65e63307edca1`と凍結済みプロトコルを保って別途続行しており、その後の進捗をこの行へ混ぜない。元の不明応答の予約14,131 tokensと、通信せず処置を保存したcount-only試行の予約14,838 tokensを、計28,969 tokensとしてledgerに保持している。P1 pilotやP2との集計も混ぜない。
 
 P1の生成結果は、閉じラベルの生成への効果を探索する資料であり、生成の仮説を確証するmain結果ではない。既存mainの主比較は読解のD−Bで、生成の主比較へ読み替えない。P2は48構造family、深さ`[2,4,8,16]`、filler`[0,8,32]`、2方向×2語彙×5構文の別pilot。[P2の設計と検証状態](docs/full-program-structures.md)を参照。実モデルの実行途中の保存時点の件数は[HTML](https://kmizu.github.io/syntax-locality-experiments/)と[`p2-live-current-status.json`](experiments/data/supporting/p2-live-current-status.json)で確認でき、mockの成績とは分ける。この実行statusは採点結果ではなく、accuracyやCIを示さない。
 

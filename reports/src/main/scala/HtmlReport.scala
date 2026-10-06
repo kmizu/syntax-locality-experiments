@@ -448,10 +448,15 @@ object HtmlReport:
     val mainCiStates = main.comparisons.map(_("ci_status")).distinct.sorted.mkString(" / ")
     val mainNotice = s"${runState(main)}。${counts(main)}CSV の CI status: $mainCiStates。"
     val supportRecovery = "supporting/main-zero-http-recovery.json"
-    val reservation =
+    val historicalRecovery =
       if Files.isRegularFile(input.resolve(supportRecovery)) then
-        s"結果不明の応答と未解決使用量を保持した復旧記録: ${link(supportRecovery, "保存済み復旧証跡")}。"
+        s"初回中断時の結果不明の応答と未解決使用量を保持した記録: ${link(supportRecovery, "初回の復旧証跡")}。"
       else "未解決使用量はゼロに置き換えず、保存済み report の会計記録に従う。"
+    val currentRecovery = "supporting/main-count-only-recovery-v2.json"
+    val reservation = historicalRecovery +
+      (if Files.isRegularFile(input.resolve(currentRecovery)) then
+        s" 記録ファイルの競合で送信前に止まった試行は、外部通信なしの復旧処理で未送信として残した。既存の応答と予約を保持した ${link(currentRecovery, "今回の復旧証跡")}。"
+      else "")
     val p2ImplementationText =
       if p2MockVerified then
         s"実装と通し mock 配線検証を完了。960/960 の synthetic strict-correct はモデルの測定に含めない。" +
