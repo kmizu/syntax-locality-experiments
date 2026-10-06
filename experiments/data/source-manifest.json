@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAtUtc": "2026-10-06T10:39:57.440213Z",
+  "generatedAtUtc": "2026-10-06T10:53:09.5729092Z",
   "synthetic_mock": false,
   "pathBase": "experiments/data",
   "provenancePathBase": "original_experiment_repository",
@@ -10,15 +10,15 @@
   "entries": [
     {
       "path": "docs/full-program-structures.md",
-      "sha256": "cb12c3e04867d9ad9072edbafbe02d5b59080e2b6d5968135395cc254b9fb83a",
-      "bytes": 8645,
+      "sha256": "361fba2f1333fd7bd71a0912298dc8e9d759f07bf0c39e96963ef630ca0354c0",
+      "bytes": 8901,
       "transformation": "current_design_verification_status_updated_from_saved_local_test_and_live_capability_evidence",
       "legacyPublicSha256": "3ba2bd20d50aab6e45c8eed5fe4c72ad74664128db7788c4dedca99c77863e5f",
       "legacyPublicBytes": 4949,
       "legacySource": ".worktrees/grammar-structures/docs/full-program-structures.md",
       "legacySourceSha256": "3ba2bd20d50aab6e45c8eed5fe4c72ad74664128db7788c4dedca99c77863e5f",
       "source": ".worktrees/grammar-structures/docs/full-program-structures.md",
-      "sourceSha256": "cb12c3e04867d9ad9072edbafbe02d5b59080e2b6d5968135395cc254b9fb83a"
+      "sourceSha256": "361fba2f1333fd7bd71a0912298dc8e9d759f07bf0c39e96963ef630ca0354c0"
     },
     {
       "path": "docs/limitations.md",
@@ -69,9 +69,9 @@
     {
       "path": "main/errors.csv",
       "source": "runs/main-terra/errors.csv",
-      "sha256": "9602ecaffafc2ae7b4492566636d2f180fb31e4e804df67f8b3730a082c59d12",
-      "sourceSha256": "9602ecaffafc2ae7b4492566636d2f180fb31e4e804df67f8b3730a082c59d12",
-      "bytes": 1027034,
+      "sha256": "e7e2db735d77ef75be0b95d3824f7de5127bf8e95d3899ac33b6e2e192b303fd",
+      "sourceSha256": "e7e2db735d77ef75be0b95d3824f7de5127bf8e95d3899ac33b6e2e192b303fd",
+      "bytes": 956599,
       "transformation": "byte_identical_current_saved_main_report_after_authorized_continuation",
       "legacyPublicSha256": "d26519fba489d162ec43d6f6454e64567ba368541b180622fb55ae7b7472894e",
       "legacyPublicBytes": 1090789
@@ -237,11 +237,19 @@
       "transformation": "byte_identical_copy"
     },
     {
+      "path": "main/manifest.json",
+      "source": "runs/main-terra/manifest.json",
+      "sha256": "86cde8f531f0917edc2098094fb3a0249f380752852a87f69c4c1aeb27b0e5d3",
+      "sourceSha256": "86cde8f531f0917edc2098094fb3a0249f380752852a87f69c4c1aeb27b0e5d3",
+      "bytes": 462,
+      "transformation": "byte_identical_copy"
+    },
+    {
       "path": "main/paired-comparisons.csv",
       "source": "runs/main-terra/paired-comparisons.csv",
-      "sha256": "db6ac11771b4bd5728dbad7aa2ee6508c56a94b8e4f9474882a26cee4b298cce",
-      "sourceSha256": "db6ac11771b4bd5728dbad7aa2ee6508c56a94b8e4f9474882a26cee4b298cce",
-      "bytes": 1327,
+      "sha256": "4aa803456e50b0c61f64c2816e61a7abc5aac1c29ff7d1f3479a8c3d57e8996f",
+      "sourceSha256": "4aa803456e50b0c61f64c2816e61a7abc5aac1c29ff7d1f3479a8c3d57e8996f",
+      "bytes": 1386,
       "transformation": "byte_identical_current_saved_main_report_after_authorized_continuation",
       "legacyPublicSha256": "85daf45ab8bee385d19ce27f3bb8ce6312c514deabcc668c7cc15b46657bd581",
       "legacyPublicBytes": 1327
@@ -257,9 +265,9 @@
     {
       "path": "main/report.md",
       "source": "runs/main-terra/report.md",
-      "sha256": "935fb9c3a07f6f5eb169a1c884bf1d9ddf82998687f66d0237de9964ccdb52e9",
-      "sourceSha256": "935fb9c3a07f6f5eb169a1c884bf1d9ddf82998687f66d0237de9964ccdb52e9",
-      "bytes": 43619,
+      "sha256": "fe51c1596be6d57ca4eedb93bcf4ac4bd9f5a296dda26f27df0a8290376dd11c",
+      "sourceSha256": "fe51c1596be6d57ca4eedb93bcf4ac4bd9f5a296dda26f27df0a8290376dd11c",
+      "bytes": 43783,
       "transformation": "byte_identical_current_saved_main_report_after_authorized_continuation",
       "legacyPublicSha256": "4adef5f1235c328f608ca903d56d13dcf4280179f23c3c4980ca2d7be5275d30",
       "legacyPublicBytes": 43619
@@ -267,17 +275,17 @@
     {
       "path": "main/scores.jsonl",
       "source": "runs/main-terra/scores.jsonl",
-      "sha256": "3196fc7864d8b70affc7c6bdd67862053538a690b70fe50819182923195c8aae",
-      "sourceSha256": "3196fc7864d8b70affc7c6bdd67862053538a690b70fe50819182923195c8aae",
-      "bytes": 1663459,
+      "sha256": "af44eb5d539094040486fdad543a581b0025e6b60d6a9470fd3f24d38e6fed6f",
+      "sourceSha256": "af44eb5d539094040486fdad543a581b0025e6b60d6a9470fd3f24d38e6fed6f",
+      "bytes": 1651437,
       "transformation": "byte_identical_copy"
     },
     {
       "path": "main/summary.csv",
       "source": "runs/main-terra/summary.csv",
-      "sha256": "9d3a9329d8e0fbd35308959ad66b1c8928ea154caa468701492997e3037532b1",
-      "sourceSha256": "9d3a9329d8e0fbd35308959ad66b1c8928ea154caa468701492997e3037532b1",
-      "bytes": 59659,
+      "sha256": "80a806157d6b4679f9cd4a4dfb5f42fc6d0029ec97d187b0d202ad69581f8b86",
+      "sourceSha256": "80a806157d6b4679f9cd4a4dfb5f42fc6d0029ec97d187b0d202ad69581f8b86",
+      "bytes": 59476,
       "transformation": "byte_identical_current_saved_main_report_after_authorized_continuation",
       "legacyPublicSha256": "460f7c131b327bdb63add44112ed56e04acb4ec9ebda12befb337873bcb8de07",
       "legacyPublicBytes": 59230
@@ -326,6 +334,347 @@
       "sha256": "f8f9bfc1f6f7bd2e388ff87a8d5be08feb0bc5632549ba2a35734065e5c13b8a",
       "bytes": 78913,
       "transformation": "byte_preserved_mock_verification_artifact_excluded_from_model_measurements"
+    },
+    {
+      "path": "p2/errors.csv",
+      "source": ".worktrees/grammar-structures/runs/full-program-pilot-live-v1/errors.csv",
+      "sha256": "237a219bc21f052df1a6605eae8df97d65dc507198259f3d9ef4eeaa07f66087",
+      "sourceSha256": "237a219bc21f052df1a6605eae8df97d65dc507198259f3d9ef4eeaa07f66087",
+      "bytes": 196417,
+      "transformation": "byte_identical_copy",
+      "synthetic_mock": false,
+      "capturedAt": "2026-10-06T10:53:09.5729092Z",
+      "protocolHash": "2ac04cc60928800d0c1fdd37986546a6fee23bd1955ccc011c76099cbde60471"
+    },
+    {
+      "path": "p2/failure-inputs/03c7b68fea90273f64ab0af379a9d676913ef670bb4a5f8e03bfe3f0cfcb3ff9.txt",
+      "source": ".worktrees/grammar-structures/runs/full-program-pilot-live-v1/failure-inputs/03c7b68fea90273f64ab0af379a9d676913ef670bb4a5f8e03bfe3f0cfcb3ff9.txt",
+      "sha256": "2c267eb4d988359fb7ac09f21a75122baa7b181cfc4a7c54523c257b79d11a02",
+      "sourceSha256": "2c267eb4d988359fb7ac09f21a75122baa7b181cfc4a7c54523c257b79d11a02",
+      "bytes": 12476,
+      "transformation": "byte_identical_copy",
+      "synthetic_mock": false,
+      "capturedAt": "2026-10-06T10:53:09.5729092Z",
+      "protocolHash": "2ac04cc60928800d0c1fdd37986546a6fee23bd1955ccc011c76099cbde60471"
+    },
+    {
+      "path": "p2/failure-inputs/09176ac607c7563802361aa43c6c65eaef4e44c3da11e88be628781d271fd957.txt",
+      "source": ".worktrees/grammar-structures/runs/full-program-pilot-live-v1/failure-inputs/09176ac607c7563802361aa43c6c65eaef4e44c3da11e88be628781d271fd957.txt",
+      "sha256": "68e90e05c6901a06092cd92f975f88dc5df8d485b14c3badf7ce4fefc2e9f1fb",
+      "sourceSha256": "68e90e05c6901a06092cd92f975f88dc5df8d485b14c3badf7ce4fefc2e9f1fb",
+      "bytes": 14312,
+      "transformation": "byte_identical_copy",
+      "synthetic_mock": false,
+      "capturedAt": "2026-10-06T10:53:09.5729092Z",
+      "protocolHash": "2ac04cc60928800d0c1fdd37986546a6fee23bd1955ccc011c76099cbde60471"
+    },
+    {
+      "path": "p2/failure-inputs/158effde616541a212442eaee90b0436ece1ed8f67ef7ddc520190204d4a6fc4.txt",
+      "source": ".worktrees/grammar-structures/runs/full-program-pilot-live-v1/failure-inputs/158effde616541a212442eaee90b0436ece1ed8f67ef7ddc520190204d4a6fc4.txt",
+      "sha256": "344ce7234206a725919d8fdb15b6fc63605f1ad485ac14122b5db40994a0c341",
+      "sourceSha256": "344ce7234206a725919d8fdb15b6fc63605f1ad485ac14122b5db40994a0c341",
+      "bytes": 15200,
+      "transformation": "byte_identical_copy",
+      "synthetic_mock": false,
+      "capturedAt": "2026-10-06T10:53:09.5729092Z",
+      "protocolHash": "2ac04cc60928800d0c1fdd37986546a6fee23bd1955ccc011c76099cbde60471"
+    },
+    {
+      "path": "p2/failure-inputs/1a1a844fc0dbd5b25a52bd6cd78d1360c1807251065d37cfd2ebc87f2a3ff7e4.txt",
+      "source": ".worktrees/grammar-structures/runs/full-program-pilot-live-v1/failure-inputs/1a1a844fc0dbd5b25a52bd6cd78d1360c1807251065d37cfd2ebc87f2a3ff7e4.txt",
+      "sha256": "a139f13ec5117dc846a41d8835f2e2c749f2a38c48ce233c5831d7ee5b4cc7b4",
+      "sourceSha256": "a139f13ec5117dc846a41d8835f2e2c749f2a38c48ce233c5831d7ee5b4cc7b4",
+      "bytes": 13617,
+      "transformation": "byte_identical_copy",
+      "synthetic_mock": false,
+      "capturedAt": "2026-10-06T10:53:09.5729092Z",
+      "protocolHash": "2ac04cc60928800d0c1fdd37986546a6fee23bd1955ccc011c76099cbde60471"
+    },
+    {
+      "path": "p2/failure-inputs/21cb7a968e792a4d0c42e1efc7b12ef2f5d566a510b95662f3f8658ccf5531a9.txt",
+      "source": ".worktrees/grammar-structures/runs/full-program-pilot-live-v1/failure-inputs/21cb7a968e792a4d0c42e1efc7b12ef2f5d566a510b95662f3f8658ccf5531a9.txt",
+      "sha256": "b9869d2471c920ddafabd50b213f56eaf1c9e05b3871498b52a28dd0d6dddcff",
+      "sourceSha256": "b9869d2471c920ddafabd50b213f56eaf1c9e05b3871498b52a28dd0d6dddcff",
+      "bytes": 12596,
+      "transformation": "byte_identical_copy",
+      "synthetic_mock": false,
+      "capturedAt": "2026-10-06T10:53:09.5729092Z",
+      "protocolHash": "2ac04cc60928800d0c1fdd37986546a6fee23bd1955ccc011c76099cbde60471"
+    },
+    {
+      "path": "p2/failure-inputs/3693c824b5f2b5b35f2ade37255c375d3467e22c5210461522feeb36d20655a9.txt",
+      "source": ".worktrees/grammar-structures/runs/full-program-pilot-live-v1/failure-inputs/3693c824b5f2b5b35f2ade37255c375d3467e22c5210461522feeb36d20655a9.txt",
+      "sha256": "f82acbb0d1564fbe34c9060bd56f5ca707485e1b05fe20d8e96cb4ae7088ee22",
+      "sourceSha256": "f82acbb0d1564fbe34c9060bd56f5ca707485e1b05fe20d8e96cb4ae7088ee22",
+      "bytes": 15149,
+      "transformation": "byte_identical_copy",
+      "synthetic_mock": false,
+      "capturedAt": "2026-10-06T10:53:09.5729092Z",
+      "protocolHash": "2ac04cc60928800d0c1fdd37986546a6fee23bd1955ccc011c76099cbde60471"
+    },
+    {
+      "path": "p2/failure-inputs/3a77f2557d5234d0aa92835537bdce7fd8951baea5cdea9648bd1a469ebd0259.txt",
+      "source": ".worktrees/grammar-structures/runs/full-program-pilot-live-v1/failure-inputs/3a77f2557d5234d0aa92835537bdce7fd8951baea5cdea9648bd1a469ebd0259.txt",
+      "sha256": "b9d66e07afcdfbe61f4c289f7eab452be5ab19314b46c87d3254d5d3dacbb1d8",
+      "sourceSha256": "b9d66e07afcdfbe61f4c289f7eab452be5ab19314b46c87d3254d5d3dacbb1d8",
+      "bytes": 16932,
+      "transformation": "byte_identical_copy",
+      "synthetic_mock": false,
+      "capturedAt": "2026-10-06T10:53:09.5729092Z",
+      "protocolHash": "2ac04cc60928800d0c1fdd37986546a6fee23bd1955ccc011c76099cbde60471"
+    },
+    {
+      "path": "p2/failure-inputs/45688a57832f34a074fb35717123ee903dae916f6cb06fcdd2e5859b679b8932.txt",
+      "source": ".worktrees/grammar-structures/runs/full-program-pilot-live-v1/failure-inputs/45688a57832f34a074fb35717123ee903dae916f6cb06fcdd2e5859b679b8932.txt",
+      "sha256": "ac799e034f53cf09deb00a221ba36de16cd43c804a5d4404a3da9495db783382",
+      "sourceSha256": "ac799e034f53cf09deb00a221ba36de16cd43c804a5d4404a3da9495db783382",
+      "bytes": 12596,
+      "transformation": "byte_identical_copy",
+      "synthetic_mock": false,
+      "capturedAt": "2026-10-06T10:53:09.5729092Z",
+      "protocolHash": "2ac04cc60928800d0c1fdd37986546a6fee23bd1955ccc011c76099cbde60471"
+    },
+    {
+      "path": "p2/failure-inputs/5352a6053abd4f6e879041134376d1f47a3bff568395d8e35bc11134351e9fc6.txt",
+      "source": ".worktrees/grammar-structures/runs/full-program-pilot-live-v1/failure-inputs/5352a6053abd4f6e879041134376d1f47a3bff568395d8e35bc11134351e9fc6.txt",
+      "sha256": "8a2f0859f5e3548d2a084e7ca4040f4a100dcb726721fefa604fba385f64b191",
+      "sourceSha256": "8a2f0859f5e3548d2a084e7ca4040f4a100dcb726721fefa604fba385f64b191",
+      "bytes": 14505,
+      "transformation": "byte_identical_copy",
+      "synthetic_mock": false,
+      "capturedAt": "2026-10-06T10:53:09.5729092Z",
+      "protocolHash": "2ac04cc60928800d0c1fdd37986546a6fee23bd1955ccc011c76099cbde60471"
+    },
+    {
+      "path": "p2/failure-inputs/57820d22806b2dafe05f6504fea600c0b48f9701d56c2541c332d949a9de0f6f.txt",
+      "source": ".worktrees/grammar-structures/runs/full-program-pilot-live-v1/failure-inputs/57820d22806b2dafe05f6504fea600c0b48f9701d56c2541c332d949a9de0f6f.txt",
+      "sha256": "5001b6f41f06378648fea31d81900d2ec7b982dec6902fccdf9be7a52b3471c4",
+      "sourceSha256": "5001b6f41f06378648fea31d81900d2ec7b982dec6902fccdf9be7a52b3471c4",
+      "bytes": 12564,
+      "transformation": "byte_identical_copy",
+      "synthetic_mock": false,
+      "capturedAt": "2026-10-06T10:53:09.5729092Z",
+      "protocolHash": "2ac04cc60928800d0c1fdd37986546a6fee23bd1955ccc011c76099cbde60471"
+    },
+    {
+      "path": "p2/failure-inputs/5bde2ef928a132a5bfd5fcd589b968e7234eac4e7a29df3a2f76c320b892dd26.txt",
+      "source": ".worktrees/grammar-structures/runs/full-program-pilot-live-v1/failure-inputs/5bde2ef928a132a5bfd5fcd589b968e7234eac4e7a29df3a2f76c320b892dd26.txt",
+      "sha256": "38bc8ca81de35346267f7a7bb508619f6f6520b4bba720242e0ef44da67a606a",
+      "sourceSha256": "38bc8ca81de35346267f7a7bb508619f6f6520b4bba720242e0ef44da67a606a",
+      "bytes": 14454,
+      "transformation": "byte_identical_copy",
+      "synthetic_mock": false,
+      "capturedAt": "2026-10-06T10:53:09.5729092Z",
+      "protocolHash": "2ac04cc60928800d0c1fdd37986546a6fee23bd1955ccc011c76099cbde60471"
+    },
+    {
+      "path": "p2/failure-inputs/5eab4245c7aa5cbf8abf9e7a37734637607cd04d88fb0046e7c200749fb4e65d.txt",
+      "source": ".worktrees/grammar-structures/runs/full-program-pilot-live-v1/failure-inputs/5eab4245c7aa5cbf8abf9e7a37734637607cd04d88fb0046e7c200749fb4e65d.txt",
+      "sha256": "3de518fa6574afc435160c3cd96472990e663da43751cec9607689e29551c63d",
+      "sourceSha256": "3de518fa6574afc435160c3cd96472990e663da43751cec9607689e29551c63d",
+      "bytes": 11349,
+      "transformation": "byte_identical_copy",
+      "synthetic_mock": false,
+      "capturedAt": "2026-10-06T10:53:09.5729092Z",
+      "protocolHash": "2ac04cc60928800d0c1fdd37986546a6fee23bd1955ccc011c76099cbde60471"
+    },
+    {
+      "path": "p2/failure-inputs/836bc6d194c3fcbb554305a143434bc3a145c7fbe596be23fa391764d3538aea.txt",
+      "source": ".worktrees/grammar-structures/runs/full-program-pilot-live-v1/failure-inputs/836bc6d194c3fcbb554305a143434bc3a145c7fbe596be23fa391764d3538aea.txt",
+      "sha256": "6dad6094946544a3147d7e898a86b37908b5d9946b94011f82ddc30933db3fa7",
+      "sourceSha256": "6dad6094946544a3147d7e898a86b37908b5d9946b94011f82ddc30933db3fa7",
+      "bytes": 12463,
+      "transformation": "byte_identical_copy",
+      "synthetic_mock": false,
+      "capturedAt": "2026-10-06T10:53:09.5729092Z",
+      "protocolHash": "2ac04cc60928800d0c1fdd37986546a6fee23bd1955ccc011c76099cbde60471"
+    },
+    {
+      "path": "p2/failure-inputs/8543dfd7434109bcd799d128ba6eaac88e4a46a0847db721872aacb0e1b4d75f.txt",
+      "source": ".worktrees/grammar-structures/runs/full-program-pilot-live-v1/failure-inputs/8543dfd7434109bcd799d128ba6eaac88e4a46a0847db721872aacb0e1b4d75f.txt",
+      "sha256": "c7a3653e4a2dc5a26556abc8c6b7019a9dbb79230fd97dc9b0d390fa579dfe2d",
+      "sourceSha256": "c7a3653e4a2dc5a26556abc8c6b7019a9dbb79230fd97dc9b0d390fa579dfe2d",
+      "bytes": 11973,
+      "transformation": "byte_identical_copy",
+      "synthetic_mock": false,
+      "capturedAt": "2026-10-06T10:53:09.5729092Z",
+      "protocolHash": "2ac04cc60928800d0c1fdd37986546a6fee23bd1955ccc011c76099cbde60471"
+    },
+    {
+      "path": "p2/failure-inputs/86e41d473702cd534eb8baec3f79eb21c501e01afe094ea116fc596c5f711926.txt",
+      "source": ".worktrees/grammar-structures/runs/full-program-pilot-live-v1/failure-inputs/86e41d473702cd534eb8baec3f79eb21c501e01afe094ea116fc596c5f711926.txt",
+      "sha256": "80c435f5b8659a14180bc2b7dc37f565bbaab8cfcc5f4828c9debb3f28ecae68",
+      "sourceSha256": "80c435f5b8659a14180bc2b7dc37f565bbaab8cfcc5f4828c9debb3f28ecae68",
+      "bytes": 12956,
+      "transformation": "byte_identical_copy",
+      "synthetic_mock": false,
+      "capturedAt": "2026-10-06T10:53:09.5729092Z",
+      "protocolHash": "2ac04cc60928800d0c1fdd37986546a6fee23bd1955ccc011c76099cbde60471"
+    },
+    {
+      "path": "p2/failure-inputs/88290eebf794fe99f2f0b9bfac7d6ef2917cd69375bea236e6e7b946e945c0f1.txt",
+      "source": ".worktrees/grammar-structures/runs/full-program-pilot-live-v1/failure-inputs/88290eebf794fe99f2f0b9bfac7d6ef2917cd69375bea236e6e7b946e945c0f1.txt",
+      "sha256": "53149c9d1aa583e0c8d6e322daf2a80278142812c4e28ecdfa80b42067662eba",
+      "sourceSha256": "53149c9d1aa583e0c8d6e322daf2a80278142812c4e28ecdfa80b42067662eba",
+      "bytes": 11613,
+      "transformation": "byte_identical_copy",
+      "synthetic_mock": false,
+      "capturedAt": "2026-10-06T10:53:09.5729092Z",
+      "protocolHash": "2ac04cc60928800d0c1fdd37986546a6fee23bd1955ccc011c76099cbde60471"
+    },
+    {
+      "path": "p2/failure-inputs/a089711f1d52a3c0c086d3388d5305c62449ec37550fc80d7b63707bbbf8a213.txt",
+      "source": ".worktrees/grammar-structures/runs/full-program-pilot-live-v1/failure-inputs/a089711f1d52a3c0c086d3388d5305c62449ec37550fc80d7b63707bbbf8a213.txt",
+      "sha256": "c7db9ed3a9096c20039c4299f7bbe97b84ee5309ba9545863635068f1e27ad11",
+      "sourceSha256": "c7db9ed3a9096c20039c4299f7bbe97b84ee5309ba9545863635068f1e27ad11",
+      "bytes": 12204,
+      "transformation": "byte_identical_copy",
+      "synthetic_mock": false,
+      "capturedAt": "2026-10-06T10:53:09.5729092Z",
+      "protocolHash": "2ac04cc60928800d0c1fdd37986546a6fee23bd1955ccc011c76099cbde60471"
+    },
+    {
+      "path": "p2/failure-inputs/a58755f9c20f2df98c27fa9327452aa8332a4e116b99f6a32b222f73349cc5a6.txt",
+      "source": ".worktrees/grammar-structures/runs/full-program-pilot-live-v1/failure-inputs/a58755f9c20f2df98c27fa9327452aa8332a4e116b99f6a32b222f73349cc5a6.txt",
+      "sha256": "40b3962fca501f47f1f891cc41b483b86bf89207684fef7258faf74c94144d91",
+      "sourceSha256": "40b3962fca501f47f1f891cc41b483b86bf89207684fef7258faf74c94144d91",
+      "bytes": 16237,
+      "transformation": "byte_identical_copy",
+      "synthetic_mock": false,
+      "capturedAt": "2026-10-06T10:53:09.5729092Z",
+      "protocolHash": "2ac04cc60928800d0c1fdd37986546a6fee23bd1955ccc011c76099cbde60471"
+    },
+    {
+      "path": "p2/failure-inputs/b2d51b3743cea4983bb94b3ddbecdddd2d304e4893f2e86ff5ac6fe5713c212f.txt",
+      "source": ".worktrees/grammar-structures/runs/full-program-pilot-live-v1/failure-inputs/b2d51b3743cea4983bb94b3ddbecdddd2d304e4893f2e86ff5ac6fe5713c212f.txt",
+      "sha256": "2ad28f6e23198124fe0a290ca3688cbe795076efe057459b4de5a30b86c8dccf",
+      "sourceSha256": "2ad28f6e23198124fe0a290ca3688cbe795076efe057459b4de5a30b86c8dccf",
+      "bytes": 12943,
+      "transformation": "byte_identical_copy",
+      "synthetic_mock": false,
+      "capturedAt": "2026-10-06T10:53:09.5729092Z",
+      "protocolHash": "2ac04cc60928800d0c1fdd37986546a6fee23bd1955ccc011c76099cbde60471"
+    },
+    {
+      "path": "p2/failure-inputs/d95f4daf209deb90f5ae6997400a9b54abdc386e5184de72419960811c5f3327.txt",
+      "source": ".worktrees/grammar-structures/runs/full-program-pilot-live-v1/failure-inputs/d95f4daf209deb90f5ae6997400a9b54abdc386e5184de72419960811c5f3327.txt",
+      "sha256": "4972f18e636349cdd56cee052c12540fa16731829d564862888e5ba7d1cab8f2",
+      "sourceSha256": "4972f18e636349cdd56cee052c12540fa16731829d564862888e5ba7d1cab8f2",
+      "bytes": 11709,
+      "transformation": "byte_identical_copy",
+      "synthetic_mock": false,
+      "capturedAt": "2026-10-06T10:53:09.5729092Z",
+      "protocolHash": "2ac04cc60928800d0c1fdd37986546a6fee23bd1955ccc011c76099cbde60471"
+    },
+    {
+      "path": "p2/failure-inputs/daaa29809343ed6fedbb12eb6f0615931ef47db10155fa123477b5e9204765ec.txt",
+      "source": ".worktrees/grammar-structures/runs/full-program-pilot-live-v1/failure-inputs/daaa29809343ed6fedbb12eb6f0615931ef47db10155fa123477b5e9204765ec.txt",
+      "sha256": "dacc10c0a1cb08befdda1b514563a3afe0bcd76d179db670e84e134b38c31bab",
+      "sourceSha256": "dacc10c0a1cb08befdda1b514563a3afe0bcd76d179db670e84e134b38c31bab",
+      "bytes": 11480,
+      "transformation": "byte_identical_copy",
+      "synthetic_mock": false,
+      "capturedAt": "2026-10-06T10:53:09.5729092Z",
+      "protocolHash": "2ac04cc60928800d0c1fdd37986546a6fee23bd1955ccc011c76099cbde60471"
+    },
+    {
+      "path": "p2/failure-inputs/de39d64425228f5cc4ec45b059be9650b95b2e606ab0fb0e040f924f521ea144.txt",
+      "source": ".worktrees/grammar-structures/runs/full-program-pilot-live-v1/failure-inputs/de39d64425228f5cc4ec45b059be9650b95b2e606ab0fb0e040f924f521ea144.txt",
+      "sha256": "69b1da7af14812237b5d5ad162d33230bd60250ee54347c3f4b001617a13cb8d",
+      "sourceSha256": "69b1da7af14812237b5d5ad162d33230bd60250ee54347c3f4b001617a13cb8d",
+      "bytes": 11493,
+      "transformation": "byte_identical_copy",
+      "synthetic_mock": false,
+      "capturedAt": "2026-10-06T10:53:09.5729092Z",
+      "protocolHash": "2ac04cc60928800d0c1fdd37986546a6fee23bd1955ccc011c76099cbde60471"
+    },
+    {
+      "path": "p2/failure-inputs/de97d66bfd083b3ad15d7cad503e593c3694b6e0e731af46137fa86cb49af73f.txt",
+      "source": ".worktrees/grammar-structures/runs/full-program-pilot-live-v1/failure-inputs/de97d66bfd083b3ad15d7cad503e593c3694b6e0e731af46137fa86cb49af73f.txt",
+      "sha256": "c5b73244b2ef59d09f3a0be44469faaf36b0f3e6273cf63dc23407c113624360",
+      "sourceSha256": "c5b73244b2ef59d09f3a0be44469faaf36b0f3e6273cf63dc23407c113624360",
+      "bytes": 11613,
+      "transformation": "byte_identical_copy",
+      "synthetic_mock": false,
+      "capturedAt": "2026-10-06T10:53:09.5729092Z",
+      "protocolHash": "2ac04cc60928800d0c1fdd37986546a6fee23bd1955ccc011c76099cbde60471"
+    },
+    {
+      "path": "p2/failure-inputs/fdc1fdb02aafe60ca95e0c7125572f922add2bf63fa9964e355fac9aba08a3b1.txt",
+      "source": ".worktrees/grammar-structures/runs/full-program-pilot-live-v1/failure-inputs/fdc1fdb02aafe60ca95e0c7125572f922add2bf63fa9964e355fac9aba08a3b1.txt",
+      "sha256": "391ad0eb7335ea647997f0975d19af59f9bcde0c5b04af71d9e5164d05cd48c7",
+      "sourceSha256": "391ad0eb7335ea647997f0975d19af59f9bcde0c5b04af71d9e5164d05cd48c7",
+      "bytes": 11960,
+      "transformation": "byte_identical_copy",
+      "synthetic_mock": false,
+      "capturedAt": "2026-10-06T10:53:09.5729092Z",
+      "protocolHash": "2ac04cc60928800d0c1fdd37986546a6fee23bd1955ccc011c76099cbde60471"
+    },
+    {
+      "path": "p2/manifest.json",
+      "source": ".worktrees/grammar-structures/runs/full-program-pilot-live-v1/manifest.json",
+      "sha256": "939e087c7382c21db65699770f05063b5cf22afe570373dcdec4b9c07304cab6",
+      "sourceSha256": "939e087c7382c21db65699770f05063b5cf22afe570373dcdec4b9c07304cab6",
+      "bytes": 460,
+      "transformation": "byte_identical_copy",
+      "synthetic_mock": false,
+      "capturedAt": "2026-10-06T10:53:09.5729092Z",
+      "protocolHash": "2ac04cc60928800d0c1fdd37986546a6fee23bd1955ccc011c76099cbde60471"
+    },
+    {
+      "path": "p2/paired-comparisons.csv",
+      "source": ".worktrees/grammar-structures/runs/full-program-pilot-live-v1/paired-comparisons.csv",
+      "sha256": "4985439b217c843046d229fb3a1d7977253ec0a55065d89dcba4ba0d84b96450",
+      "sourceSha256": "4985439b217c843046d229fb3a1d7977253ec0a55065d89dcba4ba0d84b96450",
+      "bytes": 2223,
+      "transformation": "byte_identical_copy",
+      "synthetic_mock": false,
+      "capturedAt": "2026-10-06T10:53:09.5729092Z",
+      "protocolHash": "2ac04cc60928800d0c1fdd37986546a6fee23bd1955ccc011c76099cbde60471"
+    },
+    {
+      "path": "p2/protocol.json",
+      "source": ".worktrees/grammar-structures/runs/full-program-pilot-live-v1/protocol.json",
+      "sha256": "24e4999a55f35b4631b12e086bace2a933b0ada771a2d672e088a97410fd621a",
+      "sourceSha256": "24e4999a55f35b4631b12e086bace2a933b0ada771a2d672e088a97410fd621a",
+      "bytes": 640,
+      "transformation": "byte_identical_copy",
+      "synthetic_mock": false,
+      "capturedAt": "2026-10-06T10:53:09.5729092Z",
+      "protocolHash": "2ac04cc60928800d0c1fdd37986546a6fee23bd1955ccc011c76099cbde60471"
+    },
+    {
+      "path": "p2/report.md",
+      "source": ".worktrees/grammar-structures/runs/full-program-pilot-live-v1/report.md",
+      "sha256": "af59d14e051720a2e1513e2d55100961b97288dcb0256775b4837bb8077f1f3a",
+      "sourceSha256": "af59d14e051720a2e1513e2d55100961b97288dcb0256775b4837bb8077f1f3a",
+      "bytes": 169404,
+      "transformation": "byte_identical_copy",
+      "synthetic_mock": false,
+      "capturedAt": "2026-10-06T10:53:09.5729092Z",
+      "protocolHash": "2ac04cc60928800d0c1fdd37986546a6fee23bd1955ccc011c76099cbde60471"
+    },
+    {
+      "path": "p2/scores.jsonl",
+      "source": ".worktrees/grammar-structures/runs/full-program-pilot-live-v1/scores.jsonl",
+      "sha256": "265e2fd32beb4cab551b1223a31ad6afea87920a3da14ffa9c139aa1dada6fe2",
+      "sourceSha256": "265e2fd32beb4cab551b1223a31ad6afea87920a3da14ffa9c139aa1dada6fe2",
+      "bytes": 319457,
+      "transformation": "byte_identical_copy",
+      "synthetic_mock": false,
+      "capturedAt": "2026-10-06T10:53:09.5729092Z",
+      "protocolHash": "2ac04cc60928800d0c1fdd37986546a6fee23bd1955ccc011c76099cbde60471"
+    },
+    {
+      "path": "p2/summary.csv",
+      "source": ".worktrees/grammar-structures/runs/full-program-pilot-live-v1/summary.csv",
+      "sha256": "9862590b133e1d329b85eb5c4a066aae0c60e8315dacbbbc5e542b000f629aaa",
+      "sourceSha256": "9862590b133e1d329b85eb5c4a066aae0c60e8315dacbbbc5e542b000f629aaa",
+      "bytes": 77892,
+      "transformation": "byte_identical_copy",
+      "synthetic_mock": false,
+      "capturedAt": "2026-10-06T10:53:09.5729092Z",
+      "protocolHash": "2ac04cc60928800d0c1fdd37986546a6fee23bd1955ccc011c76099cbde60471"
     },
     {
       "path": "pilot/cases.jsonl",
@@ -535,8 +884,8 @@
           "sha256": "212ebef5a5f19ce32b342b81517dcb82b810723bfbd616629fae99e24fee8f77"
         }
       ],
-      "sha256": "4650348fea9621b6b806a43172b0e596d1428424952535b4a6769a06b30fe139",
-      "bytes": 9368,
+      "sha256": "0bdd3a4d08d9ecf8a014e377444753425e00d029411361e83c1fcd856799d419",
+      "bytes": 10557,
       "transformation": "current_publication_status_from_saved_reports_and_live_execution_snapshot_no_new_grading",
       "legacyPublicSha256": "cc8346eb89b669c273398d5e1cde18c9785bcade9e14acea28bec87aa7c2ccdf",
       "legacyPublicBytes": 4382
@@ -547,6 +896,14 @@
       "sha256": "85034ce09571034437407a926ef62e34dfc164ba48da6e12e44e4ae40c492a48",
       "sourceSha256": "85034ce09571034437407a926ef62e34dfc164ba48da6e12e44e4ae40c492a48",
       "bytes": 374,
+      "transformation": "byte_identical_copy"
+    },
+    {
+      "path": "supporting/live-interruption.txt",
+      "source": "verification/live-credit-interruption-note-20261006.txt",
+      "sha256": "ca2f7179c50bf279dc59ce5ce7e3fad714122e2c6e4824d4591ccc8c97b98706",
+      "sourceSha256": "ca2f7179c50bf279dc59ce5ce7e3fad714122e2c6e4824d4591ccc8c97b98706",
+      "bytes": 647,
       "transformation": "byte_identical_copy"
     },
     {
@@ -592,10 +949,10 @@
     {
       "path": "supporting/p2-live-current-status.json",
       "source": ".worktrees/grammar-structures/verification/p2-live-current-status.json",
-      "sha256": "eec35b9f6549790c30fa3169f978b8102b3bb7838c7460d6ffc322fe4ff158c9",
-      "bytes": 910,
+      "sha256": "cb619f7202836390d866ee136d470fd1ab9ae62f30f8704a53044c0cc7eb5a40",
+      "bytes": 983,
       "transformation": "saved_read_only_execution_snapshot_enriched_with_immutable_protocol_manifest_identity_no_grading",
-      "capturedAt": "2026-10-06T10:39:57.440213Z",
+      "capturedAt": "2026-10-06T10:53:09.5729092Z",
       "sourceHash": "41ffc2647b8f3c3838a17c2425b0be97007fe611f5d0a68d3dd9d1c79e1b0b96",
       "protocolHash": "2ac04cc60928800d0c1fdd37986546a6fee23bd1955ccc011c76099cbde60471"
     },

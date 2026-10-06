@@ -52,12 +52,14 @@ sbt "bench / run --help"
 | 実験 | 内容と保存された状態 |
 | --- | --- |
 | P1 pilot | 1,800件の実モデル試行を完了、strict correctは1,622件。生成を含む探索的結果。prefixのscope lookup / active stackは全プログラムの解析ではない |
-| 凍結済みP1 main | 読解`scope_lookup / after_close`の別estimand。2026-10-06 10:23:50 UTCの保存済み採点スナップショット：計画5,120件、送信1,022件、terminal 1,025件、評価可能1,021件、correct 890件。infra missing 1件、未送信4,098件（未着手4,095件＋count-only terminal 3件）。推測統計のCIは未計算 |
-| P2 | 全体の`ast_to_source`生成と`source_to_ast`解析。実装と960件の独立したsynthetic mockを検証済み。実モデルの進捗・成功率は別の保存済みP2 runから報告する |
+| 凍結済みP1 main | 読解`scope_lookup / after_close`の別課題。残高拒否による中断後の保存済み採点：計画5,120件、送信1,409件、terminal 1,412件、評価可能1,350件、correct 1,177件。infra missing 59件、未送信3,711件。途中結果の推測統計CIは未計算 |
+| P2 | 全体の`ast_to_source`生成と`source_to_ast`解析。計画960件のうち送信・terminal 300件、評価可能295件、correct 196件、API拒否5件、未送信660件。2方向は別表で表示し、途中結果のCIは未計算 |
 
-main行の数値は保存済みbatch-0の採点時点だけを示す。実際のMainは元のsource hash `1d041fa5f4ae2a499b89151fb99958312a49b883a6315adad4d65e63307edca1`と凍結済みプロトコルを保って別途続行しており、その後の進捗をこの行へ混ぜない。元の不明応答の予約14,131 tokensと、通信せず処置を保存したcount-only試行の予約14,838 tokensを、計28,969 tokensとしてledgerに保持している。P1 pilotやP2との集計も混ぜない。
+2026-10-06（UTC）にAPIが`credit_balance_exhausted`を返したため、MainとP2の追加送信を停止した。全計画の実行は完了していない。正解率や有意差による停止ではない。保存した応答は全文で厳密採点し、誤答・拒否されたterminal trialを再送していない。P2の入力は閉じ終わりまである全文。元のMainはprobeまでのprefix読解なので、全文解析の結果には含めない。[保存済み中断記録](experiments/data/supporting/live-interruption.txt)を参照。自動課金の操作は行っていない。
 
-P1の生成結果は、閉じラベルの生成への効果を探索する資料であり、生成の仮説を確証するmain結果ではない。既存mainの主比較は読解のD−Bで、生成の主比較へ読み替えない。P2は48構造family、深さ`[2,4,8,16]`、filler`[0,8,32]`、2方向×2語彙×5構文の別pilot。[P2の設計と検証状態](docs/full-program-structures.md)を参照。実モデルの実行途中の保存時点の件数は[HTML](https://kmizu.github.io/syntax-locality-experiments/)と[`p2-live-current-status.json`](experiments/data/supporting/p2-live-current-status.json)で確認でき、mockの成績とは分ける。この実行statusは採点結果ではなく、accuracyやCIを示さない。
+Mainでは、1,350件の回答を採点し、58件のAPI拒否、元の結果不明1件、count-onlyの未送信terminal 3件を保持する。terminalがない3,708件には、count-only 2件と未着手3,706件を含む。報告上の未送信3,711件は、その3,708件と未送信terminal 3件の合計。Mainの未確定予約は60件・692,889 tokensで、以前からの28,969 tokensも保持する。P2の未確定予約は5件・119,976 tokens。利用量不明をゼロに置き換えない。
+
+P1の生成結果は、閉じラベルの生成への効果を見る探索的pilotの結果。既存mainの主比較は読解のD−Bで、生成の主比較へ読み替えない。P2は48構造family、深さ`[2,4,8,16]`、filler`[0,8,32]`、2方向×2語彙×5構文の別pilot。[P2の設計と検証状態](docs/full-program-structures.md)と[HTMLの生成・解析別表](https://kmizu.github.io/syntax-locality-experiments/)を参照。保存済みP2 reportとCSVから厳密採点結果を表示し、execution snapshot、synthetic mock、P1、Mainと合算しない。
 
 通常のルート実装のproduction source hashは`41ffc2647b8f3c3838a17c2425b0be97007fe611f5d0a68d3dd9d1c79e1b0b96`。旧mainの実装は`1d041fa5f4ae2a499b89151fb99958312a49b883a6315adad4d65e63307edca1`を保存している。凍結済みmainの再開には、その旧実装と元の保存済みrun、能力確認、凍結hashを使う。ルートのP2実装で旧mainを再開しない。
 

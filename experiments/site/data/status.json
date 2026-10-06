@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAtUtc": "2026-10-06T10:39:57.440213Z",
+  "generatedAtUtc": "2026-10-06T10:53:09.5729092Z",
   "synthetic_mock": false,
   "syntheticLanguageExamples": true,
   "resultSource": "Saved Scala-graded reports and CSVs; no new grades or statistical estimates were computed for publication.",
@@ -48,18 +48,18 @@
     "report": "pilot/report.md"
   },
   "main": {
-    "state": "provisional_incomplete_saved_checkpoint",
+    "state": "provisional_interrupted_credit_balance_exhausted_saved_checkpoint",
     "phase": "p1",
     "planned": 5120,
-    "terminal": 1025,
-    "modelEvaluable": 1021,
-    "correct": 890,
+    "terminal": 1412,
+    "modelEvaluable": 1350,
+    "correct": 1177,
     "ambiguousOutcome": 1,
     "terminalNotDispatched": 3,
-    "untouchedUnexecuted": 4095,
-    "reportNotDispatchedTotal": 4098,
-    "knownGenerationTokens": 3372103,
-    "unresolvedReservedTokens": 28969,
+    "untouchedUnexecuted": 3706,
+    "reportNotDispatchedTotal": 3711,
+    "knownGenerationTokens": 4494782,
+    "unresolvedReservedTokens": 692889,
     "task": "scope_lookup",
     "view": "after_close",
     "promptVersion": "1",
@@ -70,12 +70,12 @@
     "report": "main/report.md",
     "recoveryWitness": "supporting/main-zero-http-recovery.json",
     "reproductionWitness": "supporting/main-provisional-reproduction.json",
-    "note": "Saved graded batch-0 snapshot at 2026-10-06T10:23:50.7016333Z; execution was resumed separately under the original frozen source/protocol. One original dispatched response remains unknown. Three count-only trials are terminal not-dispatched; 4,095 planned trials remain untouched. The ledger conservatively retains the original 14,131-token reservation plus a proven count-only 14,838-token pre-dispatch reservation, total 28,969; unknown usage is not zero. No P1 pilot or P2 observations are pooled, and no CI was computed.",
-    "dispatched": 1022,
-    "infrastructureMissing": 1,
-    "snapshotAtUtc": "2026-10-06T10:23:50.7016333Z",
-    "checkpointSource": "verification/main-checkpoints-v2/batch-0",
-    "checkpointSnapshotSha256": "7bbf93eda5f61494cd60ea47649da077f5d997dfc3a3a231a228d17681cbb7b1",
+    "note": "The frozen reading Main stopped on provider credit_balance_exhausted, independently of accuracy or significance. All 1,412 terminal dispositions are preserved: 1,350 completed/evaluable responses, 58 API rejections, one original ambiguous outcome and three count-only not-dispatched outcomes. 3,708 trials have no terminal, including two successful count-only operations and 3,706 truly untouched trials. The saved report keeps these and the three terminal-unexecuted trials as 3,711 not-dispatched. All 1,025 accepted prior terminal bytes remain unchanged. 60 unresolved reservations retain 692,889 tokens, including the original 28,969-token subset. No terminal outcomes were retried; no automatic charge or fallback was performed. The partial-run inferential CI is not_computed; P1/P2/mock are not pooled.",
+    "dispatched": 1409,
+    "infrastructureMissing": 59,
+    "snapshotAtUtc": "2026-10-06T10:52:54.7280805Z",
+    "checkpointSource": "verification/main-credit-stop-checkpoint-20261006",
+    "checkpointSnapshotSha256": "e3a72e9867010e34b1ff87deb303b979c89c8924577091067d55b0c52dd5e5b3",
     "inferentialCiStatus": "not_computed",
     "heldReservations": [
       {
@@ -91,10 +91,10 @@
         "interpretation": "Proven count-only no generation; frozen ledger conservatively retains pre-dispatch reservation"
       }
     ],
-    "recoveryWitnessScope": "Historical original 2026-10-05 zero-HTTP recovery to 725 terminal dispositions; this witness is preserved unchanged and does not describe the current 1,025-terminal snapshot.",
+    "recoveryWitnessScope": "Historical original 2026-10-05 zero-HTTP recovery to 725 terminal dispositions; this witness is preserved unchanged and does not describe the current 1,412-terminal snapshot.",
     "reproductionWitnessScope": "Historical original 725-terminal provisional report reproduction only; preserved unchanged, not the current graded checkpoint.",
-    "currentScoreReportWitnessSource": "verification/main-sharing-recovered-score-report-witness.json",
-    "currentScoreReportWitnessSha256": "6c490bf45877b2b1359979bec566518dd94ca51cd007ede2f7288620cbb9af6a",
+    "currentScoreReportWitnessSource": "verification/main-credit-stop-checkpoint-20261006/snapshot.json",
+    "currentScoreReportWitnessSha256": "e3a72e9867010e34b1ff87deb303b979c89c8924577091067d55b0c52dd5e5b3",
     "countOnlyRecovery": {
       "sourceWitness": "verification/main-count-only-recovery-v2/recovery-witness.json",
       "sourceWitnessSha256": "f2cc43f10db9b6af67856dec05fe7df5521a43a9d32971e43a7dbf54e934cdcf",
@@ -112,10 +112,16 @@
       "unresolvedReservedTokens": 28969
     },
     "countOnlyRecoveryWitness": "supporting/main-count-only-recovery-v2.json",
-    "countOnlyRecoveryWitnessSha256": "1c6a01b4520811dc6061327670573d226853cb3d6d4b7ec8546569a8f7cb6fd9"
+    "countOnlyRecoveryWitnessSha256": "1c6a01b4520811dc6061327670573d226853cb3d6d4b7ec8546569a8f7cb6fd9",
+    "apiRejected": 58,
+    "countOnlyNonTerminal": 2,
+    "nonTerminal": 3708,
+    "openReservationCount": 60,
+    "heldReservationsScope": "Original accepted two-reservation subset only; 58 additional credit-refusal reservations are retained in the full private ledger",
+    "creditRefusalReservedTokens": 663920
   },
   "fullProgramExtension": {
-    "state": "live_pilot_in_progress_ungraded_execution_snapshot",
+    "state": "provisional_interrupted_saved_strict_reports",
     "phase": "p2",
     "tasks": [
       "source_to_ast",
@@ -126,7 +132,7 @@
     "plannedGenerations": 960,
     "plannedPerDirectionStyle": 96,
     "liveExecuted": true,
-    "liveGenerations": 284,
+    "liveGenerations": 300,
     "measuredSuccessRate": null,
     "completeMockWorkflowExecuted": true,
     "postChangeFullTestPassed": true,
@@ -178,10 +184,16 @@
       "artifactId": 11390722284,
       "artifactDigestSha256": "a0058b2519122ca9bffe84e60fe1b0a1875b696416cbbbc69969e86b47392bc4"
     },
-    "note": "A distinct exploratory live P2 pilot is executing after a matching 16,384-output-token capability probe. This snapshot records dispatch/completion/usage counts only. Accuracy and confidence intervals require saved strict grades at a stable batch boundary. The independently verified synthetic mock remains separate. No P1/main/P2 observations are pooled.",
+    "note": "The separately planned P2 pilot stopped after the provider returned credit_balance_exhausted. Saved strict reports retain the full 960-trial plan, infrastructure missingness, and unexecuted trials. Generation and whole-program parsing are separate result tables; partial-run inferential CI is not computed. The execution snapshot records operational counts only. Terminal outcomes and unknown-usage reservations are preserved; no terminal retry, fallback, or automatic charge was performed. No P1/main/P2/mock observations are pooled.",
     "sourceHash": "41ffc2647b8f3c3838a17c2425b0be97007fe611f5d0a68d3dd9d1c79e1b0b96",
-    "liveCompletedResponses": 284,
-    "liveSnapshotAt": "2026-10-06T10:39:57.440213Z",
+    "liveCompletedResponses": 295,
+    "liveTerminalDispositions": 300,
+    "modelEvaluable": 295,
+    "strictCorrect": 196,
+    "report": "p2/report.md",
+    "inferentialCiStatus": "not_computed",
+    "measuredSuccessRateScope": "No single pooled rate is displayed; generation and parsing use their separate strict saved summary rows.",
+    "liveSnapshotAt": "2026-10-06T10:53:09.5729092Z",
     "liveExecutionStatus": "supporting/p2-live-current-status.json",
     "liveCapabilities": "supporting/p2-live-capabilities.json"
   },
@@ -197,5 +209,6 @@
     "prompt": "supporting/pilot-named-end-ast-to-source-prompt.txt",
     "note": "Saved canonical logical request is byte-preserved. Historical v1 transport object-key insertion order was not captured; no claim of exact wire-byte reconstruction."
   },
+  "interruptionNote": "supporting/live-interruption.txt",
   "primaryHypothesis": "When generating an unfamiliar language, redundant closing syntax repeating kind or kind and name may help preserve structure with less reliance on distant context. Whole-program correctness is measured; internal dependency and attention are not measured."
 }

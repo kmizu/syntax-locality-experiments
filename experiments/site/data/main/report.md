@@ -4,7 +4,7 @@
 
 Status: **provisional / incomplete run**. synthetic_mock=false.
 
-Strict model-evaluable accuracy: 87.169%; observed primary D−B: NA percentage points.
+Strict model-evaluable accuracy: 87.185%; observed primary D−B: 5.677 percentage points.
 
 ## 2. Experiment conditions
 
@@ -20,9 +20,11 @@ Bootstrap seed: 20261005; iterations when eligible: 10,000; unit: structural fam
 
 | planned | dispatched | terminal | model-evaluable | correct | infrastructure missing | not-dispatched | incomplete | refusal |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 5120 | 1022 | 1025 | 1021 | 890 | 1 | 4098 | 0 | 0 |
+| 5120 | 1409 | 1412 | 1350 | 1177 | 59 | 3711 | 0 | 0 |
 
-Primary matched families: 19 / 512. Operational success correct/dispatched: 87.084%; upper bound if unresolved dispatched outcomes all succeed: 87.182%.
+Primary matched families: 41 / 512. Operational success correct/dispatched: 83.534%; upper bound if unresolved dispatched outcomes all succeed: 83.605%.
+
+Infrastructure missingness exceeds 1% of planned trials. Investigate causes and imbalance across conditions before drawing a definitive superiority conclusion.
 
 Missing trials are not model errors. The sensitivity bounds below assign all non-evaluable planned comparison outcomes against / in favor of D.
 
@@ -30,9 +32,9 @@ Missing trials are not model errors. The sensitivity bounds below assign all non
 
 | task | view | contrast | families | effect pp | 95% CI pp | discordant | CI status |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| scope_lookup | after_close | named_end − generic_end | 19/512 | NA | not_computed | 5 | not_computed |
+| scope_lookup | after_close | named_end − generic_end | 41/512 | 5.677 | not_computed | 14 | not_computed |
 
-Relative error reduction: NA (NA at zero baseline error). Missingness sensitivity: [-79.297, 80.859] percentage points.
+Relative error reduction: 0.522 (NA at zero baseline error). Missingness sensitivity: [-72.754, 74.609] percentage points.
 
 Replicates are averaged within family and lexical regime, regimes have equal weight, and depth × filler cells have equal weight. A wholly missing planned cell leaves the overall effect undefined. Exact McNemar values, where available for single-regime unaveraged binary family pairs, are descriptive.
 
@@ -40,15 +42,15 @@ Replicates are averaged within family and lexical regime, regimes have equal wei
 
 | task | view | style | evaluable | accuracy | incomplete | input known | output known | reasoning known | cached known | tokens/correct | retry rate | mean latency ms |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| scope_lookup | after_close | braces | 204 | 73.039% | 0 | 615445 | 33388 | 31756 | 0 | 4354.584 | 0.000% | 17981.473 |
-| scope_lookup | after_close | generic_end | 204 | 88.725% | 0 | 624070 | 33719 | 32089 | 0 | NA | 0.000% | 9599.405 |
-| scope_lookup | after_close | named_end | 204 | 92.647% | 0 | 676430 | 25038 | 23412 | 0 | 3711.471 | 0.000% | 17584.922 |
-| scope_lookup | after_close | padded_end | 204 | 92.647% | 0 | 656187 | 34454 | 32822 | 0 | 3654.185 | 0.000% | 16059.683 |
-| scope_lookup | after_close | typed_end | 205 | 88.780% | 0 | 642301 | 31071 | 29433 | 0 | 3699.846 | 0.000% | 10307.068 |
+| scope_lookup | after_close | braces | 270 | 74.074% | 0 | 822579 | 43154 | 40994 | 0 | NA | 0.000% | 15588.601 |
+| scope_lookup | after_close | generic_end | 270 | 88.889% | 0 | 834021 | 43895 | 41737 | 0 | NA | 0.000% | 9776.155 |
+| scope_lookup | after_close | named_end | 269 | 92.565% | 0 | 901055 | 32550 | 30406 | 0 | NA | 0.000% | 15110.770 |
+| scope_lookup | after_close | padded_end | 270 | 92.222% | 0 | 876590 | 44486 | 42326 | 0 | NA | 0.000% | 14682.872 |
+| scope_lookup | after_close | typed_end | 271 | 88.192% | 0 | 856256 | 40196 | 38030 | 0 | NA | 0.000% | 9813.145 |
 
-Known tokens from unique final trial usage: 3372103; known generation-attempt tokens across retries: 3372103; trials without full input/output usage: 4099; generation attempts without full usage: 1.
+Known tokens from unique final trial usage: 4494782; known generation-attempt tokens across retries: 4494782; trials without full input/output usage: 3770; generation attempts without full usage: 59.
 
-HTTP attempts (count, generation, retry): 2047; known estimated cost USD: NA; cost-known trials: 0 / 5120. Estimates are not verified billing or free-quota balances.
+HTTP attempts (count, generation, retry): 2823; known estimated cost USD: NA; cost-known trials: 0 / 5120. Estimates are not verified billing or free-quota balances.
 
 Unknown usage is excluded from known sums and explicitly counted, never replaced with a zero estimate. Cost ratios are NA when usage is incomplete or there are no correct answers. summary.csv separately reports unique-trial and all-generation-attempt tokens per correct result. Non-reasoning output is output minus reasoning only where both fields exist; it is not an exact answer-text token count. Retried and non-retried latency summaries are in summary.csv.
 
@@ -58,47 +60,47 @@ Full task/view/style/natural-or-nonce/depth/filler counts, usage completeness, a
 
 | lexical | depth | filler | planned | evaluable | accuracy | infra missing |
 | --- | --- | --- | --- | --- | --- | --- |
-| natural | 2 | 0 | 160 | 35 | 77.143% | 0 |
-| natural | 2 | 32 | 160 | 35 | 94.286% | 0 |
-| natural | 2 | 128 | 160 | 15 | 100.000% | 0 |
-| natural | 2 | 512 | 160 | 25 | 100.000% | 0 |
-| natural | 4 | 0 | 160 | 35 | 57.143% | 0 |
-| natural | 4 | 32 | 160 | 35 | 80.000% | 0 |
-| natural | 4 | 128 | 160 | 35 | 94.286% | 0 |
-| natural | 4 | 512 | 160 | 20 | 95.000% | 0 |
-| natural | 8 | 0 | 160 | 30 | 86.667% | 0 |
-| natural | 8 | 32 | 160 | 25 | 84.000% | 0 |
-| natural | 8 | 128 | 160 | 35 | 91.429% | 0 |
-| natural | 8 | 512 | 160 | 37 | 91.892% | 1 |
-| natural | 16 | 0 | 160 | 30 | 90.000% | 0 |
-| natural | 16 | 32 | 160 | 25 | 96.000% | 0 |
-| natural | 16 | 128 | 160 | 30 | 96.667% | 0 |
-| natural | 16 | 512 | 160 | 45 | 93.333% | 0 |
-| nonce | 2 | 0 | 160 | 25 | 72.000% | 0 |
-| nonce | 2 | 32 | 160 | 25 | 76.000% | 0 |
-| nonce | 2 | 128 | 160 | 15 | 86.667% | 0 |
-| nonce | 2 | 512 | 160 | 25 | 96.000% | 0 |
-| nonce | 4 | 0 | 160 | 45 | 68.889% | 0 |
-| nonce | 4 | 32 | 160 | 25 | 72.000% | 0 |
-| nonce | 4 | 128 | 160 | 40 | 90.000% | 0 |
-| nonce | 4 | 512 | 160 | 29 | 100.000% | 0 |
-| nonce | 8 | 0 | 160 | 55 | 78.182% | 0 |
-| nonce | 8 | 32 | 160 | 35 | 77.143% | 0 |
-| nonce | 8 | 128 | 160 | 20 | 90.000% | 0 |
-| nonce | 8 | 512 | 160 | 30 | 96.667% | 0 |
-| nonce | 16 | 0 | 160 | 35 | 91.429% | 0 |
-| nonce | 16 | 32 | 160 | 55 | 96.364% | 0 |
-| nonce | 16 | 128 | 160 | 45 | 95.556% | 0 |
-| nonce | 16 | 512 | 160 | 25 | 88.000% | 0 |
+| natural | 2 | 0 | 160 | 55 | 83.636% | 5 |
+| natural | 2 | 32 | 160 | 40 | 92.500% | 5 |
+| natural | 2 | 128 | 160 | 25 | 96.000% | 0 |
+| natural | 2 | 512 | 160 | 30 | 100.000% | 0 |
+| natural | 4 | 0 | 160 | 45 | 55.556% | 0 |
+| natural | 4 | 32 | 160 | 40 | 80.000% | 0 |
+| natural | 4 | 128 | 160 | 55 | 90.909% | 5 |
+| natural | 4 | 512 | 160 | 25 | 96.000% | 5 |
+| natural | 8 | 0 | 160 | 45 | 84.444% | 0 |
+| natural | 8 | 32 | 160 | 30 | 86.667% | 5 |
+| natural | 8 | 128 | 160 | 55 | 89.091% | 0 |
+| natural | 8 | 512 | 160 | 42 | 92.857% | 1 |
+| natural | 16 | 0 | 160 | 40 | 90.000% | 0 |
+| natural | 16 | 32 | 160 | 30 | 96.667% | 5 |
+| natural | 16 | 128 | 160 | 40 | 97.500% | 7 |
+| natural | 16 | 512 | 160 | 50 | 94.000% | 0 |
+| nonce | 2 | 0 | 160 | 39 | 66.667% | 1 |
+| nonce | 2 | 32 | 160 | 35 | 77.143% | 0 |
+| nonce | 2 | 128 | 160 | 20 | 90.000% | 0 |
+| nonce | 2 | 512 | 160 | 40 | 95.000% | 0 |
+| nonce | 4 | 0 | 160 | 50 | 68.000% | 0 |
+| nonce | 4 | 32 | 160 | 35 | 77.143% | 0 |
+| nonce | 4 | 128 | 160 | 50 | 90.000% | 0 |
+| nonce | 4 | 512 | 160 | 44 | 100.000% | 0 |
+| nonce | 8 | 0 | 160 | 60 | 78.333% | 0 |
+| nonce | 8 | 32 | 160 | 50 | 82.000% | 10 |
+| nonce | 8 | 128 | 160 | 35 | 88.571% | 5 |
+| nonce | 8 | 512 | 160 | 45 | 93.333% | 0 |
+| nonce | 16 | 0 | 160 | 40 | 90.000% | 0 |
+| nonce | 16 | 32 | 160 | 65 | 96.923% | 0 |
+| nonce | 16 | 128 | 160 | 55 | 96.364% | 0 |
+| nonce | 16 | 512 | 160 | 40 | 85.000% | 5 |
 
 ## 7. Exploratory paired comparisons
 
 | task | view | contrast | families | effect pp | 95% CI pp | discordant | CI status |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| scope_lookup | after_close | named_end − padded_end | 19/512 | NA | not_computed | 3 | not_computed |
-| scope_lookup | after_close | named_end − typed_end | 19/512 | NA | not_computed | 3 | not_computed |
-| scope_lookup | after_close | typed_end − generic_end | 19/512 | NA | not_computed | 7 | not_computed |
-| scope_lookup | after_close | named_end − braces | 19/512 | NA | not_computed | 6 | not_computed |
+| scope_lookup | after_close | named_end − padded_end | 41/512 | 3.750 | not_computed | 9 | not_computed |
+| scope_lookup | after_close | named_end − typed_end | 41/512 | 3.229 | not_computed | 7 | not_computed |
+| scope_lookup | after_close | typed_end − generic_end | 41/512 | 2.448 | not_computed | 17 | not_computed |
+| scope_lookup | after_close | named_end − braces | 41/512 | 12.708 | not_computed | 15 | not_computed |
 
 All D−E, D−C, C−B, A contrasts, other tasks/views, and pilot comparisons are exploratory unless a separate testing plan was frozen. See [paired-comparisons.csv](paired-comparisons.csv).
 

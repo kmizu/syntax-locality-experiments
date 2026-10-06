@@ -1,22 +1,26 @@
 {
-  "capturedAt": "2026-10-06T10:39:57.440213Z",
+  "capturedAt": "2026-10-06T10:53:09.5729092Z",
   "utcWindow": "2026-10-06",
   "planned": 960,
   "batchLimit": 500,
-  "tokenCountAttempts": 285,
-  "generationDispatchAttempts": 284,
-  "distinctDispatched": 284,
-  "terminal": 284,
-  "infrastructureTerminalCount": 0,
+  "tokenCountAttempts": 302,
+  "generationDispatchAttempts": 300,
+  "distinctDispatched": 300,
+  "terminal": 300,
+  "infrastructureTerminalCount": 5,
   "statuses": [
     {
-      "status": "completed",
-      "count": 284
+      "count": 5,
+      "status": "api_rejected"
+    },
+    {
+      "count": 295,
+      "status": "completed"
     }
   ],
-  "actualKnownTokens": 1827280,
-  "openReservedTokens": 0,
-  "unresolvedIncludesCurrentInFlight": true,
+  "actualKnownTokens": 1918793,
+  "openReservedTokens": 119976,
+  "unresolvedIncludesCurrentInFlight": false,
   "cumulativeCap": 19000000,
   "synthetic_mock": false,
   "sourceHash": "41ffc2647b8f3c3838a17c2425b0be97007fe611f5d0a68d3dd9d1c79e1b0b96",

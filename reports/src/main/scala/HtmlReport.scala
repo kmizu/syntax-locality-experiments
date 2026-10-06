@@ -447,6 +447,13 @@ object HtmlReport:
         s"未送信 ${comma(run.total.number("not_dispatched"))}、incomplete ${comma(run.total.number("incomplete"))}、refusal ${comma(run.total.number("refusal"))}。"
     val mainCiStates = main.comparisons.map(_("ci_status")).distinct.sorted.mkString(" / ")
     val mainNotice = s"${runState(main)}。${counts(main)}CSV の CI status: $mainCiStates。"
+    val interruptionPath = "supporting/live-interruption.txt"
+    val interruptionNotice =
+      if Files.isRegularFile(input.resolve(interruptionPath)) then
+        val note = Files.readString(input.resolve(interruptionPath), UTF_8).trim
+        require(note.nonEmpty && note.length <= 4000, "Invalid saved execution interruption note")
+        s"<aside class=\"callout\"><strong>実行の中断と途中結果。</strong><p>${h(note)}</p>${link(interruptionPath, "保存済み中断記録")}</aside>"
+      else ""
     val supportRecovery = "supporting/main-zero-http-recovery.json"
     val historicalRecovery =
       if Files.isRegularFile(input.resolve(supportRecovery)) then
@@ -634,6 +641,7 @@ object HtmlReport:
 </div></header>
 <nav aria-label="レポートの章"><div class="wrap"><a href="#question">問いと仮説</a><a href="#syntax">比較する閉じ方</a><a href="#method">生成の採点</a><a href="#results">生成結果</a><a href="#interpretation">解釈と限界</a><a href="#adjunct">補助実験</a><a href="#status">状態と資料</a></div></nav>
 <main class="wrap">
+$interruptionNotice
 <section id="question">
 <p class="section-label">01 / QUESTION</p><h2>問いは、未知の言語を正しく「生成」できるか。</h2>
 <p>今回確かめたいのは、<strong>「閉じるのに冗長だが長距離依存を必要としない構造が有利なのでは」</strong>という仮説。閉じ終わるたびに種類、または種類と名前を明示する構文が、共通の終端だけを使う構文より、元の構造を保った全文生成に向いているかを調べる。</p>
@@ -707,7 +715,7 @@ $mainComparison
 </section>
 <section id="status">
 <p class="section-label">07 / STATUS AND REPRODUCIBILITY</p><h2>測定、配線検証、計画を分けて記録する。</h2>
-<div class="status-grid"><article><span class="pill complete">P1 / LIVE PILOT</span><h3>探索的生成＋補助読み取り</h3><p>${h(counts(pilot))}</p><p><code>synthetic_mock=false</code>。生成360応答とprefix読み取り1,440応答を区別する。${source("pilot", "report.md", "保存済みreport")}</p></article><article><span class="pill ${if mainComplete then "complete" else "partial"}">MAIN / ${if mainComplete then "TERMINAL COMPLETE" else "SNAPSHOT"}</span><h3>別のfrozen reading main</h3><p>${h(mainNotice)}</p><p>未送信の内訳、利用量、欠測感度は元のreportに保持。${source("main", "report.md", "保存済みreport")}</p></article><article><span class="pill ${if p2.nonEmpty then "complete" else if p2Execution.nonEmpty then "partial" else "pending"}">P2 / ${if p2.nonEmpty then "LIVE ARTIFACTS" else if p2Execution.nonEmpty then "LIVE STARTED · UNGRADED" else "NO SAVED LIVE STATUS"}</span><h3>別の全文生成・parsing pilot</h3><p>$p2StatusText</p>$p2ProgressAfterReport<p>$p2ImplementationText</p><p>${link("docs/full-program-structures.md", "別のP2設計")} / ${link("supporting/full-program-pilot.json", "固定config")}</p></article></div>
+<div class="status-grid"><article><span class="pill complete">P1 / LIVE PILOT</span><h3>探索的生成＋補助読み取り</h3><p>${h(counts(pilot))}</p><p><code>synthetic_mock=false</code>。生成360応答とprefix読み取り1,440応答を区別する。${source("pilot", "report.md", "保存済みreport")}</p></article><article><span class="pill ${if mainComplete then "complete" else "partial"}">MAIN / ${if mainComplete then "TERMINAL COMPLETE" else "SNAPSHOT"}</span><h3>別のfrozen reading main</h3><p>${h(mainNotice)}</p><p>未送信の内訳、利用量、欠測感度は元のreportに保持。${source("main", "report.md", "保存済みreport")}</p></article><article><span class="pill ${if p2.exists(r => r.total.number("terminal") == r.total.number("planned")) then "complete" else if p2.nonEmpty || p2Execution.nonEmpty then "partial" else "pending"}">P2 / ${if p2.nonEmpty then "LIVE ARTIFACTS" else if p2Execution.nonEmpty then "LIVE STARTED · UNGRADED" else "NO SAVED LIVE STATUS"}</span><h3>別の全文生成・parsing pilot</h3><p>$p2StatusText</p>$p2ProgressAfterReport<p>$p2ImplementationText</p><p>${link("docs/full-program-structures.md", "別のP2設計")} / ${link("supporting/full-program-pilot.json", "固定config")}</p></article></div>
 <p>P1の既知使用量は${comma(pilot.total.number("unique_total_tokens_known"))} tokens、mainは${comma(main.total.number("unique_total_tokens_known"))} tokens。${p2.map(r => s"P2 liveは${comma(r.total.number("unique_total_tokens_known"))} known tokens。").getOrElse("")} $reservation これはbillingの確定額や無料quotaの証拠ではない。</p>
 ${detail("P2 mockの配線検証の詳細", if p2MockVerified then s"<p><code>synthetic_mock=true</code>。960/960 terminal・strict correct、1,920 simulated adapter attempts。保存済み5レポートの再生成はbyte-identical、immutable artifactは不変、resumeの追加logical trial / adapter attemptはともに0。外部HTTPは0（明示的な--mockコード経路の確認で、packet captureではない）。<a href=\"${h(p2MockWorkflowRunUrl)}/attempts/3\">実際のmock workflow（attempt 3）</a> / ${link(p2MockWitnessPath, "保存済み検証証跡")}。モデルの成績・仮説の支持として数えない。</p>" else "<p>保存済みwitnessがないため、通しmock完了を主張しない。</p>")}
 </section>

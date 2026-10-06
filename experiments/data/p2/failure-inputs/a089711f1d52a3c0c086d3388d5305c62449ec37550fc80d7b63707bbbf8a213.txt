@@ -1,0 +1,283 @@
+Follow the task and return only the requested answer, without explanation or Markdown fences.
+Parse the complete program into its neutral JSON abstract syntax tree.
+Preserve every node, parent-child relationship, statement order, scope kind and name, variable and value, and nop payload.
+Do not evaluate bindings or discard shadowed bindings or nop statements.
+The root is a JSON object with exactly one field, body, containing an ordered array of statements.
+A scope node has exactly these fields: {"type":"scope","kind":"func","name":"n_abcdefgh","body":[]}.
+Its kind is the semantic category unit, func, or area, using the mapping in SYNTAX even when the input keywords differ.
+A binding node has exactly these fields: {"type":"let","variable":"x_a","value":1739}.
+A nop node has exactly these fields: {"type":"nop","payload":"p_abcdefgh"}.
+Use the actual names, variables, integer values and payloads from the input, not these illustrative schema values.
+Closing lines determine the end of a scope body and do not create AST nodes.
+Object field order and whitespace may vary; body-array order must match the source statement order.
+Return only the complete JSON AST, without Markdown fences or explanation.
+
+SYNTAX
+The kind keywords are raku for unit, weso for func, and bifo for area. Each creates a local scope.
+Open a block with KIND NAME on one line.
+Close the innermost open block with hud KIND NAME on one line. KIND and NAME must repeat that block's opening keyword and name.
+KIND is one of raku, weso, bifo; NAME is n_ followed by exactly eight lowercase letters and is unique in the program.
+A binding statement (let) is zim VARIABLE VALUE. VARIABLE is x_ followed by one letter a through f; VALUE is a four digit integer from 1000 through 9999.
+Within one scope a variable is bound at most once. Inner bindings hide outer bindings until their scope closes.
+A no-effect statement (nop) is vop PAYLOAD. PAYLOAD is p_ followed by eight lowercase letters.
+The observation marker is probe PROBE_ID VARIABLE. PROBE_ID is q_ followed by eight lowercase letters.
+Use one statement per line. Indentation has no meaning; scope is determined solely by explicit opening and closing lines.
+
+EXAMPLES
+Example 1
+Program:
+zim x_b 1898
+zim x_a 9018
+bifo n_imcgrbkz
+zim x_a 7207
+vop p_qdggfdxg
+hud bifo n_imcgrbkz
+bifo n_kamcsxht
+zim x_a 8346
+weso n_iqloaety
+zim x_a 7330
+vop p_eeughnii
+hud weso n_iqloaety
+raku n_zsweikhp
+zim x_a 5661
+hud raku n_zsweikhp
+hud bifo n_kamcsxht
+AST:
+{"body":[{"type":"let","value":1898,"variable":"x_b"},{"type":"let","value":9018,"variable":"x_a"},{"body":[{"type":"let","value":7207,"variable":"x_a"},{"payload":"p_qdggfdxg","type":"nop"}],"kind":"area","name":"n_imcgrbkz","type":"scope"},{"body":[{"type":"let","value":8346,"variable":"x_a"},{"body":[{"type":"let","value":7.33E+3,"variable":"x_a"},{"payload":"p_eeughnii","type":"nop"}],"kind":"func","name":"n_iqloaety","type":"scope"},{"body":[{"type":"let","value":5661,"variable":"x_a"}],"kind":"unit","name":"n_zsweikhp","type":"scope"}],"kind":"area","name":"n_kamcsxht","type":"scope"}]}
+
+Example 2
+Program:
+zim x_b 6809
+zim x_a 8528
+bifo n_cltuwgfr
+zim x_a 7436
+vop p_jnevfcow
+hud bifo n_cltuwgfr
+weso n_hjmowkks
+weso n_xgsdplot
+zim x_a 1433
+vop p_fsvjabvb
+hud weso n_xgsdplot
+bifo n_prnbhatf
+zim x_a 4859
+weso n_xgfwoefi
+zim x_a 9856
+vop p_bipumgzk
+hud weso n_xgfwoefi
+hud bifo n_prnbhatf
+hud weso n_hjmowkks
+AST:
+{"body":[{"type":"let","value":6809,"variable":"x_b"},{"type":"let","value":8528,"variable":"x_a"},{"body":[{"type":"let","value":7436,"variable":"x_a"},{"payload":"p_jnevfcow","type":"nop"}],"kind":"area","name":"n_cltuwgfr","type":"scope"},{"body":[{"body":[{"type":"let","value":1433,"variable":"x_a"},{"payload":"p_fsvjabvb","type":"nop"}],"kind":"func","name":"n_xgsdplot","type":"scope"},{"body":[{"type":"let","value":4859,"variable":"x_a"},{"body":[{"type":"let","value":9856,"variable":"x_a"},{"payload":"p_bipumgzk","type":"nop"}],"kind":"func","name":"n_xgfwoefi","type":"scope"}],"kind":"area","name":"n_prnbhatf","type":"scope"}],"kind":"func","name":"n_hjmowkks","type":"scope"}]}
+
+Example 3
+Program:
+zim x_b 4546
+zim x_a 4315
+weso n_qadbgcyx
+zim x_a 6944
+vop p_ojcebpfp
+hud weso n_qadbgcyx
+bifo n_rhfrcekw
+zim x_a 4379
+bifo n_ackhjhth
+zim x_a 4681
+vop p_kiumvlki
+hud bifo n_ackhjhth
+weso n_pxnqtsdg
+zim x_a 5179
+weso n_fjetgddq
+zim x_a 1459
+weso n_nmzxtisc
+zim x_a 9594
+vop p_jfpamrpj
+vop p_rgdikjut
+hud weso n_nmzxtisc
+hud weso n_fjetgddq
+hud weso n_pxnqtsdg
+hud bifo n_rhfrcekw
+AST:
+{"body":[{"type":"let","value":4546,"variable":"x_b"},{"type":"let","value":4315,"variable":"x_a"},{"body":[{"type":"let","value":6944,"variable":"x_a"},{"payload":"p_ojcebpfp","type":"nop"}],"kind":"func","name":"n_qadbgcyx","type":"scope"},{"body":[{"type":"let","value":4379,"variable":"x_a"},{"body":[{"type":"let","value":4681,"variable":"x_a"},{"payload":"p_kiumvlki","type":"nop"}],"kind":"area","name":"n_ackhjhth","type":"scope"},{"body":[{"type":"let","value":5179,"variable":"x_a"},{"body":[{"type":"let","value":1459,"variable":"x_a"},{"body":[{"type":"let","value":9594,"variable":"x_a"},{"payload":"p_jfpamrpj","type":"nop"},{"payload":"p_rgdikjut","type":"nop"}],"kind":"func","name":"n_nmzxtisc","type":"scope"}],"kind":"func","name":"n_fjetgddq","type":"scope"}],"kind":"func","name":"n_pxnqtsdg","type":"scope"}],"kind":"area","name":"n_rhfrcekw","type":"scope"}]}
+
+Example 4
+Program:
+zim x_b 5207
+zim x_a 3885
+raku n_ktlkverx
+zim x_a 6602
+vop p_gslvtmzu
+hud raku n_ktlkverx
+weso n_qoirzpkk
+raku n_fkzkdvuv
+zim x_a 7615
+vop p_ryjhouhq
+hud raku n_fkzkdvuv
+bifo n_ukyxkutx
+zim x_a 1895
+vop p_svnicwdv
+vop p_ebipavym
+vop p_reqpqjrs
+hud bifo n_ukyxkutx
+hud weso n_qoirzpkk
+AST:
+{"body":[{"type":"let","value":5207,"variable":"x_b"},{"type":"let","value":3885,"variable":"x_a"},{"body":[{"type":"let","value":6602,"variable":"x_a"},{"payload":"p_gslvtmzu","type":"nop"}],"kind":"unit","name":"n_ktlkverx","type":"scope"},{"body":[{"body":[{"type":"let","value":7615,"variable":"x_a"},{"payload":"p_ryjhouhq","type":"nop"}],"kind":"unit","name":"n_fkzkdvuv","type":"scope"},{"body":[{"type":"let","value":1895,"variable":"x_a"},{"payload":"p_svnicwdv","type":"nop"},{"payload":"p_ebipavym","type":"nop"},{"payload":"p_reqpqjrs","type":"nop"}],"kind":"area","name":"n_ukyxkutx","type":"scope"}],"kind":"func","name":"n_qoirzpkk","type":"scope"}]}
+
+Example 5
+Program:
+zim x_b 2766
+zim x_a 1610
+weso n_gfudixmw
+zim x_a 2935
+vop p_kvlbgeik
+hud weso n_gfudixmw
+raku n_gxfollqb
+zim x_a 9814
+bifo n_cpzveext
+zim x_a 4727
+vop p_vohnzzvv
+hud bifo n_cpzveext
+weso n_cionriid
+zim x_a 7140
+weso n_lyhdpyzi
+zim x_a 4247
+vop p_bmzkvnzq
+vop p_zdaufrur
+vop p_zboxlivj
+vop p_xliowxqj
+hud weso n_lyhdpyzi
+hud weso n_cionriid
+hud raku n_gxfollqb
+AST:
+{"body":[{"type":"let","value":2766,"variable":"x_b"},{"type":"let","value":1.61E+3,"variable":"x_a"},{"body":[{"type":"let","value":2935,"variable":"x_a"},{"payload":"p_kvlbgeik","type":"nop"}],"kind":"func","name":"n_gfudixmw","type":"scope"},{"body":[{"type":"let","value":9814,"variable":"x_a"},{"body":[{"type":"let","value":4727,"variable":"x_a"},{"payload":"p_vohnzzvv","type":"nop"}],"kind":"area","name":"n_cpzveext","type":"scope"},{"body":[{"type":"let","value":7.14E+3,"variable":"x_a"},{"body":[{"type":"let","value":4247,"variable":"x_a"},{"payload":"p_bmzkvnzq","type":"nop"},{"payload":"p_zdaufrur","type":"nop"},{"payload":"p_zboxlivj","type":"nop"},{"payload":"p_xliowxqj","type":"nop"}],"kind":"func","name":"n_lyhdpyzi","type":"scope"}],"kind":"func","name":"n_cionriid","type":"scope"}],"kind":"unit","name":"n_gxfollqb","type":"scope"}]}
+
+Example 6
+Program:
+zim x_b 4691
+zim x_a 6106
+raku n_ndmozqvz
+zim x_a 8715
+vop p_dzpekxyv
+hud raku n_ndmozqvz
+raku n_jjeqyguo
+zim x_a 7168
+bifo n_ebmmneso
+zim x_a 5166
+vop p_xkunojzw
+hud bifo n_ebmmneso
+weso n_muypqkhe
+weso n_iimjvvgl
+zim x_a 1537
+raku n_mfuypmsh
+zim x_a 2852
+vop p_ulxdbrhn
+vop p_pjpriolj
+vop p_bytfzykt
+vop p_cgvpkfje
+vop p_risqwuuh
+hud raku n_mfuypmsh
+hud weso n_iimjvvgl
+hud weso n_muypqkhe
+hud raku n_jjeqyguo
+AST:
+{"body":[{"type":"let","value":4691,"variable":"x_b"},{"type":"let","value":6106,"variable":"x_a"},{"body":[{"type":"let","value":8715,"variable":"x_a"},{"payload":"p_dzpekxyv","type":"nop"}],"kind":"unit","name":"n_ndmozqvz","type":"scope"},{"body":[{"type":"let","value":7168,"variable":"x_a"},{"body":[{"type":"let","value":5166,"variable":"x_a"},{"payload":"p_xkunojzw","type":"nop"}],"kind":"area","name":"n_ebmmneso","type":"scope"},{"body":[{"body":[{"type":"let","value":1537,"variable":"x_a"},{"body":[{"type":"let","value":2852,"variable":"x_a"},{"payload":"p_ulxdbrhn","type":"nop"},{"payload":"p_pjpriolj","type":"nop"},{"payload":"p_bytfzykt","type":"nop"},{"payload":"p_cgvpkfje","type":"nop"},{"payload":"p_risqwuuh","type":"nop"}],"kind":"unit","name":"n_mfuypmsh","type":"scope"}],"kind":"func","name":"n_iimjvvgl","type":"scope"}],"kind":"func","name":"n_muypqkhe","type":"scope"}],"kind":"unit","name":"n_jjeqyguo","type":"scope"}]}
+
+Example 7
+Program:
+zim x_b 1986
+zim x_a 5784
+weso n_ummrqrxg
+zim x_a 7844
+vop p_wcufesdb
+hud weso n_ummrqrxg
+weso n_ynivrhvj
+zim x_a 5274
+bifo n_eckgojog
+zim x_a 9034
+vop p_ipbqefnk
+hud bifo n_eckgojog
+bifo n_ejfvgsga
+zim x_a 3009
+vop p_qzmmflrc
+vop p_jwnvtybq
+vop p_lvklijav
+vop p_kbbfgwtw
+vop p_fbtrlfld
+vop p_gkxvrjso
+hud bifo n_ejfvgsga
+hud weso n_ynivrhvj
+AST:
+{"body":[{"type":"let","value":1986,"variable":"x_b"},{"type":"let","value":5784,"variable":"x_a"},{"body":[{"type":"let","value":7844,"variable":"x_a"},{"payload":"p_wcufesdb","type":"nop"}],"kind":"func","name":"n_ummrqrxg","type":"scope"},{"body":[{"type":"let","value":5274,"variable":"x_a"},{"body":[{"type":"let","value":9034,"variable":"x_a"},{"payload":"p_ipbqefnk","type":"nop"}],"kind":"area","name":"n_eckgojog","type":"scope"},{"body":[{"type":"let","value":3009,"variable":"x_a"},{"payload":"p_qzmmflrc","type":"nop"},{"payload":"p_jwnvtybq","type":"nop"},{"payload":"p_lvklijav","type":"nop"},{"payload":"p_kbbfgwtw","type":"nop"},{"payload":"p_fbtrlfld","type":"nop"},{"payload":"p_gkxvrjso","type":"nop"}],"kind":"area","name":"n_ejfvgsga","type":"scope"}],"kind":"func","name":"n_ynivrhvj","type":"scope"}]}
+
+Example 8
+Program:
+zim x_b 9863
+zim x_a 7572
+bifo n_xgurnmrs
+zim x_a 1384
+vop p_jympynny
+hud bifo n_xgurnmrs
+bifo n_bmjlhswg
+bifo n_byeljvsd
+zim x_a 6584
+vop p_ridfgvom
+hud bifo n_byeljvsd
+bifo n_wmooegnc
+zim x_a 4308
+raku n_sirozwri
+zim x_a 7107
+vop p_kxpsrmub
+vop p_nlquarhb
+vop p_upeyzene
+vop p_nazcxkpw
+vop p_cewjhgle
+vop p_kbnftnwh
+vop p_yijhnzor
+hud raku n_sirozwri
+hud bifo n_wmooegnc
+hud bifo n_bmjlhswg
+AST:
+{"body":[{"type":"let","value":9863,"variable":"x_b"},{"type":"let","value":7572,"variable":"x_a"},{"body":[{"type":"let","value":1384,"variable":"x_a"},{"payload":"p_jympynny","type":"nop"}],"kind":"area","name":"n_xgurnmrs","type":"scope"},{"body":[{"body":[{"type":"let","value":6584,"variable":"x_a"},{"payload":"p_ridfgvom","type":"nop"}],"kind":"area","name":"n_byeljvsd","type":"scope"},{"body":[{"type":"let","value":4308,"variable":"x_a"},{"body":[{"type":"let","value":7107,"variable":"x_a"},{"payload":"p_kxpsrmub","type":"nop"},{"payload":"p_nlquarhb","type":"nop"},{"payload":"p_upeyzene","type":"nop"},{"payload":"p_nazcxkpw","type":"nop"},{"payload":"p_cewjhgle","type":"nop"},{"payload":"p_kbnftnwh","type":"nop"},{"payload":"p_yijhnzor","type":"nop"}],"kind":"unit","name":"n_sirozwri","type":"scope"}],"kind":"area","name":"n_wmooegnc","type":"scope"}],"kind":"area","name":"n_bmjlhswg","type":"scope"}]}
+
+TEST
+Program:
+zim x_a 5414
+raku n_hzqfrfxj
+zim x_a 6574
+vop p_owitdpeh
+hud raku n_hzqfrfxj
+bifo n_kykqrkda
+zim x_a 4537
+weso n_fasintib
+zim x_a 8806
+bifo n_pixpmibn
+zim x_a 1035
+raku n_emrydohk
+zim x_a 8211
+vop p_nlprpruv
+hud raku n_emrydohk
+weso n_ujajhoyh
+zim x_a 9052
+raku n_pdbmtxyq
+zim x_a 7781
+weso n_mqhcfixr
+zim x_a 8744
+bifo n_cpaktnqy
+zim x_a 4832
+raku n_ulzxdkvn
+zim x_a 2639
+vop p_mnvufqnc
+vop p_rjakwxyi
+vop p_uupfpxwk
+vop p_yspvjepr
+vop p_naewufvd
+vop p_jpqpbekl
+vop p_wubkwafk
+vop p_htwseaum
+hud raku n_ulzxdkvn
+hud bifo n_cpaktnqy
+hud weso n_mqhcfixr
+hud raku n_pdbmtxyq
+hud weso n_ujajhoyh
+hud bifo n_pixpmibn
+hud weso n_fasintib
+hud bifo n_kykqrkda
+AST:

@@ -1,0 +1,307 @@
+Follow the task and return only the requested answer, without explanation or Markdown fences.
+Parse the complete program into its neutral JSON abstract syntax tree.
+Preserve every node, parent-child relationship, statement order, scope kind and name, variable and value, and nop payload.
+Do not evaluate bindings or discard shadowed bindings or nop statements.
+The root is a JSON object with exactly one field, body, containing an ordered array of statements.
+A scope node has exactly these fields: {"type":"scope","kind":"func","name":"n_abcdefgh","body":[]}.
+Its kind is the semantic category unit, func, or area, using the mapping in SYNTAX even when the input keywords differ.
+A binding node has exactly these fields: {"type":"let","variable":"x_a","value":1739}.
+A nop node has exactly these fields: {"type":"nop","payload":"p_abcdefgh"}.
+Use the actual names, variables, integer values and payloads from the input, not these illustrative schema values.
+Closing lines determine the end of a scope body and do not create AST nodes.
+Object field order and whitespace may vary; body-array order must match the source statement order.
+Return only the complete JSON AST, without Markdown fences or explanation.
+
+SYNTAX
+The kind keywords are nezu for unit, sapu for func, and jomi for area. Each creates a local scope.
+Open a block with KIND NAME on one line.
+Close the innermost open block with wor on its own line.
+KIND is one of nezu, sapu, jomi; NAME is n_ followed by exactly eight lowercase letters and is unique in the program.
+A binding statement (let) is fal VARIABLE VALUE. VARIABLE is x_ followed by one letter a through f; VALUE is a four digit integer from 1000 through 9999.
+Within one scope a variable is bound at most once. Inner bindings hide outer bindings until their scope closes.
+A no-effect statement (nop) is kiv PAYLOAD. PAYLOAD is p_ followed by eight lowercase letters.
+The observation marker is probe PROBE_ID VARIABLE. PROBE_ID is q_ followed by eight lowercase letters.
+Use one statement per line. Indentation has no meaning; scope is determined solely by explicit opening and closing lines.
+
+EXAMPLES
+Example 1
+Program:
+fal x_b 1898
+fal x_a 9018
+jomi n_imcgrbkz
+fal x_a 7207
+kiv p_qdggfdxg
+wor
+jomi n_kamcsxht
+fal x_a 8346
+sapu n_iqloaety
+fal x_a 7330
+kiv p_eeughnii
+wor
+nezu n_zsweikhp
+fal x_a 5661
+wor
+wor
+AST:
+{"body":[{"type":"let","value":1898,"variable":"x_b"},{"type":"let","value":9018,"variable":"x_a"},{"body":[{"type":"let","value":7207,"variable":"x_a"},{"payload":"p_qdggfdxg","type":"nop"}],"kind":"area","name":"n_imcgrbkz","type":"scope"},{"body":[{"type":"let","value":8346,"variable":"x_a"},{"body":[{"type":"let","value":7.33E+3,"variable":"x_a"},{"payload":"p_eeughnii","type":"nop"}],"kind":"func","name":"n_iqloaety","type":"scope"},{"body":[{"type":"let","value":5661,"variable":"x_a"}],"kind":"unit","name":"n_zsweikhp","type":"scope"}],"kind":"area","name":"n_kamcsxht","type":"scope"}]}
+
+Example 2
+Program:
+fal x_b 6809
+fal x_a 8528
+jomi n_cltuwgfr
+fal x_a 7436
+kiv p_jnevfcow
+wor
+sapu n_hjmowkks
+sapu n_xgsdplot
+fal x_a 1433
+kiv p_fsvjabvb
+wor
+jomi n_prnbhatf
+fal x_a 4859
+sapu n_xgfwoefi
+fal x_a 9856
+kiv p_bipumgzk
+wor
+wor
+wor
+AST:
+{"body":[{"type":"let","value":6809,"variable":"x_b"},{"type":"let","value":8528,"variable":"x_a"},{"body":[{"type":"let","value":7436,"variable":"x_a"},{"payload":"p_jnevfcow","type":"nop"}],"kind":"area","name":"n_cltuwgfr","type":"scope"},{"body":[{"body":[{"type":"let","value":1433,"variable":"x_a"},{"payload":"p_fsvjabvb","type":"nop"}],"kind":"func","name":"n_xgsdplot","type":"scope"},{"body":[{"type":"let","value":4859,"variable":"x_a"},{"body":[{"type":"let","value":9856,"variable":"x_a"},{"payload":"p_bipumgzk","type":"nop"}],"kind":"func","name":"n_xgfwoefi","type":"scope"}],"kind":"area","name":"n_prnbhatf","type":"scope"}],"kind":"func","name":"n_hjmowkks","type":"scope"}]}
+
+Example 3
+Program:
+fal x_b 4546
+fal x_a 4315
+sapu n_qadbgcyx
+fal x_a 6944
+kiv p_ojcebpfp
+wor
+jomi n_rhfrcekw
+fal x_a 4379
+jomi n_ackhjhth
+fal x_a 4681
+kiv p_kiumvlki
+wor
+sapu n_pxnqtsdg
+fal x_a 5179
+sapu n_fjetgddq
+fal x_a 1459
+sapu n_nmzxtisc
+fal x_a 9594
+kiv p_jfpamrpj
+kiv p_rgdikjut
+wor
+wor
+wor
+wor
+AST:
+{"body":[{"type":"let","value":4546,"variable":"x_b"},{"type":"let","value":4315,"variable":"x_a"},{"body":[{"type":"let","value":6944,"variable":"x_a"},{"payload":"p_ojcebpfp","type":"nop"}],"kind":"func","name":"n_qadbgcyx","type":"scope"},{"body":[{"type":"let","value":4379,"variable":"x_a"},{"body":[{"type":"let","value":4681,"variable":"x_a"},{"payload":"p_kiumvlki","type":"nop"}],"kind":"area","name":"n_ackhjhth","type":"scope"},{"body":[{"type":"let","value":5179,"variable":"x_a"},{"body":[{"type":"let","value":1459,"variable":"x_a"},{"body":[{"type":"let","value":9594,"variable":"x_a"},{"payload":"p_jfpamrpj","type":"nop"},{"payload":"p_rgdikjut","type":"nop"}],"kind":"func","name":"n_nmzxtisc","type":"scope"}],"kind":"func","name":"n_fjetgddq","type":"scope"}],"kind":"func","name":"n_pxnqtsdg","type":"scope"}],"kind":"area","name":"n_rhfrcekw","type":"scope"}]}
+
+Example 4
+Program:
+fal x_b 5207
+fal x_a 3885
+nezu n_ktlkverx
+fal x_a 6602
+kiv p_gslvtmzu
+wor
+sapu n_qoirzpkk
+nezu n_fkzkdvuv
+fal x_a 7615
+kiv p_ryjhouhq
+wor
+jomi n_ukyxkutx
+fal x_a 1895
+kiv p_svnicwdv
+kiv p_ebipavym
+kiv p_reqpqjrs
+wor
+wor
+AST:
+{"body":[{"type":"let","value":5207,"variable":"x_b"},{"type":"let","value":3885,"variable":"x_a"},{"body":[{"type":"let","value":6602,"variable":"x_a"},{"payload":"p_gslvtmzu","type":"nop"}],"kind":"unit","name":"n_ktlkverx","type":"scope"},{"body":[{"body":[{"type":"let","value":7615,"variable":"x_a"},{"payload":"p_ryjhouhq","type":"nop"}],"kind":"unit","name":"n_fkzkdvuv","type":"scope"},{"body":[{"type":"let","value":1895,"variable":"x_a"},{"payload":"p_svnicwdv","type":"nop"},{"payload":"p_ebipavym","type":"nop"},{"payload":"p_reqpqjrs","type":"nop"}],"kind":"area","name":"n_ukyxkutx","type":"scope"}],"kind":"func","name":"n_qoirzpkk","type":"scope"}]}
+
+Example 5
+Program:
+fal x_b 2766
+fal x_a 1610
+sapu n_gfudixmw
+fal x_a 2935
+kiv p_kvlbgeik
+wor
+nezu n_gxfollqb
+fal x_a 9814
+jomi n_cpzveext
+fal x_a 4727
+kiv p_vohnzzvv
+wor
+sapu n_cionriid
+fal x_a 7140
+sapu n_lyhdpyzi
+fal x_a 4247
+kiv p_bmzkvnzq
+kiv p_zdaufrur
+kiv p_zboxlivj
+kiv p_xliowxqj
+wor
+wor
+wor
+AST:
+{"body":[{"type":"let","value":2766,"variable":"x_b"},{"type":"let","value":1.61E+3,"variable":"x_a"},{"body":[{"type":"let","value":2935,"variable":"x_a"},{"payload":"p_kvlbgeik","type":"nop"}],"kind":"func","name":"n_gfudixmw","type":"scope"},{"body":[{"type":"let","value":9814,"variable":"x_a"},{"body":[{"type":"let","value":4727,"variable":"x_a"},{"payload":"p_vohnzzvv","type":"nop"}],"kind":"area","name":"n_cpzveext","type":"scope"},{"body":[{"type":"let","value":7.14E+3,"variable":"x_a"},{"body":[{"type":"let","value":4247,"variable":"x_a"},{"payload":"p_bmzkvnzq","type":"nop"},{"payload":"p_zdaufrur","type":"nop"},{"payload":"p_zboxlivj","type":"nop"},{"payload":"p_xliowxqj","type":"nop"}],"kind":"func","name":"n_lyhdpyzi","type":"scope"}],"kind":"func","name":"n_cionriid","type":"scope"}],"kind":"unit","name":"n_gxfollqb","type":"scope"}]}
+
+Example 6
+Program:
+fal x_b 4691
+fal x_a 6106
+nezu n_ndmozqvz
+fal x_a 8715
+kiv p_dzpekxyv
+wor
+nezu n_jjeqyguo
+fal x_a 7168
+jomi n_ebmmneso
+fal x_a 5166
+kiv p_xkunojzw
+wor
+sapu n_muypqkhe
+sapu n_iimjvvgl
+fal x_a 1537
+nezu n_mfuypmsh
+fal x_a 2852
+kiv p_ulxdbrhn
+kiv p_pjpriolj
+kiv p_bytfzykt
+kiv p_cgvpkfje
+kiv p_risqwuuh
+wor
+wor
+wor
+wor
+AST:
+{"body":[{"type":"let","value":4691,"variable":"x_b"},{"type":"let","value":6106,"variable":"x_a"},{"body":[{"type":"let","value":8715,"variable":"x_a"},{"payload":"p_dzpekxyv","type":"nop"}],"kind":"unit","name":"n_ndmozqvz","type":"scope"},{"body":[{"type":"let","value":7168,"variable":"x_a"},{"body":[{"type":"let","value":5166,"variable":"x_a"},{"payload":"p_xkunojzw","type":"nop"}],"kind":"area","name":"n_ebmmneso","type":"scope"},{"body":[{"body":[{"type":"let","value":1537,"variable":"x_a"},{"body":[{"type":"let","value":2852,"variable":"x_a"},{"payload":"p_ulxdbrhn","type":"nop"},{"payload":"p_pjpriolj","type":"nop"},{"payload":"p_bytfzykt","type":"nop"},{"payload":"p_cgvpkfje","type":"nop"},{"payload":"p_risqwuuh","type":"nop"}],"kind":"unit","name":"n_mfuypmsh","type":"scope"}],"kind":"func","name":"n_iimjvvgl","type":"scope"}],"kind":"func","name":"n_muypqkhe","type":"scope"}],"kind":"unit","name":"n_jjeqyguo","type":"scope"}]}
+
+Example 7
+Program:
+fal x_b 1986
+fal x_a 5784
+sapu n_ummrqrxg
+fal x_a 7844
+kiv p_wcufesdb
+wor
+sapu n_ynivrhvj
+fal x_a 5274
+jomi n_eckgojog
+fal x_a 9034
+kiv p_ipbqefnk
+wor
+jomi n_ejfvgsga
+fal x_a 3009
+kiv p_qzmmflrc
+kiv p_jwnvtybq
+kiv p_lvklijav
+kiv p_kbbfgwtw
+kiv p_fbtrlfld
+kiv p_gkxvrjso
+wor
+wor
+AST:
+{"body":[{"type":"let","value":1986,"variable":"x_b"},{"type":"let","value":5784,"variable":"x_a"},{"body":[{"type":"let","value":7844,"variable":"x_a"},{"payload":"p_wcufesdb","type":"nop"}],"kind":"func","name":"n_ummrqrxg","type":"scope"},{"body":[{"type":"let","value":5274,"variable":"x_a"},{"body":[{"type":"let","value":9034,"variable":"x_a"},{"payload":"p_ipbqefnk","type":"nop"}],"kind":"area","name":"n_eckgojog","type":"scope"},{"body":[{"type":"let","value":3009,"variable":"x_a"},{"payload":"p_qzmmflrc","type":"nop"},{"payload":"p_jwnvtybq","type":"nop"},{"payload":"p_lvklijav","type":"nop"},{"payload":"p_kbbfgwtw","type":"nop"},{"payload":"p_fbtrlfld","type":"nop"},{"payload":"p_gkxvrjso","type":"nop"}],"kind":"area","name":"n_ejfvgsga","type":"scope"}],"kind":"func","name":"n_ynivrhvj","type":"scope"}]}
+
+Example 8
+Program:
+fal x_b 9863
+fal x_a 7572
+jomi n_xgurnmrs
+fal x_a 1384
+kiv p_jympynny
+wor
+jomi n_bmjlhswg
+jomi n_byeljvsd
+fal x_a 6584
+kiv p_ridfgvom
+wor
+jomi n_wmooegnc
+fal x_a 4308
+nezu n_sirozwri
+fal x_a 7107
+kiv p_kxpsrmub
+kiv p_nlquarhb
+kiv p_upeyzene
+kiv p_nazcxkpw
+kiv p_cewjhgle
+kiv p_kbnftnwh
+kiv p_yijhnzor
+wor
+wor
+wor
+AST:
+{"body":[{"type":"let","value":9863,"variable":"x_b"},{"type":"let","value":7572,"variable":"x_a"},{"body":[{"type":"let","value":1384,"variable":"x_a"},{"payload":"p_jympynny","type":"nop"}],"kind":"area","name":"n_xgurnmrs","type":"scope"},{"body":[{"body":[{"type":"let","value":6584,"variable":"x_a"},{"payload":"p_ridfgvom","type":"nop"}],"kind":"area","name":"n_byeljvsd","type":"scope"},{"body":[{"type":"let","value":4308,"variable":"x_a"},{"body":[{"type":"let","value":7107,"variable":"x_a"},{"payload":"p_kxpsrmub","type":"nop"},{"payload":"p_nlquarhb","type":"nop"},{"payload":"p_upeyzene","type":"nop"},{"payload":"p_nazcxkpw","type":"nop"},{"payload":"p_cewjhgle","type":"nop"},{"payload":"p_kbnftnwh","type":"nop"},{"payload":"p_yijhnzor","type":"nop"}],"kind":"unit","name":"n_sirozwri","type":"scope"}],"kind":"area","name":"n_wmooegnc","type":"scope"}],"kind":"area","name":"n_bmjlhswg","type":"scope"}]}
+
+TEST
+Program:
+fal x_a 1596
+jomi n_eoccaddf
+fal x_a 2616
+kiv p_jcckuckx
+wor
+nezu n_fjwiiaoa
+fal x_a 2640
+sapu n_wummwmwp
+fal x_a 8726
+nezu n_nfbsqzpa
+fal x_a 3742
+jomi n_cxzgtwgv
+fal x_a 3171
+sapu n_fbrqujdm
+fal x_a 6621
+sapu n_fpicxdsj
+fal x_a 2232
+jomi n_ygyydrip
+fal x_a 7355
+sapu n_nysuwtuj
+fal x_a 1675
+kiv p_qvxnehxb
+wor
+nezu n_pzjgugkv
+fal x_a 1466
+nezu n_vqomlisu
+fal x_a 5326
+jomi n_lbxmruhv
+fal x_a 8930
+jomi n_kjkaribw
+fal x_a 5331
+jomi n_eqfwerlx
+fal x_a 1098
+nezu n_ntgfuktw
+fal x_a 7711
+nezu n_epkfvsxi
+fal x_a 3895
+sapu n_drbpnqxl
+fal x_a 9169
+nezu n_jnhimagi
+fal x_a 5658
+kiv p_gadyzgdc
+kiv p_bpcoyvgn
+kiv p_qajxrtje
+kiv p_xgrtahvy
+kiv p_gtgyapwa
+kiv p_drxfwjwg
+kiv p_ijwvfydr
+kiv p_dxgysuhb
+wor
+wor
+wor
+wor
+wor
+wor
+wor
+wor
+wor
+wor
+wor
+wor
+wor
+wor
+wor
+wor
+AST:
