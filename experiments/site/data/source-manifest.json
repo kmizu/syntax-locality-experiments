@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAtUtc": "2026-10-06T08:31:40.9875561Z",
+  "generatedAtUtc": "2026-10-06T09:43:50.7546781Z",
   "synthetic_mock": false,
   "pathBase": "experiments/data",
   "provenancePathBase": "original_experiment_repository",
@@ -10,13 +10,15 @@
   "entries": [
     {
       "path": "docs/full-program-structures.md",
-      "source": ".worktrees/grammar-structures/docs/full-program-structures.md",
-      "sha256": "00f155177f7ce4ce1b2a3169224d28119cb15eb8c5c2587597aa4b8b8f965b77",
-      "sourceSha256": "3ba2bd20d50aab6e45c8eed5fe4c72ad74664128db7788c4dedca99c77863e5f",
-      "bytes": 6127,
+      "sha256": "cb12c3e04867d9ad9072edbafbe02d5b59080e2b6d5968135395cc254b9fb83a",
+      "bytes": 8645,
       "transformation": "current_design_verification_status_updated_from_saved_local_test_and_live_capability_evidence",
       "legacyPublicSha256": "3ba2bd20d50aab6e45c8eed5fe4c72ad74664128db7788c4dedca99c77863e5f",
-      "legacyPublicBytes": 4949
+      "legacyPublicBytes": 4949,
+      "legacySource": ".worktrees/grammar-structures/docs/full-program-structures.md",
+      "legacySourceSha256": "3ba2bd20d50aab6e45c8eed5fe4c72ad74664128db7788c4dedca99c77863e5f",
+      "source": ".worktrees/grammar-structures/docs/full-program-structures.md",
+      "sourceSha256": "cb12c3e04867d9ad9072edbafbe02d5b59080e2b6d5968135395cc254b9fb83a"
     },
     {
       "path": "docs/limitations.md",
@@ -56,11 +58,13 @@
     },
     {
       "path": "docs/scala3-syntax-locality-icl-experiment.md",
-      "source": "scala3-syntax-locality-icl-experiment.md",
-      "sha256": "2a3c108be4336f4097aa7e86f1e473717aabcba33455a3514c403e87cec5bbc6",
-      "sourceSha256": "2a3c108be4336f4097aa7e86f1e473717aabcba33455a3514c403e87cec5bbc6",
+      "sha256": "439e258ab49078f13b47094418f7051895d969563c833d5db7e7014355488395",
       "bytes": 77959,
-      "transformation": "byte_identical_copy"
+      "transformation": "public_terminology_only_label_alignment_original_saved_specification_unchanged",
+      "legacyPublicSha256": "2a3c108be4336f4097aa7e86f1e473717aabcba33455a3514c403e87cec5bbc6",
+      "legacyPublicBytes": 77959,
+      "source": "scala3-syntax-locality-icl-experiment.md",
+      "sourceSha256": "2a3c108be4336f4097aa7e86f1e473717aabcba33455a3514c403e87cec5bbc6"
     },
     {
       "path": "main/errors.csv",
@@ -483,8 +487,8 @@
           "sha256": "212ebef5a5f19ce32b342b81517dcb82b810723bfbd616629fae99e24fee8f77"
         }
       ],
-      "sha256": "f2d1f4f939d9add217d3d064fdefe5eccb4e86d75fbf3fb2184c169c9b4cae56",
-      "bytes": 6596,
+      "sha256": "aa37bedf98eeaa4fc150f9d04fa0668c63b46e1066fa097ef8b6ea6e259ed357",
+      "bytes": 6598,
       "transformation": "current_publication_status_from_saved_reports_and_live_execution_snapshot_no_new_grading",
       "legacyPublicSha256": "cc8346eb89b669c273398d5e1cde18c9785bcade9e14acea28bec87aa7c2ccdf",
       "legacyPublicBytes": 4382
@@ -528,10 +532,10 @@
     {
       "path": "supporting/p2-live-current-status.json",
       "source": ".worktrees/grammar-structures/verification/p2-live-current-status.json",
-      "sha256": "f29ce2d13117d8d6373ebb9af904ff87be76e993f78edcb3e2962f7249279d51",
-      "bytes": 905,
+      "sha256": "053a9fa9041743dd56203c14bc6ed270f49a2457516803d3d20d9d514096898e",
+      "bytes": 911,
       "transformation": "saved_read_only_execution_snapshot_enriched_with_immutable_protocol_manifest_identity_no_grading",
-      "capturedAt": "2026-10-06T08:31:40.9875561Z",
+      "capturedAt": "2026-10-06T09:43:50.7546781Z",
       "sourceHash": "41ffc2647b8f3c3838a17c2425b0be97007fe611f5d0a68d3dd9d1c79e1b0b96",
       "protocolHash": "2ac04cc60928800d0c1fdd37986546a6fee23bd1955ccc011c76099cbde60471"
     },

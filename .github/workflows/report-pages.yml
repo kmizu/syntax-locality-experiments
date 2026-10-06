@@ -69,7 +69,7 @@ jobs:
           } finally { Pop-Location }
           $fallback = Get-Content -LiteralPath experiments/site-mock-witness-absent/build-provenance.json -Raw | ConvertFrom-Json
           if ($fallback.p2StandaloneMockVerified -ne $false -or $null -ne $fallback.p2MockWitnessSha256) { throw 'Absent saved witness must not establish mock completion' }
-          foreach ($field in @('p2LiveGenerations','p2LiveReportAvailable','p2LiveExecutionStatusAvailable','p2LiveExecutionSnapshotAt','p2LiveExecutionStatusPath','p2LiveExecutionStatusSha256','p2LiveTerminalDispositions','p2LivePlannedTrials')) {
+          foreach ($field in @('p2LiveGenerations','p2LiveReportAvailable','p2LiveExecutionStatusAvailable','p2LiveExecutionSnapshotAt','p2LiveExecutionStatusPath','p2LiveExecutionStatusSha256','p2LiveTerminalDispositions','p2LivePlannedTrials','p2LiveCountsBasis','p2LiveReportDispatched','p2LiveReportTerminalDispositions','p2LiveExecutionDistinctDispatched','p2LiveExecutionTerminalDispositions')) {
             if ($provenance.PSObject.Properties.Name -notcontains $field -or $fallback.PSObject.Properties.Name -notcontains $field) { throw "P2 execution/report provenance field missing: $field" }
             if ($fallback.$field -cne $provenance.$field) { throw "Historical mock-witness absence changed separate real P2 provenance: $field" }
           }

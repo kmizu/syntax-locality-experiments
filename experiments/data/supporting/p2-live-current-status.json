@@ -1,20 +1,20 @@
 {
-  "capturedAt": "2026-10-06T08:31:40.9875561Z",
+  "capturedAt": "2026-10-06T09:43:50.7546781Z",
   "utcWindow": "2026-10-06",
   "planned": 960,
   "batchLimit": 500,
-  "tokenCountAttempts": 29,
-  "generationDispatchAttempts": 28,
-  "distinctDispatched": 28,
-  "terminal": 28,
+  "tokenCountAttempts": 173,
+  "generationDispatchAttempts": 172,
+  "distinctDispatched": 172,
+  "terminal": 172,
   "infrastructureTerminalCount": 0,
   "statuses": [
     {
-      "count": 28,
-      "status": "completed"
+      "status": "completed",
+      "count": 172
     }
   ],
-  "actualKnownTokens": 197425,
+  "actualKnownTokens": 1100390,
   "openReservedTokens": 0,
   "unresolvedIncludesCurrentInFlight": true,
   "cumulativeCap": 19000000,

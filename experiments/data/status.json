@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAtUtc": "2026-10-06T08:31:40.9875561Z",
+  "generatedAtUtc": "2026-10-06T09:43:50.7546781Z",
   "synthetic_mock": false,
   "syntheticLanguageExamples": true,
   "resultSource": "Saved Scala-graded reports and CSVs; no new grades or statistical estimates were computed for publication.",
@@ -84,7 +84,7 @@
     "plannedGenerations": 960,
     "plannedPerDirectionStyle": 96,
     "liveExecuted": true,
-    "liveGenerations": 28,
+    "liveGenerations": 172,
     "measuredSuccessRate": null,
     "completeMockWorkflowExecuted": true,
     "postChangeFullTestPassed": true,
@@ -138,8 +138,8 @@
     },
     "note": "A distinct exploratory live P2 pilot is executing after a matching 16,384-output-token capability probe. This snapshot records dispatch/completion/usage counts only. Accuracy and confidence intervals require saved strict grades at a stable batch boundary. The independently verified synthetic mock remains separate. No P1/main/P2 observations are pooled.",
     "sourceHash": "41ffc2647b8f3c3838a17c2425b0be97007fe611f5d0a68d3dd9d1c79e1b0b96",
-    "liveCompletedResponses": 28,
-    "liveSnapshotAt": "2026-10-06T08:31:40.9875561Z",
+    "liveCompletedResponses": 172,
+    "liveSnapshotAt": "2026-10-06T09:43:50.7546781Z",
     "liveExecutionStatus": "supporting/p2-live-current-status.json",
     "liveCapabilities": "supporting/p2-live-capabilities.json"
   },
