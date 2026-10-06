@@ -1,0 +1,159 @@
+{
+  "schemaVersion": 1,
+  "generatedAtUtc": "2026-10-06T08:31:40.9875561Z",
+  "synthetic_mock": false,
+  "syntheticLanguageExamples": true,
+  "resultSource": "Saved Scala-graded reports and CSVs; no new grades or statistical estimates were computed for publication.",
+  "measurement": "Explicitly supplied miniature grammars with eight fixed worked examples; not demonstrated absence from training or grammar inference from examples alone.",
+  "common": {
+    "model": "gpt-5.6-terra",
+    "reasoningEffort": "low",
+    "fewShotCount": 8,
+    "styles": [
+      "braces",
+      "generic_end",
+      "typed_end",
+      "named_end",
+      "padded_end"
+    ],
+    "lexicalRegimes": [
+      "natural",
+      "nonce"
+    ],
+    "samplingUnit": "structural_family"
+  },
+  "pilot": {
+    "state": "complete_exploratory",
+    "phase": "p1",
+    "planned": 1800,
+    "terminal": 1800,
+    "modelEvaluable": 1800,
+    "correct": 1622,
+    "knownGenerationTokens": 6148886,
+    "unresolvedReservedTokens": 0,
+    "tasks": [
+      "scope_lookup",
+      "active_stack",
+      "ast_to_source"
+    ],
+    "readingViews": [
+      "before_close",
+      "after_close"
+    ],
+    "generationView": "complete",
+    "promptVersion": "1",
+    "scorerVersion": "1",
+    "protocolHash": "f7dd15dd3c44b507506e123517157926a35a53b52c1d4aab278664f512a1e182",
+    "sourceHash": "f3e5a0a43c3ca7332be53f098c2b8d9064360312d6e7d5efc16cc4a74fd646ab",
+    "report": "pilot/report.md"
+  },
+  "main": {
+    "state": "interrupted_provisional_incomplete",
+    "phase": "p1",
+    "planned": 5120,
+    "terminal": 725,
+    "modelEvaluable": 722,
+    "correct": 629,
+    "ambiguousOutcome": 1,
+    "terminalNotDispatched": 2,
+    "untouchedUnexecuted": 4395,
+    "reportNotDispatchedTotal": 4397,
+    "knownGenerationTokens": 2347107,
+    "unresolvedReservedTokens": 14131,
+    "task": "scope_lookup",
+    "view": "after_close",
+    "promptVersion": "1",
+    "scorerVersion": "1",
+    "protocolHash": "f57aadd6b497ff6d05715753dd59802be050dce8ec5706ff41216721515e6f4a",
+    "sourceHash": "1d041fa5f4ae2a499b89151fb99958312a49b883a6315adad4d65e63307edca1",
+    "inferentialCiComputed": false,
+    "report": "main/report.md",
+    "recoveryWitness": "supporting/main-zero-http-recovery.json",
+    "reproductionWitness": "supporting/main-provisional-reproduction.json",
+    "note": "One missing dispatched response remains unknown. Two count-only interrupted trials are terminal not-dispatched; 4,395 planned trials remain untouched. Unknown usage is retained separately, not treated as zero."
+  },
+  "fullProgramExtension": {
+    "state": "live_pilot_in_progress_ungraded_execution_snapshot",
+    "phase": "p2",
+    "tasks": [
+      "source_to_ast",
+      "ast_to_source"
+    ],
+    "view": "complete",
+    "plannedStructuralFamilies": 48,
+    "plannedGenerations": 960,
+    "plannedPerDirectionStyle": 96,
+    "liveExecuted": true,
+    "liveGenerations": 28,
+    "measuredSuccessRate": null,
+    "completeMockWorkflowExecuted": true,
+    "postChangeFullTestPassed": true,
+    "postChangeFullTestCounts": {
+      "core": 28,
+      "bench": 19,
+      "preflight": 12,
+      "parsing": 13
+    },
+    "plannedPromptVersion": "2",
+    "plannedScorerVersion": "2",
+    "protocolHash": "2ac04cc60928800d0c1fdd37986546a6fee23bd1955ccc011c76099cbde60471",
+    "depths": [
+      2,
+      4,
+      8,
+      16
+    ],
+    "fillers": [
+      0,
+      8,
+      32
+    ],
+    "design": "docs/full-program-structures.md",
+    "config": "supporting/full-program-pilot.json",
+    "mockVerification": {
+      "synthetic_mock": true,
+      "planned": 960,
+      "families": 48,
+      "terminal": 960,
+      "strictCorrect": 960,
+      "simulatedAdapterAttempts": 1920,
+      "externalHttpCalls": 0,
+      "externalHttpEvidence": "Explicit --mock without --execute uses MockClient; code-path evidence, not packet capture.",
+      "reportFilesByteIdentical": true,
+      "resumeAdditionalLogicalTrials": 0,
+      "resumeAdditionalAdapterAttempts": 0,
+      "unresolvedReservedTokens": 0,
+      "liveGenerations": 0,
+      "immutableArtifactsUnchanged": true,
+      "checksPassed": true,
+      "protocolHash": "2ac04cc60928800d0c1fdd37986546a6fee23bd1955ccc011c76099cbde60471",
+      "sourceHash": "41ffc2647b8f3c3838a17c2425b0be97007fe611f5d0a68d3dd9d1c79e1b0b96",
+      "witness": "supporting/p2-mock-verification.json",
+      "witnessSha256": "224e9091619a7ce85cce16c663fff2238b3694161fc4f5540734bfd383b5c4dc",
+      "report": "mock-p2/report.md",
+      "workflowRunUrl": "https://github.com/kmizu/syntax-locality-experiments/actions/runs/37371856651/attempts/3",
+      "workflowJobId": 112109491633,
+      "artifactId": 11390722284,
+      "artifactDigestSha256": "a0058b2519122ca9bffe84e60fe1b0a1875b696416cbbbc69969e86b47392bc4"
+    },
+    "note": "A distinct exploratory live P2 pilot is executing after a matching 16,384-output-token capability probe. This snapshot records dispatch/completion/usage counts only. Accuracy and confidence intervals require saved strict grades at a stable batch boundary. The independently verified synthetic mock remains separate. No P1/main/P2 observations are pooled.",
+    "sourceHash": "41ffc2647b8f3c3838a17c2425b0be97007fe611f5d0a68d3dd9d1c79e1b0b96",
+    "liveCompletedResponses": 28,
+    "liveSnapshotAt": "2026-10-06T08:31:40.9875561Z",
+    "liveExecutionStatus": "supporting/p2-live-current-status.json",
+    "liveCapabilities": "supporting/p2-live-capabilities.json"
+  },
+  "promptExemplar": {
+    "trialId": "024fb909d07dabef1ff984148793631a0780afdb01b69520a4154755b8637602",
+    "selection": "Lexicographically smallest trial id among saved pilot ast_to_source / named_end / natural cases, chosen without inspecting outcomes.",
+    "task": "ast_to_source",
+    "style": "named_end",
+    "lexicalRegime": "natural",
+    "depth": 4,
+    "filler": 32,
+    "request": "supporting/pilot-named-end-ast-to-source-request.json",
+    "prompt": "supporting/pilot-named-end-ast-to-source-prompt.txt",
+    "note": "Saved canonical logical request is byte-preserved. Historical v1 transport object-key insertion order was not captured; no claim of exact wire-byte reconstruction."
+  },
+  "primaryHypothesis": "When generating an unfamiliar language, redundant closing syntax repeating kind or kind and name may help preserve structure with less reliance on distant context. Whole-program correctness is measured; internal dependency and attention are not measured."
+}

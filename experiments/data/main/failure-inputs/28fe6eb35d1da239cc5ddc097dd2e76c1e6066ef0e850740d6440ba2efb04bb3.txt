@@ -1,0 +1,258 @@
+Follow the task and return only the requested answer, without explanation or Markdown fences.
+You will read a prefix of a small scope language.
+Every block, regardless of its kind, creates a local scope.
+Statements are processed once, from top to bottom.
+A let statement binds a variable in the current scope.
+The nearest still-open scope containing the variable determines its value.
+Bindings in closed scopes are no longer visible.
+A nop statement has no effect.
+The final probe marks the observation point.
+Open blocks at the end of this prefix are intentional.
+Do not complete or repair the program.
+Return only the decimal integer visible at the final probe.
+
+SYNTAX
+The kind keywords are feni for unit, havu for func, and zomu for area. Each creates a local scope.
+Open a block with KIND NAME on one line.
+Close the innermost open block with tek KIND NAME on one line. KIND and NAME must repeat that block's opening keyword and name.
+KIND is one of feni, havu, zomu; NAME is n_ followed by exactly eight lowercase letters and is unique in the program.
+A binding statement (let) is dal VARIABLE VALUE. VARIABLE is x_ followed by one letter a through f; VALUE is a four digit integer from 1000 through 9999.
+Within one scope a variable is bound at most once. Inner bindings hide outer bindings until their scope closes.
+A no-effect statement (nop) is nup PAYLOAD. PAYLOAD is p_ followed by eight lowercase letters.
+The observation marker is probe PROBE_ID VARIABLE. PROBE_ID is q_ followed by eight lowercase letters.
+Use one statement per line. Indentation has no meaning; scope is determined solely by explicit opening and closing lines.
+
+EXAMPLES
+Example 1
+Program prefix:
+dal x_b 4122
+dal x_a 2890
+havu n_xubbtrah
+dal x_a 3834
+nup p_gwsvasbv
+tek havu n_xubbtrah
+feni n_svuhbhuc
+dal x_a 9147
+zomu n_vatidpaw
+dal x_a 2381
+nup p_bmncluwq
+tek zomu n_vatidpaw
+havu n_bitcouov
+dal x_a 2353
+tek havu n_bitcouov
+probe q_weiyabfx x_a
+Answer:
+9147
+
+Example 2
+Program prefix:
+dal x_b 4643
+dal x_a 9240
+zomu n_jwjtonjy
+dal x_a 5060
+nup p_zvrdujac
+tek zomu n_jwjtonjy
+havu n_elakdjlt
+feni n_zkugdafl
+dal x_a 7468
+nup p_djjwjykg
+tek feni n_zkugdafl
+zomu n_pqsktqal
+dal x_a 1017
+feni n_pijimsaw
+dal x_a 5749
+nup p_bkcqvgef
+tek feni n_pijimsaw
+tek zomu n_pqsktqal
+probe q_onitejyk x_a
+Answer:
+9240
+
+Example 3
+Program prefix:
+dal x_b 2603
+dal x_a 4534
+zomu n_igwgjwxr
+dal x_a 7717
+nup p_arlbtehc
+tek zomu n_igwgjwxr
+zomu n_yzroehmu
+dal x_a 1287
+feni n_wztpbctn
+dal x_a 2226
+nup p_onjrbqqr
+tek feni n_wztpbctn
+feni n_jhlqzdhf
+dal x_a 9616
+feni n_plmwzuun
+dal x_a 1008
+feni n_zjasycsp
+dal x_a 7252
+nup p_kzrmnund
+nup p_ldxedvla
+tek feni n_zjasycsp
+tek feni n_plmwzuun
+probe q_emfmlypw x_a
+Answer:
+9616
+
+Example 4
+Program prefix:
+dal x_b 7712
+dal x_a 1404
+feni n_orcqilwv
+dal x_a 5947
+nup p_tnxbymlx
+tek feni n_orcqilwv
+havu n_vptgxaqc
+havu n_jtejogmc
+dal x_a 9799
+nup p_ggijypnl
+tek havu n_jtejogmc
+zomu n_bjobaqua
+dal x_a 6432
+nup p_odshpixa
+nup p_iojfbaoo
+nup p_psdmjcpx
+tek zomu n_bjobaqua
+probe q_ekhnwdvf x_a
+Answer:
+1404
+
+Example 5
+Program prefix:
+dal x_b 2396
+dal x_a 1875
+havu n_vtoyqqhf
+dal x_a 5155
+nup p_jmjfcnjr
+tek havu n_vtoyqqhf
+zomu n_jugfmzum
+dal x_a 1775
+havu n_mprryqun
+dal x_a 6576
+nup p_agedtkcg
+tek havu n_mprryqun
+feni n_orkqqzbn
+dal x_a 9387
+havu n_pqcoyknm
+dal x_a 7662
+nup p_secslvsx
+nup p_shpapfhe
+nup p_hgrvmeey
+nup p_qlwoztrf
+tek havu n_pqcoyknm
+tek feni n_orkqqzbn
+probe q_azrftedt x_a
+Answer:
+1775
+
+Example 6
+Program prefix:
+dal x_b 1134
+dal x_a 9864
+feni n_tyonnqti
+dal x_a 4034
+nup p_bneqoyft
+tek feni n_tyonnqti
+havu n_zumeyzwo
+dal x_a 7362
+havu n_svppttop
+dal x_a 9968
+nup p_duhfiapp
+tek havu n_svppttop
+havu n_hfinelpx
+havu n_btantfyt
+dal x_a 5771
+zomu n_rozsaqva
+dal x_a 2454
+nup p_jlrxmplc
+nup p_edrrrins
+nup p_ebylllhm
+nup p_iqroapfl
+nup p_qvfomogd
+tek zomu n_rozsaqva
+tek havu n_btantfyt
+probe q_smrujqtl x_a
+Answer:
+7362
+
+Example 7
+Program prefix:
+dal x_b 6259
+dal x_a 8415
+havu n_jjsggzpc
+dal x_a 1241
+nup p_qzsnyrmp
+tek havu n_jjsggzpc
+havu n_wjfyport
+dal x_a 2363
+feni n_lephpreg
+dal x_a 6811
+nup p_forfkwze
+tek feni n_lephpreg
+feni n_bpcqoznq
+dal x_a 8625
+nup p_amteviko
+nup p_mpcobtyq
+nup p_exmjvecm
+nup p_xqjinttp
+nup p_tzxzsusn
+nup p_kzrptmdu
+tek feni n_bpcqoznq
+probe q_iglmuvnu x_a
+Answer:
+2363
+
+Example 8
+Program prefix:
+dal x_b 8707
+dal x_a 6260
+havu n_gzwokkrx
+dal x_a 6180
+nup p_vazrrapk
+tek havu n_gzwokkrx
+havu n_jklqiklj
+zomu n_cdoyhwqj
+dal x_a 5254
+nup p_dgrdtjdm
+tek zomu n_cdoyhwqj
+feni n_mdlaxrnb
+dal x_a 6264
+havu n_mhrfhtuz
+dal x_a 3058
+nup p_mdxdngyi
+nup p_azlenkox
+nup p_kuelkeio
+nup p_lediertt
+nup p_zxscckam
+nup p_vsopddqw
+nup p_lasnjtfs
+tek havu n_mhrfhtuz
+tek feni n_mdlaxrnb
+probe q_brsxfyge x_a
+Answer:
+6260
+
+TEST
+Program prefix:
+dal x_a 1358
+feni n_nbvjwfla
+dal x_a 7327
+nup p_tjpzlxzi
+tek feni n_nbvjwfla
+zomu n_kfvccvxy
+dal x_a 4949
+zomu n_mfbrkfyk
+dal x_a 5469
+nup p_kbkasbig
+tek zomu n_mfbrkfyk
+havu n_xernpwse
+zomu n_yeefkzrq
+dal x_a 8568
+feni n_xpcyxpbf
+dal x_a 6960
+tek feni n_xpcyxpbf
+tek zomu n_yeefkzrq
+probe q_unffkwcq x_a
+Answer:

@@ -19,29 +19,17 @@ jobs:
     timeout-minutes: 25
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
-      - name: Verify and expand preserved experiment source
-        shell: pwsh
-        run: |
-          # Publication documents now reflect saved verification; experiment source remains guarded below.
-          $expected = '12d3d57424608d0f01d4a6eff3e8031d73421ee5354b3d3ed1e1cb9c7af82fe4'
-          if ((Get-FileHash -LiteralPath report-project.zip -Algorithm SHA256).Hash.ToLowerInvariant() -ne $expected) { throw 'Source package changed; review before running a new protocol' }
-          Expand-Archive -LiteralPath report-project.zip -DestinationPath . -Force
       - uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 # v6
         with:
           distribution: temurin
           java-version: '21'
-      - name: Preserve unchanged wrapper entry point
-        shell: bash
-        run: ln -s "$JAVA_HOME/bin/java" "$JAVA_HOME/bin/java.exe"
+      - uses: sbt/setup-sbt@v1
       - name: Required full experiment tests
         shell: pwsh
-        working-directory: experiment
         run: |
-          $env:SYNTAX_JAVA_HOME = $env:JAVA_HOME
-          ./scripts/sbt.ps1 test
+          sbt test
       - name: Full P2 plan audit mock score reproduction and zero-call resume
         shell: pwsh
-        working-directory: experiment
         run: |
           $mockHelperText = @'
           param(
@@ -312,17 +300,16 @@ jobs:
           '@
           [IO.File]::WriteAllText('mock-assertions.ps1', $mockHelperText, [Text.UTF8Encoding]::new($false))
           $ErrorActionPreference = 'Stop'
-          $env:SYNTAX_JAVA_HOME = $env:JAVA_HOME
           New-Item -ItemType Directory -Force -Path mock-verification | Out-Null
           $mockRun = 'runs/full-program-pilot-mock-v1'
-          ./scripts/sbt.ps1 "bench/run plan --preset pilot --phase p2 --config configs/full-program-pilot.json --model gpt-5.6-terra --out $mockRun" "bench/run audit --run $mockRun" 2>&1 | Tee-Object -FilePath mock-verification/plan-audit.log
+          sbt "bench / run plan --preset pilot --phase p2 --config configs/full-program-pilot.json --model gpt-5.6-terra --out $mockRun" "bench / run audit --run $mockRun" 2>&1 | Tee-Object -FilePath mock-verification/plan-audit.log
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           ./mock-assertions.ps1 -Phase BeforeMock -RunDirectory $mockRun
-          ./scripts/sbt.ps1 "bench/run run --run $mockRun --mock --max-generation-calls 960 --max-http-attempts 1920 --local-token-cap 80000000" "bench/run score --run $mockRun" 2>&1 | Tee-Object -FilePath mock-verification/run-score.log
+          sbt "bench / run run --run $mockRun --mock --max-generation-calls 960 --max-http-attempts 1920 --local-token-cap 80000000" "bench / run score --run $mockRun" 2>&1 | Tee-Object -FilePath mock-verification/run-score.log
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           ./mock-assertions.ps1 -Phase Verify -RunDirectory $mockRun
           ./mock-assertions.ps1 -Phase Snapshot -RunDirectory $mockRun -WitnessDirectory mock-verification
-          ./scripts/sbt.ps1 "bench/run report --run $mockRun" "bench/run resume --run $mockRun --mock --max-generation-calls 960 --max-http-attempts 1920 --local-token-cap 80000000" 2>&1 | Tee-Object -FilePath mock-verification/resume.log
+          sbt "bench / run report --run $mockRun" "bench / run resume --run $mockRun --mock --max-generation-calls 960 --max-http-attempts 1920 --local-token-cap 80000000" 2>&1 | Tee-Object -FilePath mock-verification/resume.log
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           ./mock-assertions.ps1 -Phase ResumeVerify -RunDirectory $mockRun -WitnessDirectory mock-verification -ResumeLog mock-verification/resume.log
           $mockWitness = [ordered]@{
@@ -355,6 +342,6 @@ jobs:
           retention-days: 14
           if-no-files-found: error
           path: |
-            experiment/runs/full-program-pilot-mock-v1
-            experiment/mock-verification
-            experiment/mock-assertions.ps1
+            runs/full-program-pilot-mock-v1
+            mock-verification
+            mock-assertions.ps1

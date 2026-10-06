@@ -1,0 +1,28 @@
+{
+  "capturedAt": "2026-10-06T08:31:40.9875561Z",
+  "utcWindow": "2026-10-06",
+  "planned": 960,
+  "batchLimit": 500,
+  "tokenCountAttempts": 29,
+  "generationDispatchAttempts": 28,
+  "distinctDispatched": 28,
+  "terminal": 28,
+  "infrastructureTerminalCount": 0,
+  "statuses": [
+    {
+      "count": 28,
+      "status": "completed"
+    }
+  ],
+  "actualKnownTokens": 197425,
+  "openReservedTokens": 0,
+  "unresolvedIncludesCurrentInFlight": true,
+  "cumulativeCap": 19000000,
+  "synthetic_mock": false,
+  "sourceHash": "41ffc2647b8f3c3838a17c2425b0be97007fe611f5d0a68d3dd9d1c79e1b0b96",
+  "protocolHash": "2ac04cc60928800d0c1fdd37986546a6fee23bd1955ccc011c76099cbde60471",
+  "requestedModel": "gpt-5.6-terra",
+  "phase": "p2",
+  "runLabel": "full-program-pilot-live-v1",
+  "measurementScope": "Execution progress only; not strict grades, accuracy, or inferential statistics."
+}

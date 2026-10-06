@@ -1,0 +1,381 @@
+Follow the task and return only the requested answer, without explanation or Markdown fences.
+You will read a prefix of a small scope language.
+Every block, regardless of its kind, creates a local scope.
+Statements are processed once, from top to bottom.
+A let statement binds a variable in the current scope.
+The nearest still-open scope containing the variable determines its value.
+Bindings in closed scopes are no longer visible.
+A nop statement has no effect.
+The final probe marks the observation point.
+Open blocks at the end of this prefix are intentional.
+Do not complete or repair the program.
+Return only the decimal integer visible at the final probe.
+
+SYNTAX
+The kind keywords are raku for unit, weso for func, and bifo for area. Each creates a local scope.
+Open a block with KIND NAME on one line.
+Close the innermost open block with hud on its own line.
+KIND is one of raku, weso, bifo; NAME is n_ followed by exactly eight lowercase letters and is unique in the program.
+A binding statement (let) is zim VARIABLE VALUE. VARIABLE is x_ followed by one letter a through f; VALUE is a four digit integer from 1000 through 9999.
+Within one scope a variable is bound at most once. Inner bindings hide outer bindings until their scope closes.
+A no-effect statement (nop) is vop PAYLOAD. PAYLOAD is p_ followed by eight lowercase letters.
+The observation marker is probe PROBE_ID VARIABLE. PROBE_ID is q_ followed by eight lowercase letters.
+Use one statement per line. Indentation has no meaning; scope is determined solely by explicit opening and closing lines.
+
+EXAMPLES
+Example 1
+Program prefix:
+zim x_b 4122
+zim x_a 2890
+weso n_xubbtrah
+zim x_a 3834
+vop p_gwsvasbv
+hud
+raku n_svuhbhuc
+zim x_a 9147
+bifo n_vatidpaw
+zim x_a 2381
+vop p_bmncluwq
+hud
+weso n_bitcouov
+zim x_a 2353
+hud
+probe q_weiyabfx x_a
+Answer:
+9147
+
+Example 2
+Program prefix:
+zim x_b 4643
+zim x_a 9240
+bifo n_jwjtonjy
+zim x_a 5060
+vop p_zvrdujac
+hud
+weso n_elakdjlt
+raku n_zkugdafl
+zim x_a 7468
+vop p_djjwjykg
+hud
+bifo n_pqsktqal
+zim x_a 1017
+raku n_pijimsaw
+zim x_a 5749
+vop p_bkcqvgef
+hud
+hud
+probe q_onitejyk x_a
+Answer:
+9240
+
+Example 3
+Program prefix:
+zim x_b 2603
+zim x_a 4534
+bifo n_igwgjwxr
+zim x_a 7717
+vop p_arlbtehc
+hud
+bifo n_yzroehmu
+zim x_a 1287
+raku n_wztpbctn
+zim x_a 2226
+vop p_onjrbqqr
+hud
+raku n_jhlqzdhf
+zim x_a 9616
+raku n_plmwzuun
+zim x_a 1008
+raku n_zjasycsp
+zim x_a 7252
+vop p_kzrmnund
+vop p_ldxedvla
+hud
+hud
+probe q_emfmlypw x_a
+Answer:
+9616
+
+Example 4
+Program prefix:
+zim x_b 7712
+zim x_a 1404
+raku n_orcqilwv
+zim x_a 5947
+vop p_tnxbymlx
+hud
+weso n_vptgxaqc
+weso n_jtejogmc
+zim x_a 9799
+vop p_ggijypnl
+hud
+bifo n_bjobaqua
+zim x_a 6432
+vop p_odshpixa
+vop p_iojfbaoo
+vop p_psdmjcpx
+hud
+probe q_ekhnwdvf x_a
+Answer:
+1404
+
+Example 5
+Program prefix:
+zim x_b 2396
+zim x_a 1875
+weso n_vtoyqqhf
+zim x_a 5155
+vop p_jmjfcnjr
+hud
+bifo n_jugfmzum
+zim x_a 1775
+weso n_mprryqun
+zim x_a 6576
+vop p_agedtkcg
+hud
+raku n_orkqqzbn
+zim x_a 9387
+weso n_pqcoyknm
+zim x_a 7662
+vop p_secslvsx
+vop p_shpapfhe
+vop p_hgrvmeey
+vop p_qlwoztrf
+hud
+hud
+probe q_azrftedt x_a
+Answer:
+1775
+
+Example 6
+Program prefix:
+zim x_b 1134
+zim x_a 9864
+raku n_tyonnqti
+zim x_a 4034
+vop p_bneqoyft
+hud
+weso n_zumeyzwo
+zim x_a 7362
+weso n_svppttop
+zim x_a 9968
+vop p_duhfiapp
+hud
+weso n_hfinelpx
+weso n_btantfyt
+zim x_a 5771
+bifo n_rozsaqva
+zim x_a 2454
+vop p_jlrxmplc
+vop p_edrrrins
+vop p_ebylllhm
+vop p_iqroapfl
+vop p_qvfomogd
+hud
+hud
+probe q_smrujqtl x_a
+Answer:
+7362
+
+Example 7
+Program prefix:
+zim x_b 6259
+zim x_a 8415
+weso n_jjsggzpc
+zim x_a 1241
+vop p_qzsnyrmp
+hud
+weso n_wjfyport
+zim x_a 2363
+raku n_lephpreg
+zim x_a 6811
+vop p_forfkwze
+hud
+raku n_bpcqoznq
+zim x_a 8625
+vop p_amteviko
+vop p_mpcobtyq
+vop p_exmjvecm
+vop p_xqjinttp
+vop p_tzxzsusn
+vop p_kzrptmdu
+hud
+probe q_iglmuvnu x_a
+Answer:
+2363
+
+Example 8
+Program prefix:
+zim x_b 8707
+zim x_a 6260
+weso n_gzwokkrx
+zim x_a 6180
+vop p_vazrrapk
+hud
+weso n_jklqiklj
+bifo n_cdoyhwqj
+zim x_a 5254
+vop p_dgrdtjdm
+hud
+raku n_mdlaxrnb
+zim x_a 6264
+weso n_mhrfhtuz
+zim x_a 3058
+vop p_mdxdngyi
+vop p_azlenkox
+vop p_kuelkeio
+vop p_lediertt
+vop p_zxscckam
+vop p_vsopddqw
+vop p_lasnjtfs
+hud
+hud
+probe q_brsxfyge x_a
+Answer:
+6260
+
+TEST
+Program prefix:
+zim x_a 8867
+bifo n_hizwqicp
+zim x_a 9069
+vop p_djelkehx
+hud
+bifo n_lsshpuln
+raku n_qjhhprxs
+zim x_a 9405
+vop p_jihkvbpf
+hud
+raku n_posxrmiz
+zim x_a 3065
+vop p_eacisdlp
+vop p_fppbiznm
+vop p_vwaghqjp
+vop p_hathgjfz
+vop p_vfzdwney
+vop p_cawynrfz
+vop p_ezmxwekb
+vop p_mjhjfyui
+vop p_yhklupty
+vop p_cgmhcfuq
+vop p_fyueqrxk
+vop p_nbgsicpl
+vop p_jrxzuhhn
+vop p_ktrsbcxp
+vop p_fckoqcek
+vop p_kuqdvdtd
+vop p_khrujibj
+vop p_wfbnjchy
+vop p_xhqiqwyd
+vop p_nsitqtey
+vop p_qvnnjuwa
+vop p_auonxzhh
+vop p_fjlnqzjl
+vop p_lucotyhu
+vop p_asncunhg
+vop p_wpwjlxqk
+vop p_xdeorogi
+vop p_pwffmsdc
+vop p_mcacdmlx
+vop p_ofdvnqhv
+vop p_grlgzkpy
+vop p_virfmjdi
+vop p_ojhczurz
+vop p_adjzduvd
+vop p_ryjqbbhq
+vop p_tzhzrtzy
+vop p_ukgvtgrx
+vop p_yvtwjzkg
+vop p_gceiwwxy
+vop p_yfhomglg
+vop p_vhyadied
+vop p_sbmubzrs
+vop p_rxexiwky
+vop p_ggfuccsy
+vop p_wqhnjbid
+vop p_snsgckii
+vop p_djauyzbg
+vop p_nxdujfti
+vop p_xhhfgqil
+vop p_cmoxmtea
+vop p_yiupyang
+vop p_ueyswtdl
+vop p_adqdzbiv
+vop p_wxstwgls
+vop p_ujhdlarf
+vop p_qdqgsulf
+vop p_mizuwvvs
+vop p_nlxdnhsy
+vop p_ymzoedez
+vop p_xjakrtdg
+vop p_bmizqrzi
+vop p_hurmzdzw
+vop p_tyqddazi
+vop p_fmfwfppd
+vop p_lqehuugh
+vop p_gwxxbrkm
+vop p_rfeimare
+vop p_dsnzjicj
+vop p_empnsoln
+vop p_pzjtvfam
+vop p_wbhdunlh
+vop p_ldpnurvc
+vop p_cuhhizeg
+vop p_fkzzomdd
+vop p_blnloenx
+vop p_dkotwirp
+vop p_hldoburr
+vop p_afdablxl
+vop p_idqcmgax
+vop p_ccsgtewq
+vop p_pdhtshbi
+vop p_qqxyyppy
+vop p_ojwttbal
+vop p_javnicfz
+vop p_iqsglkzd
+vop p_euxmzwyi
+vop p_xplsqmkx
+vop p_cmbkgzmw
+vop p_adyiilby
+vop p_cnldfxmh
+vop p_doulzaox
+vop p_txuibmgi
+vop p_zevwmjzj
+vop p_epfchnly
+vop p_hsdxuwnj
+vop p_rcrxkfpr
+vop p_xzvvgxqh
+vop p_pudpfswf
+vop p_alleyxoy
+vop p_yhltyyqp
+vop p_pznepgmq
+vop p_ypxvujpk
+vop p_amobmtmu
+vop p_zoayfkgc
+vop p_nsfkzyhi
+vop p_zlnawxmj
+vop p_pvzkuwud
+vop p_bsxbgika
+vop p_nycwycmj
+vop p_qvsiwlge
+vop p_okukdlph
+vop p_hspenvtg
+vop p_yrtirphv
+vop p_ufgpbxha
+vop p_nksikdmw
+vop p_yacjsack
+vop p_zpyhpfjg
+vop p_veeollip
+vop p_cneehpuz
+vop p_retlfdag
+vop p_sgosejsv
+vop p_gpwrmmxz
+vop p_wbgrugug
+vop p_dwulgxsc
+vop p_raqkqqva
+vop p_dibvhkui
+vop p_otscsebt
+vop p_tqsltrre
+hud
+probe q_vofbvabe x_a
+Answer:

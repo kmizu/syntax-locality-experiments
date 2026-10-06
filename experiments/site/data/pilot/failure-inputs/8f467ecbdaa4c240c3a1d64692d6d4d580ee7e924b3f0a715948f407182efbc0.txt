@@ -1,0 +1,300 @@
+Follow the task and return only the requested answer, without explanation or Markdown fences.
+You will read a prefix of a small scope language.
+Every block, regardless of its kind, creates a local scope.
+Statements are processed once, from top to bottom.
+A let statement binds a variable in the current scope.
+The nearest still-open scope containing the variable determines its value.
+Bindings in closed scopes are no longer visible.
+A nop statement has no effect.
+The final probe marks the observation point.
+Open blocks at the end of this prefix are intentional.
+Do not complete or repair the program.
+Return only a JSON array of the names of still-open blocks, ordered from outermost to innermost. Do not include the implicit global scope. If no blocks remain open, return [].
+
+SYNTAX
+The kind keywords are unit for unit, func for func, and area for area. Each creates a local scope.
+Open a block with KIND NAME on one line.
+Close the innermost open block with end KIND NAME on one line. KIND and NAME must repeat that block's opening keyword and name.
+KIND is one of unit, func, area; NAME is n_ followed by exactly eight lowercase letters and is unique in the program.
+A binding statement (let) is let VARIABLE VALUE. VARIABLE is x_ followed by one letter a through f; VALUE is a four digit integer from 1000 through 9999.
+Within one scope a variable is bound at most once. Inner bindings hide outer bindings until their scope closes.
+A no-effect statement (nop) is nop PAYLOAD. PAYLOAD is p_ followed by eight lowercase letters.
+The observation marker is probe PROBE_ID VARIABLE. PROBE_ID is q_ followed by eight lowercase letters.
+Use one statement per line. Indentation has no meaning; scope is determined solely by explicit opening and closing lines.
+
+EXAMPLES
+Example 1
+Program prefix:
+let x_b 8303
+let x_a 8323
+unit n_qflwqmaz
+let x_a 8435
+nop p_zylqsrnu
+end unit n_qflwqmaz
+func n_myndeesr
+let x_a 8749
+area n_inuktfag
+let x_a 8459
+nop p_mjpldyqb
+end area n_inuktfag
+area n_gqjdgjnv
+let x_a 1433
+end area n_gqjdgjnv
+probe q_mbifmxno x_a
+Answer:
+["n_myndeesr"]
+
+Example 2
+Program prefix:
+let x_b 5135
+let x_a 2841
+unit n_dlopnmcd
+let x_a 5739
+nop p_jdgngrmp
+end unit n_dlopnmcd
+unit n_wuovjpgb
+area n_lmlpcznp
+let x_a 3328
+nop p_jmlgebbo
+end area n_lmlpcznp
+func n_mbcvettd
+let x_a 8319
+area n_tvzhhkqe
+let x_a 8533
+nop p_gqqmvtut
+end area n_tvzhhkqe
+end func n_mbcvettd
+probe q_vghjmldk x_a
+Answer:
+["n_wuovjpgb"]
+
+Example 3
+Program prefix:
+let x_b 2658
+let x_a 4614
+func n_bixyobtv
+let x_a 7078
+nop p_dtkmvpvr
+end func n_bixyobtv
+area n_usknhpcf
+let x_a 6538
+unit n_qgrcybnz
+let x_a 7274
+nop p_hgnyeagk
+end unit n_qgrcybnz
+area n_exzummid
+let x_a 9011
+unit n_eoooioqt
+let x_a 7836
+func n_dkndsizk
+let x_a 6034
+nop p_csjccxlz
+nop p_mzxiyuyr
+end func n_dkndsizk
+end unit n_eoooioqt
+probe q_qvqijtlb x_a
+Answer:
+["n_usknhpcf","n_exzummid"]
+
+Example 4
+Program prefix:
+let x_b 6521
+let x_a 7590
+area n_kpjszszc
+let x_a 2928
+nop p_gfasoglp
+end area n_kpjszszc
+area n_wujpoest
+unit n_tzvngvps
+let x_a 2227
+nop p_ustnyocf
+end unit n_tzvngvps
+func n_znlwyqda
+let x_a 4748
+nop p_rsplwwst
+nop p_ncucklyp
+nop p_rokkdkmd
+end func n_znlwyqda
+probe q_cwnmrvbd x_a
+Answer:
+["n_wujpoest"]
+
+Example 5
+Program prefix:
+let x_b 4895
+let x_a 3433
+unit n_hbzscaez
+let x_a 8441
+nop p_aovviwfe
+end unit n_hbzscaez
+func n_sboyihyp
+let x_a 4773
+area n_sqgwbfok
+let x_a 7652
+nop p_fhsrpsee
+end area n_sqgwbfok
+unit n_umvhgniv
+let x_a 9613
+area n_inpcwaxh
+let x_a 2145
+nop p_locndsoo
+nop p_iketxzvy
+nop p_tffyftuo
+nop p_vydvhrbo
+end area n_inpcwaxh
+end unit n_umvhgniv
+probe q_dmxteozh x_a
+Answer:
+["n_sboyihyp"]
+
+Example 6
+Program prefix:
+let x_b 3276
+let x_a 1754
+func n_joiczzca
+let x_a 5779
+nop p_oxbqguog
+end func n_joiczzca
+unit n_anzlbrnx
+let x_a 4413
+unit n_ystzxxge
+let x_a 6238
+nop p_wxmwrcjq
+end unit n_ystzxxge
+func n_qtkxzmue
+unit n_zsmpimdq
+let x_a 8150
+area n_dgjamytj
+let x_a 9242
+nop p_ujzetizq
+nop p_ccbgqusp
+nop p_nkanbitc
+nop p_hevvoueq
+nop p_rrfatpno
+end area n_dgjamytj
+end unit n_zsmpimdq
+probe q_qajokgqb x_a
+Answer:
+["n_anzlbrnx","n_qtkxzmue"]
+
+Example 7
+Program prefix:
+let x_b 7443
+let x_a 6355
+unit n_zxdgyyvi
+let x_a 5676
+nop p_jdukxssy
+end unit n_zxdgyyvi
+unit n_xuiwhuta
+let x_a 1576
+func n_olgkslrg
+let x_a 1941
+nop p_kwtlmpit
+end func n_olgkslrg
+area n_hwyhzfrf
+let x_a 5295
+nop p_scovbznt
+nop p_onqeacwn
+nop p_nehwtdox
+nop p_hholwlgn
+nop p_mikvoxor
+nop p_vbzqofyi
+end area n_hwyhzfrf
+probe q_pwzdqhjp x_a
+Answer:
+["n_xuiwhuta"]
+
+Example 8
+Program prefix:
+let x_b 4160
+let x_a 7309
+area n_bzmevtoc
+let x_a 1696
+nop p_rluwooen
+end area n_bzmevtoc
+func n_vdzbooul
+func n_dnlrynce
+let x_a 7518
+nop p_trbnzure
+end func n_dnlrynce
+func n_doqbvhfx
+let x_a 1342
+area n_elgiwzjy
+let x_a 5955
+nop p_jksdqoon
+nop p_dniiynxi
+nop p_nvdbfkqk
+nop p_xbswmobw
+nop p_axqwknam
+nop p_awkvzpon
+nop p_icsgsnrt
+end area n_elgiwzjy
+end func n_doqbvhfx
+probe q_bxiftdqq x_a
+Answer:
+["n_vdzbooul"]
+
+TEST
+Program prefix:
+let x_a 8709
+area n_kvknhwdt
+let x_a 4930
+nop p_wehwcemo
+end area n_kvknhwdt
+func n_tiysyemf
+let x_a 6984
+area n_ctnihjws
+let x_a 9052
+unit n_ntxboeqs
+let x_a 2892
+func n_lumgpnyy
+let x_a 8268
+nop p_oequoaom
+end func n_lumgpnyy
+area n_ginlueac
+func n_nyvdugjb
+let x_a 6714
+area n_lzfpiqih
+let x_a 4596
+func n_xufrurad
+let x_a 4778
+func n_gnauurox
+let x_a 4651
+nop p_xzyvketz
+nop p_dvtzxkin
+nop p_kmsodtun
+nop p_xggqdvyt
+nop p_micwvrmv
+nop p_xrofrbmu
+nop p_mmqigaav
+nop p_ogpvpjbk
+nop p_vcwqqwrm
+nop p_siptsrum
+nop p_wfpeukpa
+nop p_jaaseuwp
+nop p_otbxmsyv
+nop p_xyiqxwtq
+nop p_hkgsvdik
+nop p_wbjvluml
+nop p_wyeoojyr
+nop p_nwcmxshj
+nop p_lxiqgbis
+nop p_flefapah
+nop p_lhqirdrn
+nop p_zlzepjfy
+nop p_msaribao
+nop p_oklsmpry
+nop p_tednvtxi
+nop p_trlabdcd
+nop p_aigtwlew
+nop p_hpadqupl
+nop p_jhxopgyb
+nop p_yedvuceh
+nop p_adkxpwba
+nop p_tdqmcvrl
+end func n_gnauurox
+end func n_xufrurad
+end area n_lzfpiqih
+end func n_nyvdugjb
+probe q_hxmqaesr x_a
+Answer:

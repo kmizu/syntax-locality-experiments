@@ -1,0 +1,37 @@
+{
+  "checkedAt": "2026-10-05T19:22:58.4445751Z",
+  "state": "provisional_incomplete",
+  "run": "runs/main-terra",
+  "externalHttpRequests": 0,
+  "artifactsReproducedByteIdentically": true,
+  "artifacts": [
+    {
+      "path": "scores.jsonl",
+      "sha256": "b64b0f17307ae6349a6c8f8b74213af7daf1ed0a7cb17f59b0bf690be67ac6fc"
+    },
+    {
+      "path": "summary.csv",
+      "sha256": "460f7c131b327bdb63add44112ed56e04acb4ec9ebda12befb337873bcb8de07"
+    },
+    {
+      "path": "paired-comparisons.csv",
+      "sha256": "85daf45ab8bee385d19ce27f3bb8ce6312c514deabcc668c7cc15b46657bd581"
+    },
+    {
+      "path": "errors.csv",
+      "sha256": "d26519fba489d162ec43d6f6454e64567ba368541b180622fb55ae7b7472894e"
+    },
+    {
+      "path": "report.md",
+      "sha256": "4adef5f1235c328f608ca903d56d13dcf4280179f23c3c4980ca2d7be5275d30"
+    }
+  ],
+  "completedModelResponses": 722,
+  "terminalDispositions": 725,
+  "strictCorrect": 629,
+  "planned": 5120,
+  "inferentialCiComputed": false,
+  "recoveryRerunRejectedBeforeRunStore": true,
+  "recoveryRerunLog": "verification/main-recovery-rerun-guard.log",
+  "originalMainSourceHash": "1d041fa5f4ae2a499b89151fb99958312a49b883a6315adad4d65e63307edca1"
+}

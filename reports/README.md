@@ -1,0 +1,58 @@
+# Syntax locality: generation and redundant closing syntax
+
+[HTML report on GitHub Pages](https://kmizu.github.io/syntax-locality-experiments/) · [Publication verification workflow](https://github.com/kmizu/syntax-locality-experiments/actions/workflows/report-pages.yml)
+
+This standalone publication project turns the saved, strictly graded Scala reports in `data/` into `site/index.html`. It does not send model requests, grade responses, resample families, or calculate confidence intervals. Percentages in the interactive table are exact ratios of persisted correct/evaluable counts; confidence intervals are copied from `paired-comparisons.csv` only.
+
+The research question is whether an unfamiliar language is easier to **generate** when closing syntax redundantly repeats the block kind, or its kind and name: conceptually `def foo ... end def` or `def foo ... end def foo`. The report starts with that hypothesis, the five same-AST treatments, exact generation grading, generation results, and interpretation. Whole-program parsing and prefix reading are separate adjunct tasks. The conceptual `def/foo` examples are explicitly distinguished from the actual `unit/func/area`, identifiers and nonce lexicons.
+
+The completed P1 exploratory generation pilot observed C (kind) 60/72, D (kind + name) 71/72, B (generic end) 46/72, and E (uninformative padding) 49/72. It displays the persisted C−B, D−B, D−C and D−E contrasts and confidence intervals. No C−E interval is invented. These finite results support a generation advantage under the measured conditions; they do not directly measure internal long-distance dependency, cognitive load or FLOPs.
+
+The original frozen 5,120-trial main retains its reading objective, source and prespecified T1/after-close/D−B estimand. Its completion status, outcome counts and confidence intervals follow the saved main CSV files, including when an interrupted snapshot is replaced by a complete report. It is never relabelled as a confirmatory generation experiment. P1, main and the separate P2 pilot are never pooled. The standalone 960-trial synthetic P2 mock verifies the pipeline and is excluded from all live model tables and charts.
+
+## Build
+
+Use **Scala 3.3.8, JDK 21, sbt 1.10.7**. There are no application dependencies beyond the Scala standard library and JDK APIs.
+
+With JDK 21 and sbt 1.10.7 available, build directly from the checked-in source in this directory:
+
+```sh
+sbt "run data site"
+```
+
+In the published GitHub repository, the standalone generator is checked in under `reports/`, saved public artifacts under `experiments/data/`, and generated HTML under `experiments/site/`. From the repository root:
+
+```sh
+cd reports
+sbt "run ../experiments/data ../experiments/site"
+```
+
+These are native sbt commands and require no archive extraction or shell wrapper. sbt resolves the pinned Scala compiler; a populated Maven/sbt cache or network access is needed for the build tools, while the report generator itself remains offline. Input and output paths are positional arguments relative to the generator's working directory.
+
+The experiment implementation is checked in as ordinary source files in the public repository, including `bench/`, `llm-core/`, the sbt build files and tests. Run `sbt test` from that repository's root with JDK 21 to verify the current implementation. The historical frozen reading main retains its own saved source identity and protocol; current implementation tests do not rewrite that run's provenance. Credentials, private instruction files and build caches are excluded from the publication.
+
+The default local output is `site/index.html`; the published layout command above writes `experiments/site/index.html`. All public input artifacts are copied byte-for-byte to the output's `data/` subdirectory. The report includes their SHA-256 hashes and downloadable links. Given identical data, generator source, and build metadata, output is byte-identical: it has no clock time, absolute workspace path, external assets, analytics, or network fetches. If input artifacts are removed, use a fresh output directory before deployment so removed files are not retained.
+
+The optional environment variable `SYNTAX_P2_TEST_VERIFIED=true` is reserved for the publication workflow after its prior required full experiment-test step succeeds. It requires `SYNTAX_REPORT_WORKFLOW_URL` identifying the actual GitHub Actions run. This flag records publication build verification only; it cannot establish standalone mock completion or live model measurement. The output's `build-provenance.json` records build verification, saved mock verification, P2 live dispatch/terminal/planned counts, graded-report availability and execution-snapshot availability/time/path/hash.
+
+Standalone mock completion requires `data/supporting/p2-mock-verification.json`, byte-identical to SHA-256 `224e9091619a7ce85cce16c663fff2238b3694161fc4f5540734bfd383b5c4dc`. The generator checks the fixed source hash `41ffc2647b8f3c3838a17c2425b0be97007fe611f5d0a68d3dd9d1c79e1b0b96`, workflow identity, synthetic label, counts, reproduction and resume assertions. Changed or malformed witness bytes are rejected. Absent evidence prevents a verified-mock claim; it does not determine the separate live P2 state. All five saved mock reports must exist separately under `data/mock-p2/`, and the Markdown report must retain `synthetic_mock=true`. They are downloadable artifacts and are excluded from all live tables and charts.
+
+The saved witness comes from [workflow run 37371856651, attempt 3](https://github.com/kmizu/syntax-locality-experiments/actions/runs/37371856651/attempts/3), job `112109491633`. Its full suites passed (28 core, 19 bench, 12 preflight, 13 parsing), followed by 960 terminal strict-correct synthetic trials across 48 structural families. Regenerating the five reports from saved artifacts preserved their bytes; a completed-run resume added zero logical trials and zero simulated adapter attempts, with all immutable artifacts unchanged. The 1,920 fresh mock adapter attempts were synthetic count/generation calls. Zero external HTTP calls is evidence from the explicit `--mock` code path without `--execute`, not packet capture. Artifact `11390722284` has digest SHA-256 `a0058b2519122ca9bffe84e60fe1b0a1875b696416cbbbc69969e86b47392bc4`.
+
+## Required data
+
+Both `data/pilot/` and `data/main/` contain `summary.csv`, `paired-comparisons.csv`, `errors.csv`, `report.md`, and `protocol.json`. CSV parsing supports quoted commas, escaped quotes, CRLF/LF, and quoted multiline fields, and rejects malformed rows and duplicate headers. The generator validates aggregate counts against disjoint persisted leaf cells, preserves non-evaluable outcomes, and rejects inconsistent totals rather than publishing guessed results.
+
+Optional live P2 data belongs under `data/p2/`, with the same five required report files as P1/main. Its plan must retain 960 trials, both `ast_to_source` and `source_to_ast`, `view=complete`, a separate `phase=p2` protocol, and an explicitly `synthetic_mock=false` Markdown report. A present but incomplete or inconsistent directory fails validation. Saved generation outcomes are displayed separately, including depth 2/4/8/16 and persisted paired comparisons; full-program parsing appears in the adjunct section. The interactive selector includes P2 only when its actual saved non-synthetic reports exist. With live reports present, state and dispatch counts follow those reports rather than the mock witness or a fixed zero. A new fixed generation main would need its own protocol and data integration; P2 remains exploratory.
+
+Before a graded P2 report is available, optional `data/supporting/p2-live-current-status.json` records **execution progress only**. Its narrow JSON schema contains `capturedAt`, `utcWindow`, `planned`, `batchLimit`, `tokenCountAttempts`, `generationDispatchAttempts`, `distinctDispatched`, `terminal`, `infrastructureTerminalCount`, `statuses` (unique `status`/`count` pairs), `actualKnownTokens`, `openReservedTokens`, `unresolvedIncludesCurrentInFlight`, `cumulativeCap`, `synthetic_mock`, `sourceHash`, `protocolHash`, `requestedModel`, `phase`, `runLabel`, and `measurementScope`. The snapshot must be non-synthetic and bind source `41ffc2647b8f3c3838a17c2425b0be97007fe611f5d0a68d3dd9d1c79e1b0b96`, protocol `2ac04cc60928800d0c1fdd37986546a6fee23bd1955ccc011c76099cbde60471`, model `gpt-5.6-terra`, phase `p2`, and run `full-program-pilot-live-v1`. The scope must be `Execution progress only; not strict grades, accuracy, or inferential statistics.` Timestamp/window, count partitions, planned 960, dispatch/terminal bounds, and known/open-reserved token accounting are validated. Malformed, duplicate-key, unsupported-schema, wrong-identity and mock snapshots fail closed. This schema uses plain strings, non-negative integer counts, booleans and status arrays; escaped strings and arbitrary JSON values are intentionally unsupported.
+
+A valid heartbeat displays the captured UTC time, distinct dispatch count, terminal dispositions, planned count, known tokens and open reservations. It changes the P2 card to live-started/ungraded rather than unexecuted. Provider status `completed` does not establish strict correctness. No accuracy, grading or confidence interval is derived from the heartbeat, and it is never added to the model-result selector. `p2LiveGenerations` uses actual saved report dispatch counts when a graded report is present, otherwise the validated heartbeat's distinct dispatch count. `p2LiveReportAvailable` remains false until the separate graded report exists. Removing a historical mock witness cannot alter these live fields. With neither a heartbeat nor a live report, the page states that no live execution evidence is saved, without inferring that a live request never happened.
+
+Paths in this section are relative to the selected input directory: local `data/` or public `experiments/data/`. Supporting documents and recovery/mock witnesses live under `data/docs/` and `data/supporting/`. The separate synthetic outputs in `data/mock-p2/` are `report.md`, `summary.csv`, `paired-comparisons.csv`, `errors.csv`, and `scores.jsonl`. `data/status.json` and the individual reports record the saved experiment state and source provenance. Update results by regenerating from saved Scala grading/report artifacts; never hand-edit HTML numbers or reinterpret synthetic outcomes as model performance.
+
+## Publish
+
+Deploy the contents of `experiments/site/` in the public source layout using GitHub Pages, or `site/` for the local standalone layout. The checked-in workflow builds the ordinary Scala sources and saved report artifacts directly. The report generator does not create a repository, handle credentials, or publish files.
+
+All P1 and P2 results are exploratory. An interrupted main snapshot has only the CI status and estimates supported by its persisted report; the generator never computes missing intervals. P2 has no measured success rate until actual responses have been saved and graded under its separate protocol. Exact AST accuracy includes identifier/value/payload copying as well as structure, and a measured generation advantage does not uniquely identify its mechanism.

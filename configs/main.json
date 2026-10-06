@@ -1,0 +1,1 @@
+{"model":"gpt-5.6-terra","reasoningEffort":"low","maxOutputTokensReading":8192,"maxOutputTokensGeneration":16384,"fewShotCount":8,"replicates":1,"masterSeed":20261005,"depths":[2,4,8,16],"fillersReading":[0,32,128,512],"fillersGeneration":[0,8,32],"seedsPerCell":32,"concurrency":4,"maxRpm":60,"maxTpm":200000}

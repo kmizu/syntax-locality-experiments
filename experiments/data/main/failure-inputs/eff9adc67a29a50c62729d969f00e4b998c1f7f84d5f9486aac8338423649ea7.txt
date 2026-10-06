@@ -1,0 +1,800 @@
+Follow the task and return only the requested answer, without explanation or Markdown fences.
+You will read a prefix of a small scope language.
+Every block, regardless of its kind, creates a local scope.
+Statements are processed once, from top to bottom.
+A let statement binds a variable in the current scope.
+The nearest still-open scope containing the variable determines its value.
+Bindings in closed scopes are no longer visible.
+A nop statement has no effect.
+The final probe marks the observation point.
+Open blocks at the end of this prefix are intentional.
+Do not complete or repair the program.
+Return only the decimal integer visible at the final probe.
+
+SYNTAX
+The kind keywords are unit for unit, func for func, and area for area. Each creates a local scope.
+Open a block with KIND NAME on one line.
+Close the innermost open block with end on its own line.
+KIND is one of unit, func, area; NAME is n_ followed by exactly eight lowercase letters and is unique in the program.
+A binding statement (let) is let VARIABLE VALUE. VARIABLE is x_ followed by one letter a through f; VALUE is a four digit integer from 1000 through 9999.
+Within one scope a variable is bound at most once. Inner bindings hide outer bindings until their scope closes.
+A no-effect statement (nop) is nop PAYLOAD. PAYLOAD is p_ followed by eight lowercase letters.
+The observation marker is probe PROBE_ID VARIABLE. PROBE_ID is q_ followed by eight lowercase letters.
+Use one statement per line. Indentation has no meaning; scope is determined solely by explicit opening and closing lines.
+
+EXAMPLES
+Example 1
+Program prefix:
+let x_b 4122
+let x_a 2890
+func n_xubbtrah
+let x_a 3834
+nop p_gwsvasbv
+end
+unit n_svuhbhuc
+let x_a 9147
+area n_vatidpaw
+let x_a 2381
+nop p_bmncluwq
+end
+func n_bitcouov
+let x_a 2353
+end
+probe q_weiyabfx x_a
+Answer:
+9147
+
+Example 2
+Program prefix:
+let x_b 4643
+let x_a 9240
+area n_jwjtonjy
+let x_a 5060
+nop p_zvrdujac
+end
+func n_elakdjlt
+unit n_zkugdafl
+let x_a 7468
+nop p_djjwjykg
+end
+area n_pqsktqal
+let x_a 1017
+unit n_pijimsaw
+let x_a 5749
+nop p_bkcqvgef
+end
+end
+probe q_onitejyk x_a
+Answer:
+9240
+
+Example 3
+Program prefix:
+let x_b 2603
+let x_a 4534
+area n_igwgjwxr
+let x_a 7717
+nop p_arlbtehc
+end
+area n_yzroehmu
+let x_a 1287
+unit n_wztpbctn
+let x_a 2226
+nop p_onjrbqqr
+end
+unit n_jhlqzdhf
+let x_a 9616
+unit n_plmwzuun
+let x_a 1008
+unit n_zjasycsp
+let x_a 7252
+nop p_kzrmnund
+nop p_ldxedvla
+end
+end
+probe q_emfmlypw x_a
+Answer:
+9616
+
+Example 4
+Program prefix:
+let x_b 7712
+let x_a 1404
+unit n_orcqilwv
+let x_a 5947
+nop p_tnxbymlx
+end
+func n_vptgxaqc
+func n_jtejogmc
+let x_a 9799
+nop p_ggijypnl
+end
+area n_bjobaqua
+let x_a 6432
+nop p_odshpixa
+nop p_iojfbaoo
+nop p_psdmjcpx
+end
+probe q_ekhnwdvf x_a
+Answer:
+1404
+
+Example 5
+Program prefix:
+let x_b 2396
+let x_a 1875
+func n_vtoyqqhf
+let x_a 5155
+nop p_jmjfcnjr
+end
+area n_jugfmzum
+let x_a 1775
+func n_mprryqun
+let x_a 6576
+nop p_agedtkcg
+end
+unit n_orkqqzbn
+let x_a 9387
+func n_pqcoyknm
+let x_a 7662
+nop p_secslvsx
+nop p_shpapfhe
+nop p_hgrvmeey
+nop p_qlwoztrf
+end
+end
+probe q_azrftedt x_a
+Answer:
+1775
+
+Example 6
+Program prefix:
+let x_b 1134
+let x_a 9864
+unit n_tyonnqti
+let x_a 4034
+nop p_bneqoyft
+end
+func n_zumeyzwo
+let x_a 7362
+func n_svppttop
+let x_a 9968
+nop p_duhfiapp
+end
+func n_hfinelpx
+func n_btantfyt
+let x_a 5771
+area n_rozsaqva
+let x_a 2454
+nop p_jlrxmplc
+nop p_edrrrins
+nop p_ebylllhm
+nop p_iqroapfl
+nop p_qvfomogd
+end
+end
+probe q_smrujqtl x_a
+Answer:
+7362
+
+Example 7
+Program prefix:
+let x_b 6259
+let x_a 8415
+func n_jjsggzpc
+let x_a 1241
+nop p_qzsnyrmp
+end
+func n_wjfyport
+let x_a 2363
+unit n_lephpreg
+let x_a 6811
+nop p_forfkwze
+end
+unit n_bpcqoznq
+let x_a 8625
+nop p_amteviko
+nop p_mpcobtyq
+nop p_exmjvecm
+nop p_xqjinttp
+nop p_tzxzsusn
+nop p_kzrptmdu
+end
+probe q_iglmuvnu x_a
+Answer:
+2363
+
+Example 8
+Program prefix:
+let x_b 8707
+let x_a 6260
+func n_gzwokkrx
+let x_a 6180
+nop p_vazrrapk
+end
+func n_jklqiklj
+area n_cdoyhwqj
+let x_a 5254
+nop p_dgrdtjdm
+end
+unit n_mdlaxrnb
+let x_a 6264
+func n_mhrfhtuz
+let x_a 3058
+nop p_mdxdngyi
+nop p_azlenkox
+nop p_kuelkeio
+nop p_lediertt
+nop p_zxscckam
+nop p_vsopddqw
+nop p_lasnjtfs
+end
+end
+probe q_brsxfyge x_a
+Answer:
+6260
+
+TEST
+Program prefix:
+let x_a 5042
+func n_rwwizuvq
+let x_a 8036
+nop p_qmrearcv
+end
+area n_degvkuri
+let x_a 5081
+func n_yoxpxhad
+let x_a 6475
+area n_qpxllwer
+let x_a 2528
+area n_vofxbfyb
+let x_a 4158
+unit n_vkykmzaw
+let x_a 7410
+func n_pdmhhbjo
+let x_a 6179
+func n_ghtuczdp
+let x_a 7571
+func n_oomvmpsg
+let x_a 9941
+nop p_vrrwiuxu
+end
+area n_kalngwbb
+func n_iscgbojx
+let x_a 1755
+area n_ordkjrxj
+let x_a 2814
+unit n_ynyaogeh
+let x_a 7767
+area n_hcieadnr
+let x_a 8688
+area n_fazrruot
+let x_a 7040
+func n_hqawpuad
+let x_a 9191
+area n_drupmbsm
+let x_a 6266
+unit n_ditwdvea
+let x_a 9013
+nop p_rddlkojv
+nop p_jzsozqcy
+nop p_trtgstwl
+nop p_wgaqrgqp
+nop p_idmuavcy
+nop p_mxlhfrrp
+nop p_pakrmjyx
+nop p_kwplidzr
+nop p_sxgcryzq
+nop p_hfldydxl
+nop p_cygzvidi
+nop p_mhmduwgd
+nop p_dbdmgyvc
+nop p_rzgjcdkg
+nop p_excjnedp
+nop p_xrzihosf
+nop p_xsacjqwd
+nop p_kvanulqo
+nop p_sxdoxwqa
+nop p_yamisvaz
+nop p_hikwajna
+nop p_twaxcyvg
+nop p_esqwiuxg
+nop p_abanxeyd
+nop p_hqzfxsdr
+nop p_oyomdnjr
+nop p_ycqpcfrf
+nop p_illglgjn
+nop p_ccrvzacr
+nop p_mgvomqhg
+nop p_mscxcbmo
+nop p_bujzzirc
+nop p_ezgeehke
+nop p_zhhrvwig
+nop p_ocrwuofy
+nop p_kskcrhik
+nop p_oylhfaij
+nop p_aowcweod
+nop p_faqzolvn
+nop p_mxqqjmyf
+nop p_ihhvdudn
+nop p_xgdtrfxr
+nop p_dictrqes
+nop p_cgnxvxdo
+nop p_xyyfculi
+nop p_chusoquz
+nop p_qktjxaec
+nop p_bvwhpvta
+nop p_ycgbwbpu
+nop p_iserxjcj
+nop p_zdcjfjse
+nop p_fnjbbdxl
+nop p_kngmrtib
+nop p_eruzuxqp
+nop p_mhjuxxjg
+nop p_zsolfmuq
+nop p_aqsilhuh
+nop p_fuoutkkr
+nop p_oiwnfvtr
+nop p_rsohuzsq
+nop p_hgqkutxn
+nop p_kreymucy
+nop p_vowitxlo
+nop p_jozknaxz
+nop p_eqgwwvka
+nop p_nwycyalv
+nop p_uhutxoul
+nop p_ktdiqavq
+nop p_gtcyfpal
+nop p_myjowtwb
+nop p_fzupbmyt
+nop p_ejsrkuyw
+nop p_kdmhfhjk
+nop p_yrvpwhrw
+nop p_tigeyahn
+nop p_jdocefcs
+nop p_qphvcuas
+nop p_upbxxhed
+nop p_bhvwibup
+nop p_urvrieud
+nop p_ffpqwuce
+nop p_tcwavuaz
+nop p_uafnqxos
+nop p_wybgbyxp
+nop p_hlokcohx
+nop p_rozomrau
+nop p_vdqbczxt
+nop p_uezprezi
+nop p_zhqkqdjn
+nop p_rurvklqp
+nop p_jrbleczb
+nop p_zcwzcael
+nop p_xfednzby
+nop p_nmzayjhv
+nop p_jczgjpbq
+nop p_ubhkuihl
+nop p_ucfghbiq
+nop p_ekjjibuy
+nop p_aogrxfay
+nop p_ihbkfijd
+nop p_wedxjaah
+nop p_agbrjmjv
+nop p_pnautnrt
+nop p_wspmzbjc
+nop p_zrxhpvzk
+nop p_isumnfrp
+nop p_kzuhuoga
+nop p_fjhostfa
+nop p_wbtxhnag
+nop p_bxlacxyq
+nop p_hoiasoxp
+nop p_xkeainds
+nop p_nenjljkh
+nop p_yfauexsl
+nop p_xiqcxkxk
+nop p_vzehvwkj
+nop p_uhytncoo
+nop p_oubmsvfh
+nop p_ycfohpps
+nop p_dklfbrbn
+nop p_okyzvgwh
+nop p_owygiuhn
+nop p_kaansdco
+nop p_qjksufoo
+nop p_sfirtoab
+nop p_pdqobpcs
+nop p_jmjfgjoh
+nop p_yifbowwr
+nop p_oycuvdlz
+nop p_uewtrtpa
+nop p_cssinxdf
+nop p_mlxanbri
+nop p_yngihzay
+nop p_wgclqxrz
+nop p_bcacdlqn
+nop p_trmxokft
+nop p_rjzkjfyn
+nop p_mnaempui
+nop p_qpncyyaq
+nop p_igksfvgo
+nop p_vwagvlba
+nop p_jejzoqgs
+nop p_gdqcltdu
+nop p_uipenech
+nop p_osfabwlf
+nop p_fsrowtsw
+nop p_qyuqbwpa
+nop p_mlnsrelo
+nop p_jzkxryyf
+nop p_hdkbrdja
+nop p_vitncbzl
+nop p_bjtdrzav
+nop p_cjyzally
+nop p_poohired
+nop p_mrztlsis
+nop p_ohqpinwm
+nop p_gcxkiirg
+nop p_ckhgpixs
+nop p_qoiooswl
+nop p_qrvchysb
+nop p_nxouuhnp
+nop p_gdjiiaez
+nop p_gxlbkouo
+nop p_qpeyeasq
+nop p_bofmdsye
+nop p_gryufgwl
+nop p_bnswfyvw
+nop p_rpeunauz
+nop p_xryexwos
+nop p_peiuotgn
+nop p_svdpccfl
+nop p_oeovgupp
+nop p_vqcwvgvc
+nop p_kmvebygk
+nop p_bsxtlakv
+nop p_eaxahvla
+nop p_vrurkyvg
+nop p_mgpcyqfy
+nop p_bqhsunnw
+nop p_voqlsqfo
+nop p_yzsxsalf
+nop p_wmqzpntc
+nop p_wquqjwrn
+nop p_mroolwim
+nop p_bcaylteg
+nop p_lsbviqvg
+nop p_hcrnqzct
+nop p_rnwljiyx
+nop p_vohzdjbl
+nop p_ewwgumsv
+nop p_seyflclt
+nop p_jknclwgx
+nop p_xrniyajr
+nop p_sbhzciym
+nop p_sspfoald
+nop p_ijeqddsr
+nop p_rrtdwokh
+nop p_eddiyftj
+nop p_afikrrkk
+nop p_fuxbmjam
+nop p_niphhicr
+nop p_drfedock
+nop p_hbnwiwmr
+nop p_fnrhtqdf
+nop p_kjjwskno
+nop p_bydxctub
+nop p_rxpnnukj
+nop p_pukxcoyv
+nop p_qqmmkdev
+nop p_irzrjlxy
+nop p_yhynhzve
+nop p_kpczyniq
+nop p_vhwxxguq
+nop p_pfiibxyh
+nop p_pjnfayvw
+nop p_taycvqwo
+nop p_chqweski
+nop p_uuiguhnm
+nop p_raexjukb
+nop p_xuvqrbxi
+nop p_rhxbhpmg
+nop p_oljkiorf
+nop p_lvnbugjj
+nop p_dzxfasur
+nop p_nplcbaie
+nop p_uekipobq
+nop p_wmxyqrdu
+nop p_itequjio
+nop p_looeqbhv
+nop p_oxkxrivj
+nop p_ckkazcbq
+nop p_tlhndxxc
+nop p_ggojxqge
+nop p_fwzhwudk
+nop p_hmjhczjo
+nop p_tquqrigv
+nop p_klghwpgq
+nop p_bqhwkawp
+nop p_iabjqpfm
+nop p_oodhaxoa
+nop p_jebdxmtp
+nop p_ndxrlfxv
+nop p_qprhfuum
+nop p_lkxympnw
+nop p_cjnpwkbg
+nop p_kvvurfma
+nop p_averzonv
+nop p_owpaxfzb
+nop p_chqhfdlq
+nop p_jmklktmk
+nop p_cjbpmfpu
+nop p_uyzahsvh
+nop p_kjuuqcgn
+nop p_ruugkdoy
+nop p_pdkiquyc
+nop p_hexlaoid
+nop p_laaufcgq
+nop p_fqhuvbut
+nop p_ortanuqy
+nop p_qtibwmjn
+nop p_xxnjaidq
+nop p_ibsbuiye
+nop p_gsaxbkiw
+nop p_htowaigh
+nop p_gkxerlgt
+nop p_orwhbubj
+nop p_jclaxnhg
+nop p_euxkigzj
+nop p_xgsrsnmi
+nop p_wbhrhoau
+nop p_fhylkgnx
+nop p_qwyudqlv
+nop p_dtjknvvg
+nop p_iunrkcxl
+nop p_ljrwwcws
+nop p_spmjcdex
+nop p_dfvcvysl
+nop p_livbrrbt
+nop p_kepeqjly
+nop p_pohadjhx
+nop p_vaqhoruc
+nop p_bavukylo
+nop p_heirtalk
+nop p_wpjbjaxl
+nop p_uzqxlzhy
+nop p_rbvczhhh
+nop p_dbcbnwig
+nop p_qmlmfioz
+nop p_cmlqqexc
+nop p_bdarqtng
+nop p_mmmhdkjb
+nop p_cvpbtndz
+nop p_ngkeonts
+nop p_gobkqvwa
+nop p_ilednznj
+nop p_qiizxman
+nop p_iaievryx
+nop p_iawfuqbw
+nop p_kkgjtzmt
+nop p_qpgixvyf
+nop p_hrplxbwy
+nop p_mjzittwq
+nop p_pysclniu
+nop p_fylkzbyw
+nop p_yybhkqkp
+nop p_rixxutbd
+nop p_egkexyqs
+nop p_rosspzod
+nop p_ujpszety
+nop p_gzarbklo
+nop p_jcqhdhhf
+nop p_zlwetccw
+nop p_kfsgbsxc
+nop p_qcggehvm
+nop p_vxlznjbt
+nop p_jpncftji
+nop p_dyexwlgn
+nop p_ebgqxhip
+nop p_udzdjdzu
+nop p_qbxtbxsb
+nop p_iybquovp
+nop p_tbdylvmo
+nop p_vjufhbiy
+nop p_wpppakbo
+nop p_xkxgukpm
+nop p_ditgdyri
+nop p_wlqzvuuz
+nop p_iitoqjzc
+nop p_akfchnwe
+nop p_ensfdegn
+nop p_uukwrjhd
+nop p_zcehgddk
+nop p_cxkebulr
+nop p_nxjzyewu
+nop p_ytdsdgoe
+nop p_wlyikurl
+nop p_tquemylt
+nop p_qdmmahew
+nop p_fwlprxws
+nop p_hnnrzmpv
+nop p_pbtgceuk
+nop p_zimilqsn
+nop p_szvwctjx
+nop p_unachqco
+nop p_bayhuvoh
+nop p_xwqnqgem
+nop p_ccltwuzj
+nop p_nrqsmglj
+nop p_lwpumoqw
+nop p_qauodajy
+nop p_wbvykzdh
+nop p_cqvjyzuj
+nop p_mpauikpj
+nop p_xquldazr
+nop p_tnkgyhcj
+nop p_ccfnxcyh
+nop p_rbyvxpjl
+nop p_juebchnu
+nop p_kgcjtqvr
+nop p_kbnjzxve
+nop p_lcuthacr
+nop p_nxtkcwkq
+nop p_jgkxfhui
+nop p_zwbfwffg
+nop p_egsovufr
+nop p_nfvstykp
+nop p_povycqfh
+nop p_ybjvoxin
+nop p_klcpppru
+nop p_vfiavkco
+nop p_awnvypkc
+nop p_eikitmiy
+nop p_otfafupd
+nop p_yceiiuui
+nop p_tnqhekvs
+nop p_pvnydhdj
+nop p_znrdnjjx
+nop p_xslobplw
+nop p_okozvnga
+nop p_gksjuplg
+nop p_qfbfhshb
+nop p_frxysgoa
+nop p_gvcrojgv
+nop p_gnxeydoz
+nop p_aniofjit
+nop p_nmqviojk
+nop p_vimoygfs
+nop p_ygvhtnak
+nop p_jaggxmpt
+nop p_pjxzveqo
+nop p_ewyjxlqz
+nop p_amqasoev
+nop p_htnplgfs
+nop p_zuncjyex
+nop p_jpuebrcm
+nop p_bdibvjos
+nop p_tmhqdrmf
+nop p_itlzndor
+nop p_zbwxkpfk
+nop p_xroptwto
+nop p_kcflwcqd
+nop p_rmumzwsm
+nop p_hassbwfm
+nop p_lphfmggc
+nop p_ztbkswrn
+nop p_drndaezn
+nop p_amhlbinl
+nop p_yidexhvv
+nop p_qizocogj
+nop p_msexxglz
+nop p_pbrbcgea
+nop p_pscyyrsi
+nop p_idnpcdev
+nop p_noeuknkb
+nop p_dzqfrxqd
+nop p_xyfvbxkf
+nop p_crzgnbgm
+nop p_tjtiecsy
+nop p_ptzfiwoz
+nop p_yoyrquqg
+nop p_nzrrvlri
+nop p_fjrkujhw
+nop p_fznxpufn
+nop p_vusjxoqb
+nop p_xbuodulh
+nop p_zvdmogri
+nop p_nlydgbzj
+nop p_yltacize
+nop p_znihwtup
+nop p_vekmyrmo
+nop p_urulgmsy
+nop p_ebzlvlcv
+nop p_nwnwmpsf
+nop p_megwjnct
+nop p_stfurypu
+nop p_athzwuxu
+nop p_woamfswe
+nop p_rmvvkknq
+nop p_jsusuahq
+nop p_xokzzmay
+nop p_nqpifpzp
+nop p_rgstfhsx
+nop p_mecbfxmh
+nop p_hfwaeewj
+nop p_xrmugbug
+nop p_bszoejto
+nop p_tdfckptn
+nop p_hfxpbrgj
+nop p_xswcmjgw
+nop p_cfchprlr
+nop p_vhpaxpva
+nop p_msqvztop
+nop p_vyeahehu
+nop p_ptkgngfm
+nop p_lxvsracs
+nop p_blxymlrk
+nop p_kdpetxpm
+nop p_kmiugnfo
+nop p_cvhoyhkz
+nop p_maxgbcsn
+nop p_qogrwsyd
+nop p_dymthgay
+nop p_nqxzxrqh
+nop p_zluksupy
+nop p_cnbbfwfs
+nop p_ftcuyayf
+nop p_primifxz
+nop p_dyyailog
+nop p_rqipvspd
+nop p_ghawcyvt
+nop p_wbdtlelr
+nop p_pkethkgy
+nop p_mjdlsurz
+nop p_lghwfepv
+nop p_ofosjglz
+nop p_stqtpnis
+nop p_loilncjz
+nop p_unqkxvwg
+nop p_lntpomxu
+nop p_dunomtav
+nop p_homyqjha
+nop p_mavqyvuz
+nop p_rutqvbfj
+nop p_cmcbmrxg
+nop p_tpnfztqu
+nop p_bjircxui
+nop p_nkbwqrbo
+nop p_zipllzuu
+nop p_iznfpvfc
+nop p_ofajvzjl
+nop p_mtbhqbde
+nop p_fjuddsrf
+nop p_ogndkuxf
+nop p_oyywlhck
+nop p_zdzybohc
+nop p_rtbuurul
+nop p_lauwplgh
+nop p_uvuzwyjh
+nop p_yfqvvfrj
+nop p_ybdtgdkh
+nop p_moujyyon
+nop p_bfocqkov
+nop p_grasezjv
+nop p_gfbpfbct
+nop p_ecjnhcid
+nop p_wyijpidt
+nop p_xvdaqhnu
+nop p_kzrwrysx
+nop p_vggtmpxi
+nop p_mejengln
+nop p_ipcrnsuk
+nop p_oktmqhah
+end
+end
+end
+end
+end
+end
+end
+end
+probe q_phgzwuhz x_a
+Answer:

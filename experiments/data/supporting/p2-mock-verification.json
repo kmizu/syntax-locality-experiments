@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "synthetic_mock": true,
+  "workflowRunUrl": "https://github.com/kmizu/syntax-locality-experiments/actions/runs/37371856651",
+  "sourceHash": "41ffc2647b8f3c3838a17c2425b0be97007fe611f5d0a68d3dd9d1c79e1b0b96",
+  "planned": 960,
+  "families": 48,
+  "terminal": 960,
+  "strictCorrect": 960,
+  "simulatedAdapterAttempts": 1920,
+  "externalHttpCalls": 0,
+  "externalHttpEvidence": "Explicit --mock without --execute uses MockClient; code-path evidence, not packet capture.",
+  "reportFilesByteIdentical": true,
+  "resumeAdditionalLogicalTrials": 0,
+  "resumeAdditionalAdapterAttempts": 0,
+  "unresolvedReservedTokens": 0,
+  "liveGenerations": 0,
+  "immutableArtifactsUnchanged": true,
+  "checksPassed": true
+}

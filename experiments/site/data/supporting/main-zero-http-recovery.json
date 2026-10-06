@@ -1,0 +1,170 @@
+{
+  "assessmentVersion": 1,
+  "inspectionStartUtc": "2026-10-05T19:20:55.0162418Z",
+  "inspectionEndUtc": "2026-10-05T19:21:02.032103Z",
+  "pass": true,
+  "originalRun": "runs/main-terra",
+  "witnessSource": "verification/main-zero-http-recovery-actual.json",
+  "actualWitnessSha256": "a8dbff078e337a23469052a73aed5d6161f4f97ccc2656f960ebf89f19d1059c",
+  "baselineWitness": "verification/main-interruption-assessment.json",
+  "baselineWitnessSha256": "eb2e64b2d34fed733f3b3a2419fbc1da3d2d75c76894240bd16d0daee26ca025",
+  "cloneReviewWitness": "verification/main-zero-http-recovery-review.json",
+  "cloneReviewSha256": "67f71c634c9f5b1800ad8a22a8a291985c21c01ea426fef25606e19446e0e689",
+  "readOnlyRunInspection": true,
+  "rawAnswersInspected": false,
+  "gradesComputed": false,
+  "externalHttpRequests": 0,
+  "protocolHash": "f57aadd6b497ff6d05715753dd59802be050dce8ec5706ff41216721515e6f4a",
+  "frozenProtocolHash": "f57aadd6b497ff6d05715753dd59802be050dce8ec5706ff41216721515e6f4a",
+  "sourceHashRecorded": "1d041fa5f4ae2a499b89151fb99958312a49b883a6315adad4d65e63307edca1",
+  "currentSourceHash": "1d041fa5f4ae2a499b89151fb99958312a49b883a6315adad4d65e63307edca1",
+  "originalTerminalCount": 722,
+  "actualTerminalCount": 725,
+  "actualTerminalStatuses": [
+    {
+      "status": "ambiguous_outcome",
+      "count": 1
+    },
+    {
+      "status": "completed",
+      "count": 722
+    },
+    {
+      "status": "not_dispatched",
+      "count": 2
+    }
+  ],
+  "existingTerminalsCompared": 722,
+  "existingTerminalFailures": [],
+  "oldBackingReferencesCompared": 3610,
+  "oldBackingHashFailures": [],
+  "recoveredTerminals": [
+    {
+      "id": "f92a43fa61e8d13dc4204692d22ffc4633917aaaec83d778457701acae458a64",
+      "index": 720.0,
+      "sha256": "d917f8537e2e19c04a1e5dee6adffb85994fd3819e5a55e7981adbd580041c0f",
+      "status": "ambiguous_outcome",
+      "countAttempts": 1,
+      "generationAttempts": 1,
+      "usageKnown": false,
+      "responseId": null,
+      "startedAt": "2026-10-05T19:19:04.878Z",
+      "endedAt": "2026-10-05T19:19:04.878Z",
+      "reason": "Recovered dispatch without terminal; unresolved reservation retained",
+      "artifactCount": 3,
+      "cloneSemanticDispositionMatches": true
+    },
+    {
+      "id": "e658324f1e4329be29fed5fab65958a98617e809fa05d6dee4bbf94cea53000c",
+      "index": 722,
+      "sha256": "cf719c96a23329ebd9141107096840732f0a18b42cd48700b1f2630ad859b666",
+      "status": "not_dispatched",
+      "countAttempts": 1,
+      "generationAttempts": 0,
+      "usageKnown": false,
+      "responseId": null,
+      "startedAt": "2026-10-05T18:51:28.239Z",
+      "endedAt": "2026-10-05T19:19:05.071Z",
+      "reason": "Logical attempt/deadline exhausted before generation",
+      "artifactCount": 3,
+      "cloneSemanticDispositionMatches": true
+    },
+    {
+      "id": "26eaf37b58152d00a4ce91f4ea02b54d49bda164867a8c47b607161cf8e83e0b",
+      "index": 724,
+      "sha256": "8903bb69397cbe1a3047cf0d204c5ba8e29779c1bfbf2b8b23c440f98fea7f9b",
+      "status": "not_dispatched",
+      "countAttempts": 1,
+      "generationAttempts": 0,
+      "usageKnown": false,
+      "responseId": null,
+      "startedAt": "2026-10-05T18:51:35.66Z",
+      "endedAt": "2026-10-05T19:19:05.078Z",
+      "reason": "Logical attempt/deadline exhausted before generation",
+      "artifactCount": 3,
+      "cloneSemanticDispositionMatches": true
+    }
+  ],
+  "coreComparisons": [
+    {
+      "path": "events.jsonl",
+      "baselineSha256": "46914e38f74ae70c37a00788a923bec1421c805bc4250a6672767ba9d447b218",
+      "actualSha256": "46914e38f74ae70c37a00788a923bec1421c805bc4250a6672767ba9d447b218",
+      "cloneSha256": "46914e38f74ae70c37a00788a923bec1421c805bc4250a6672767ba9d447b218",
+      "actualEqualsBaseline": true,
+      "actualEqualsClone": true
+    },
+    {
+      "path": "usage-ledger.jsonl",
+      "baselineSha256": "dc683baeabf43a683461d10bcfa0e3ca6f1022db9a41171f8a4d2faa6b68b2a0",
+      "actualSha256": "dc683baeabf43a683461d10bcfa0e3ca6f1022db9a41171f8a4d2faa6b68b2a0",
+      "cloneSha256": "dc683baeabf43a683461d10bcfa0e3ca6f1022db9a41171f8a4d2faa6b68b2a0",
+      "actualEqualsBaseline": true,
+      "actualEqualsClone": true
+    },
+    {
+      "path": "schedule.jsonl",
+      "baselineSha256": "7de35e98c68820708c66a7de8be5672fd41a2ce5ba10e49631189e0852387679",
+      "actualSha256": "7de35e98c68820708c66a7de8be5672fd41a2ce5ba10e49631189e0852387679",
+      "cloneSha256": "7de35e98c68820708c66a7de8be5672fd41a2ce5ba10e49631189e0852387679",
+      "actualEqualsBaseline": true,
+      "actualEqualsClone": true
+    },
+    {
+      "path": "freeze.json",
+      "baselineSha256": "d7d0cd022ca5fd29e56472755ebab9a47cbddd1d56b1225717d4da0bc8a6afcf",
+      "actualSha256": "d7d0cd022ca5fd29e56472755ebab9a47cbddd1d56b1225717d4da0bc8a6afcf",
+      "cloneSha256": "d7d0cd022ca5fd29e56472755ebab9a47cbddd1d56b1225717d4da0bc8a6afcf",
+      "actualEqualsBaseline": true,
+      "actualEqualsClone": true
+    },
+    {
+      "path": "protocol.json",
+      "baselineSha256": "3b19dd635a75c79bb363e73fdf1454ec5f65f80780f39361463c56c49d501fcd",
+      "actualSha256": "3b19dd635a75c79bb363e73fdf1454ec5f65f80780f39361463c56c49d501fcd",
+      "cloneSha256": "3b19dd635a75c79bb363e73fdf1454ec5f65f80780f39361463c56c49d501fcd",
+      "actualEqualsBaseline": true,
+      "actualEqualsClone": true
+    },
+    {
+      "path": "budget-2026-10-05.json",
+      "baselineSha256": "ad5a161c7df71e0e9064317a2b9c32551f7e58f78437618db0532a32bcc46969",
+      "actualSha256": "635387910429f6a89ffe0fe41e0d65ec6bb53d0403e10a6781d461be23fd3a07",
+      "cloneSha256": "635387910429f6a89ffe0fe41e0d65ec6bb53d0403e10a6781d461be23fd3a07",
+      "actualEqualsBaseline": false,
+      "actualEqualsClone": true
+    }
+  ],
+  "immutableCoreExactMatch": true,
+  "knownSettledTokensUnchanged": 2347107,
+  "unresolvedReservedTokensRetained": 14131,
+  "unresolvedReservations": [
+    {
+      "kind": "reserve",
+      "reservationId": "f92a43fa61e8d13dc4204692d22ffc4633917aaaec83d778457701acae458a64/1",
+      "tokens": 14131,
+      "trialId": "f92a43fa61e8d13dc4204692d22ffc4633917aaaec83d778457701acae458a64",
+      "window": "2026-10-05"
+    }
+  ],
+  "eventsAndLedgerByteIdentical": true,
+  "eventKindCounts": [
+    {
+      "kind": "dispatch",
+      "count": 723
+    },
+    {
+      "kind": "token_count_attempt",
+      "count": 725
+    },
+    {
+      "kind": "token_count_finished",
+      "count": 725
+    }
+  ],
+  "noNewCountOrGenerationAttempts": true,
+  "recoveryLogSha256": "f6c213c2115cdc61bbb195d2d8b37db229751625c841f3b3553c210c3f3666f6",
+  "recoveryLogShowsZeroTransport": true,
+  "originalLastModelCompletionUtc": "2026-10-05T18:51:38.28Z",
+  "limitations": "Recovery terminal timestamps identify recovery work, not original generation latency. The missing dispatched response and its actual usage remain unknown. This proof is limited to the guarded exact-two selection and snapshot. Frozen artifacts and original result bytes remain unchanged; budget snapshot was refreshed without changing known or unresolved usage."
+}

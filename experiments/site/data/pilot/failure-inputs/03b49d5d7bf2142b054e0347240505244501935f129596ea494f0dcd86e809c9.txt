@@ -1,0 +1,269 @@
+Follow the task and return only the requested answer, without explanation or Markdown fences.
+You will read a prefix of a small scope language.
+Every block, regardless of its kind, creates a local scope.
+Statements are processed once, from top to bottom.
+A let statement binds a variable in the current scope.
+The nearest still-open scope containing the variable determines its value.
+Bindings in closed scopes are no longer visible.
+A nop statement has no effect.
+The final probe marks the observation point.
+Open blocks at the end of this prefix are intentional.
+Do not complete or repair the program.
+Return only a JSON array of the names of still-open blocks, ordered from outermost to innermost. Do not include the implicit global scope. If no blocks remain open, return [].
+
+SYNTAX
+The kind keywords are nezu for unit, sapu for func, and jomi for area. Each creates a local scope.
+Open a block with KIND NAME on one line.
+Close the innermost open block with wor KIND NAME on one line. KIND and NAME must repeat that block's opening keyword and name.
+KIND is one of nezu, sapu, jomi; NAME is n_ followed by exactly eight lowercase letters and is unique in the program.
+A binding statement (let) is fal VARIABLE VALUE. VARIABLE is x_ followed by one letter a through f; VALUE is a four digit integer from 1000 through 9999.
+Within one scope a variable is bound at most once. Inner bindings hide outer bindings until their scope closes.
+A no-effect statement (nop) is kiv PAYLOAD. PAYLOAD is p_ followed by eight lowercase letters.
+The observation marker is probe PROBE_ID VARIABLE. PROBE_ID is q_ followed by eight lowercase letters.
+Use one statement per line. Indentation has no meaning; scope is determined solely by explicit opening and closing lines.
+
+EXAMPLES
+Example 1
+Program prefix:
+fal x_b 8303
+fal x_a 8323
+nezu n_qflwqmaz
+fal x_a 8435
+kiv p_zylqsrnu
+wor nezu n_qflwqmaz
+sapu n_myndeesr
+fal x_a 8749
+jomi n_inuktfag
+fal x_a 8459
+kiv p_mjpldyqb
+wor jomi n_inuktfag
+jomi n_gqjdgjnv
+fal x_a 1433
+wor jomi n_gqjdgjnv
+probe q_mbifmxno x_a
+Answer:
+["n_myndeesr"]
+
+Example 2
+Program prefix:
+fal x_b 5135
+fal x_a 2841
+nezu n_dlopnmcd
+fal x_a 5739
+kiv p_jdgngrmp
+wor nezu n_dlopnmcd
+nezu n_wuovjpgb
+jomi n_lmlpcznp
+fal x_a 3328
+kiv p_jmlgebbo
+wor jomi n_lmlpcznp
+sapu n_mbcvettd
+fal x_a 8319
+jomi n_tvzhhkqe
+fal x_a 8533
+kiv p_gqqmvtut
+wor jomi n_tvzhhkqe
+wor sapu n_mbcvettd
+probe q_vghjmldk x_a
+Answer:
+["n_wuovjpgb"]
+
+Example 3
+Program prefix:
+fal x_b 2658
+fal x_a 4614
+sapu n_bixyobtv
+fal x_a 7078
+kiv p_dtkmvpvr
+wor sapu n_bixyobtv
+jomi n_usknhpcf
+fal x_a 6538
+nezu n_qgrcybnz
+fal x_a 7274
+kiv p_hgnyeagk
+wor nezu n_qgrcybnz
+jomi n_exzummid
+fal x_a 9011
+nezu n_eoooioqt
+fal x_a 7836
+sapu n_dkndsizk
+fal x_a 6034
+kiv p_csjccxlz
+kiv p_mzxiyuyr
+wor sapu n_dkndsizk
+wor nezu n_eoooioqt
+probe q_qvqijtlb x_a
+Answer:
+["n_usknhpcf","n_exzummid"]
+
+Example 4
+Program prefix:
+fal x_b 6521
+fal x_a 7590
+jomi n_kpjszszc
+fal x_a 2928
+kiv p_gfasoglp
+wor jomi n_kpjszszc
+jomi n_wujpoest
+nezu n_tzvngvps
+fal x_a 2227
+kiv p_ustnyocf
+wor nezu n_tzvngvps
+sapu n_znlwyqda
+fal x_a 4748
+kiv p_rsplwwst
+kiv p_ncucklyp
+kiv p_rokkdkmd
+wor sapu n_znlwyqda
+probe q_cwnmrvbd x_a
+Answer:
+["n_wujpoest"]
+
+Example 5
+Program prefix:
+fal x_b 4895
+fal x_a 3433
+nezu n_hbzscaez
+fal x_a 8441
+kiv p_aovviwfe
+wor nezu n_hbzscaez
+sapu n_sboyihyp
+fal x_a 4773
+jomi n_sqgwbfok
+fal x_a 7652
+kiv p_fhsrpsee
+wor jomi n_sqgwbfok
+nezu n_umvhgniv
+fal x_a 9613
+jomi n_inpcwaxh
+fal x_a 2145
+kiv p_locndsoo
+kiv p_iketxzvy
+kiv p_tffyftuo
+kiv p_vydvhrbo
+wor jomi n_inpcwaxh
+wor nezu n_umvhgniv
+probe q_dmxteozh x_a
+Answer:
+["n_sboyihyp"]
+
+Example 6
+Program prefix:
+fal x_b 3276
+fal x_a 1754
+sapu n_joiczzca
+fal x_a 5779
+kiv p_oxbqguog
+wor sapu n_joiczzca
+nezu n_anzlbrnx
+fal x_a 4413
+nezu n_ystzxxge
+fal x_a 6238
+kiv p_wxmwrcjq
+wor nezu n_ystzxxge
+sapu n_qtkxzmue
+nezu n_zsmpimdq
+fal x_a 8150
+jomi n_dgjamytj
+fal x_a 9242
+kiv p_ujzetizq
+kiv p_ccbgqusp
+kiv p_nkanbitc
+kiv p_hevvoueq
+kiv p_rrfatpno
+wor jomi n_dgjamytj
+wor nezu n_zsmpimdq
+probe q_qajokgqb x_a
+Answer:
+["n_anzlbrnx","n_qtkxzmue"]
+
+Example 7
+Program prefix:
+fal x_b 7443
+fal x_a 6355
+nezu n_zxdgyyvi
+fal x_a 5676
+kiv p_jdukxssy
+wor nezu n_zxdgyyvi
+nezu n_xuiwhuta
+fal x_a 1576
+sapu n_olgkslrg
+fal x_a 1941
+kiv p_kwtlmpit
+wor sapu n_olgkslrg
+jomi n_hwyhzfrf
+fal x_a 5295
+kiv p_scovbznt
+kiv p_onqeacwn
+kiv p_nehwtdox
+kiv p_hholwlgn
+kiv p_mikvoxor
+kiv p_vbzqofyi
+wor jomi n_hwyhzfrf
+probe q_pwzdqhjp x_a
+Answer:
+["n_xuiwhuta"]
+
+Example 8
+Program prefix:
+fal x_b 4160
+fal x_a 7309
+jomi n_bzmevtoc
+fal x_a 1696
+kiv p_rluwooen
+wor jomi n_bzmevtoc
+sapu n_vdzbooul
+sapu n_dnlrynce
+fal x_a 7518
+kiv p_trbnzure
+wor sapu n_dnlrynce
+sapu n_doqbvhfx
+fal x_a 1342
+jomi n_elgiwzjy
+fal x_a 5955
+kiv p_jksdqoon
+kiv p_dniiynxi
+kiv p_nvdbfkqk
+kiv p_xbswmobw
+kiv p_axqwknam
+kiv p_awkvzpon
+kiv p_icsgsnrt
+wor jomi n_elgiwzjy
+wor sapu n_doqbvhfx
+probe q_bxiftdqq x_a
+Answer:
+["n_vdzbooul"]
+
+TEST
+Program prefix:
+fal x_a 9841
+nezu n_bwokjioo
+fal x_a 1558
+kiv p_tvkvpysz
+wor nezu n_bwokjioo
+nezu n_izbpetmz
+fal x_a 2469
+nezu n_ejlmawlq
+fal x_a 5685
+nezu n_jlyjogws
+fal x_a 9191
+sapu n_wcccebof
+fal x_a 8687
+kiv p_nxefnryg
+wor sapu n_wcccebof
+sapu n_pswivkws
+fal x_a 7247
+jomi n_xprdxvhp
+fal x_a 9658
+jomi n_ifiewyaz
+fal x_a 5428
+sapu n_iliqlgcq
+fal x_a 2161
+nezu n_krbcptuo
+fal x_a 1338
+wor nezu n_krbcptuo
+wor sapu n_iliqlgcq
+wor jomi n_ifiewyaz
+wor jomi n_xprdxvhp
+probe q_dzhwprxf x_a
+Answer:

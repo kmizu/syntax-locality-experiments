@@ -1,0 +1,285 @@
+Follow the task and return only the requested answer, without explanation or Markdown fences.
+You will read a prefix of a small scope language.
+Every block, regardless of its kind, creates a local scope.
+Statements are processed once, from top to bottom.
+A let statement binds a variable in the current scope.
+The nearest still-open scope containing the variable determines its value.
+Bindings in closed scopes are no longer visible.
+A nop statement has no effect.
+The final probe marks the observation point.
+Open blocks at the end of this prefix are intentional.
+Do not complete or repair the program.
+Return only the decimal integer visible at the final probe.
+
+SYNTAX
+The kind keywords are kori for unit, fazu for func, and benu for area. Each creates a local scope.
+Open a block with KIND NAME on one line.
+Close the innermost open block with gol KIND NAME on one line. KIND and NAME must repeat that block's opening keyword and name.
+KIND is one of kori, fazu, benu; NAME is n_ followed by exactly eight lowercase letters and is unique in the program.
+A binding statement (let) is miv VARIABLE VALUE. VARIABLE is x_ followed by one letter a through f; VALUE is a four digit integer from 1000 through 9999.
+Within one scope a variable is bound at most once. Inner bindings hide outer bindings until their scope closes.
+A no-effect statement (nop) is zup PAYLOAD. PAYLOAD is p_ followed by eight lowercase letters.
+The observation marker is probe PROBE_ID VARIABLE. PROBE_ID is q_ followed by eight lowercase letters.
+Use one statement per line. Indentation has no meaning; scope is determined solely by explicit opening and closing lines.
+
+EXAMPLES
+Example 1
+Program prefix:
+miv x_b 4122
+miv x_a 2890
+fazu n_xubbtrah
+miv x_a 3834
+zup p_gwsvasbv
+gol fazu n_xubbtrah
+kori n_svuhbhuc
+miv x_a 9147
+benu n_vatidpaw
+miv x_a 2381
+zup p_bmncluwq
+gol benu n_vatidpaw
+fazu n_bitcouov
+miv x_a 2353
+gol fazu n_bitcouov
+probe q_weiyabfx x_a
+Answer:
+9147
+
+Example 2
+Program prefix:
+miv x_b 4643
+miv x_a 9240
+benu n_jwjtonjy
+miv x_a 5060
+zup p_zvrdujac
+gol benu n_jwjtonjy
+fazu n_elakdjlt
+kori n_zkugdafl
+miv x_a 7468
+zup p_djjwjykg
+gol kori n_zkugdafl
+benu n_pqsktqal
+miv x_a 1017
+kori n_pijimsaw
+miv x_a 5749
+zup p_bkcqvgef
+gol kori n_pijimsaw
+gol benu n_pqsktqal
+probe q_onitejyk x_a
+Answer:
+9240
+
+Example 3
+Program prefix:
+miv x_b 2603
+miv x_a 4534
+benu n_igwgjwxr
+miv x_a 7717
+zup p_arlbtehc
+gol benu n_igwgjwxr
+benu n_yzroehmu
+miv x_a 1287
+kori n_wztpbctn
+miv x_a 2226
+zup p_onjrbqqr
+gol kori n_wztpbctn
+kori n_jhlqzdhf
+miv x_a 9616
+kori n_plmwzuun
+miv x_a 1008
+kori n_zjasycsp
+miv x_a 7252
+zup p_kzrmnund
+zup p_ldxedvla
+gol kori n_zjasycsp
+gol kori n_plmwzuun
+probe q_emfmlypw x_a
+Answer:
+9616
+
+Example 4
+Program prefix:
+miv x_b 7712
+miv x_a 1404
+kori n_orcqilwv
+miv x_a 5947
+zup p_tnxbymlx
+gol kori n_orcqilwv
+fazu n_vptgxaqc
+fazu n_jtejogmc
+miv x_a 9799
+zup p_ggijypnl
+gol fazu n_jtejogmc
+benu n_bjobaqua
+miv x_a 6432
+zup p_odshpixa
+zup p_iojfbaoo
+zup p_psdmjcpx
+gol benu n_bjobaqua
+probe q_ekhnwdvf x_a
+Answer:
+1404
+
+Example 5
+Program prefix:
+miv x_b 2396
+miv x_a 1875
+fazu n_vtoyqqhf
+miv x_a 5155
+zup p_jmjfcnjr
+gol fazu n_vtoyqqhf
+benu n_jugfmzum
+miv x_a 1775
+fazu n_mprryqun
+miv x_a 6576
+zup p_agedtkcg
+gol fazu n_mprryqun
+kori n_orkqqzbn
+miv x_a 9387
+fazu n_pqcoyknm
+miv x_a 7662
+zup p_secslvsx
+zup p_shpapfhe
+zup p_hgrvmeey
+zup p_qlwoztrf
+gol fazu n_pqcoyknm
+gol kori n_orkqqzbn
+probe q_azrftedt x_a
+Answer:
+1775
+
+Example 6
+Program prefix:
+miv x_b 1134
+miv x_a 9864
+kori n_tyonnqti
+miv x_a 4034
+zup p_bneqoyft
+gol kori n_tyonnqti
+fazu n_zumeyzwo
+miv x_a 7362
+fazu n_svppttop
+miv x_a 9968
+zup p_duhfiapp
+gol fazu n_svppttop
+fazu n_hfinelpx
+fazu n_btantfyt
+miv x_a 5771
+benu n_rozsaqva
+miv x_a 2454
+zup p_jlrxmplc
+zup p_edrrrins
+zup p_ebylllhm
+zup p_iqroapfl
+zup p_qvfomogd
+gol benu n_rozsaqva
+gol fazu n_btantfyt
+probe q_smrujqtl x_a
+Answer:
+7362
+
+Example 7
+Program prefix:
+miv x_b 6259
+miv x_a 8415
+fazu n_jjsggzpc
+miv x_a 1241
+zup p_qzsnyrmp
+gol fazu n_jjsggzpc
+fazu n_wjfyport
+miv x_a 2363
+kori n_lephpreg
+miv x_a 6811
+zup p_forfkwze
+gol kori n_lephpreg
+kori n_bpcqoznq
+miv x_a 8625
+zup p_amteviko
+zup p_mpcobtyq
+zup p_exmjvecm
+zup p_xqjinttp
+zup p_tzxzsusn
+zup p_kzrptmdu
+gol kori n_bpcqoznq
+probe q_iglmuvnu x_a
+Answer:
+2363
+
+Example 8
+Program prefix:
+miv x_b 8707
+miv x_a 6260
+fazu n_gzwokkrx
+miv x_a 6180
+zup p_vazrrapk
+gol fazu n_gzwokkrx
+fazu n_jklqiklj
+benu n_cdoyhwqj
+miv x_a 5254
+zup p_dgrdtjdm
+gol benu n_cdoyhwqj
+kori n_mdlaxrnb
+miv x_a 6264
+fazu n_mhrfhtuz
+miv x_a 3058
+zup p_mdxdngyi
+zup p_azlenkox
+zup p_kuelkeio
+zup p_lediertt
+zup p_zxscckam
+zup p_vsopddqw
+zup p_lasnjtfs
+gol fazu n_mhrfhtuz
+gol kori n_mdlaxrnb
+probe q_brsxfyge x_a
+Answer:
+6260
+
+TEST
+Program prefix:
+miv x_a 6191
+benu n_xzdlysoz
+miv x_a 6676
+zup p_fhfprxgc
+gol benu n_xzdlysoz
+fazu n_geyqbcfm
+fazu n_jnjubfbf
+miv x_a 2193
+zup p_ziprcryd
+gol fazu n_jnjubfbf
+kori n_kynvxzvi
+miv x_a 8357
+zup p_xxeqcdwc
+zup p_spxlrcva
+zup p_bazckquk
+zup p_agwidxlx
+zup p_tuttkjtb
+zup p_ykdkskca
+zup p_ahznvdsx
+zup p_qsrjbnne
+zup p_rbacetwb
+zup p_jczgyvxd
+zup p_wravdmjn
+zup p_nuljpsba
+zup p_gfwvsrhv
+zup p_jvrbceyf
+zup p_kyxyizit
+zup p_vgygvxob
+zup p_dsysmcdk
+zup p_attddugq
+zup p_lmepxzpx
+zup p_woeityce
+zup p_lexlvyvf
+zup p_hdjnltcz
+zup p_euwbpwhe
+zup p_xvserpeq
+zup p_vykprrdj
+zup p_erelbhci
+zup p_toqesrxm
+zup p_iwyeydbq
+zup p_lbpcjcqb
+zup p_kkcegulg
+zup p_fahvltdc
+zup p_tvyvaokz
+gol kori n_kynvxzvi
+probe q_oyxdqxii x_a
+Answer:
