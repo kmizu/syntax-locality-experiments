@@ -22,8 +22,8 @@ jobs:
       - name: Verify and expand preserved experiment source
         shell: pwsh
         run: |
-          # Publication inputs gained the saved mock witness; experiment source remains guarded below.
-          $expected = '34d6e001416edf0879e6f4957ad0d2ddab683b96e82ba0102b41406c206b6e6c'
+          # Publication documents now reflect saved verification; experiment source remains guarded below.
+          $expected = '12d3d57424608d0f01d4a6eff3e8031d73421ee5354b3d3ed1e1cb9c7af82fe4'
           if ((Get-FileHash -LiteralPath report-project.zip -Algorithm SHA256).Hash.ToLowerInvariant() -ne $expected) { throw 'Source package changed; review before running a new protocol' }
           Expand-Archive -LiteralPath report-project.zip -DestinationPath . -Force
       - uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 # v6
