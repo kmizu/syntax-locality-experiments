@@ -1118,8 +1118,8 @@
           "sha256": "212ebef5a5f19ce32b342b81517dcb82b810723bfbd616629fae99e24fee8f77"
         }
       ],
-      "sha256": "fce418986e5c7c9708eb800fde5058f063146e33b2ef8ab0ab21761e07beb112",
-      "bytes": 11463,
+      "sha256": "70e2c04ad667bf21d5518e3328d941565ea5d4dad5956316daebbdb08a173cfd",
+      "bytes": 11456,
       "transformation": "current_publication_status_from_saved_reports_and_live_execution_snapshot_no_new_grading",
       "legacyPublicSha256": "cc8346eb89b669c273398d5e1cde18c9785bcade9e14acea28bec87aa7c2ccdf",
       "legacyPublicBytes": 4382

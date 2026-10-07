@@ -91,7 +91,7 @@
         "interpretation": "Proven count-only no generation; frozen ledger conservatively retains pre-dispatch reservation"
       }
     ],
-    "recoveryWitnessScope": "Historical original 2026-10-05 zero-HTTP recovery to 725 terminal dispositions; this witness is preserved unchanged and does not describe the current 1,412-terminal snapshot.",
+    "recoveryWitnessScope": "Historical original 2026-10-05 zero-HTTP recovery to 725 terminal dispositions; this witness is preserved unchanged and does not describe the current graded checkpoint.",
     "reproductionWitnessScope": "Historical original 725-terminal provisional report reproduction only; preserved unchanged, not the current graded checkpoint.",
     "currentScoreReportWitnessSource": "verification/main-credit-restop-checkpoint-20261007/snapshot.json",
     "currentScoreReportWitnessSha256": "f6ac0abc5a436d34d9cc92327183eced78dfaf33b9d2b8f7897ed79e0a569749",
