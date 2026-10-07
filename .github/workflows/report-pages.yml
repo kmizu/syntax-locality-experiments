@@ -40,7 +40,7 @@ jobs:
           SYNTAX_P2_TEST_VERIFIED: 'true'
           SYNTAX_REPORT_WORKFLOW_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
-          sbt 'run ../experiments/data ../experiments/site' 'run ../experiments/data ../experiments/site-reproduction'
+          sbt test 'run ../experiments/data ../experiments/site' 'run ../experiments/data ../experiments/site-reproduction'
           diff -r ../experiments/site ../experiments/site-reproduction
       - name: Verify saved mock evidence and fail-closed publication
         shell: pwsh

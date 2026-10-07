@@ -1,0 +1,258 @@
+Follow the task and return only the requested answer, without explanation or Markdown fences.
+You will read a prefix of a small scope language.
+Every block, regardless of its kind, creates a local scope.
+Statements are processed once, from top to bottom.
+A let statement binds a variable in the current scope.
+The nearest still-open scope containing the variable determines its value.
+Bindings in closed scopes are no longer visible.
+A nop statement has no effect.
+The final probe marks the observation point.
+Open blocks at the end of this prefix are intentional.
+Do not complete or repair the program.
+Return only the decimal integer visible at the final probe.
+
+SYNTAX
+The kind keywords are vomu for unit, zafi for func, and nelo for area. Each creates a local scope.
+Open a block with KIND NAME on one line.
+Close the innermost open block with pab on its own line.
+KIND is one of vomu, zafi, nelo; NAME is n_ followed by exactly eight lowercase letters and is unique in the program.
+A binding statement (let) is dut VARIABLE VALUE. VARIABLE is x_ followed by one letter a through f; VALUE is a four digit integer from 1000 through 9999.
+Within one scope a variable is bound at most once. Inner bindings hide outer bindings until their scope closes.
+A no-effect statement (nop) is hev PAYLOAD. PAYLOAD is p_ followed by eight lowercase letters.
+The observation marker is probe PROBE_ID VARIABLE. PROBE_ID is q_ followed by eight lowercase letters.
+Use one statement per line. Indentation has no meaning; scope is determined solely by explicit opening and closing lines.
+
+EXAMPLES
+Example 1
+Program prefix:
+dut x_b 4122
+dut x_a 2890
+zafi n_xubbtrah
+dut x_a 3834
+hev p_gwsvasbv
+pab
+vomu n_svuhbhuc
+dut x_a 9147
+nelo n_vatidpaw
+dut x_a 2381
+hev p_bmncluwq
+pab
+zafi n_bitcouov
+dut x_a 2353
+pab
+probe q_weiyabfx x_a
+Answer:
+9147
+
+Example 2
+Program prefix:
+dut x_b 4643
+dut x_a 9240
+nelo n_jwjtonjy
+dut x_a 5060
+hev p_zvrdujac
+pab
+zafi n_elakdjlt
+vomu n_zkugdafl
+dut x_a 7468
+hev p_djjwjykg
+pab
+nelo n_pqsktqal
+dut x_a 1017
+vomu n_pijimsaw
+dut x_a 5749
+hev p_bkcqvgef
+pab
+pab
+probe q_onitejyk x_a
+Answer:
+9240
+
+Example 3
+Program prefix:
+dut x_b 2603
+dut x_a 4534
+nelo n_igwgjwxr
+dut x_a 7717
+hev p_arlbtehc
+pab
+nelo n_yzroehmu
+dut x_a 1287
+vomu n_wztpbctn
+dut x_a 2226
+hev p_onjrbqqr
+pab
+vomu n_jhlqzdhf
+dut x_a 9616
+vomu n_plmwzuun
+dut x_a 1008
+vomu n_zjasycsp
+dut x_a 7252
+hev p_kzrmnund
+hev p_ldxedvla
+pab
+pab
+probe q_emfmlypw x_a
+Answer:
+9616
+
+Example 4
+Program prefix:
+dut x_b 7712
+dut x_a 1404
+vomu n_orcqilwv
+dut x_a 5947
+hev p_tnxbymlx
+pab
+zafi n_vptgxaqc
+zafi n_jtejogmc
+dut x_a 9799
+hev p_ggijypnl
+pab
+nelo n_bjobaqua
+dut x_a 6432
+hev p_odshpixa
+hev p_iojfbaoo
+hev p_psdmjcpx
+pab
+probe q_ekhnwdvf x_a
+Answer:
+1404
+
+Example 5
+Program prefix:
+dut x_b 2396
+dut x_a 1875
+zafi n_vtoyqqhf
+dut x_a 5155
+hev p_jmjfcnjr
+pab
+nelo n_jugfmzum
+dut x_a 1775
+zafi n_mprryqun
+dut x_a 6576
+hev p_agedtkcg
+pab
+vomu n_orkqqzbn
+dut x_a 9387
+zafi n_pqcoyknm
+dut x_a 7662
+hev p_secslvsx
+hev p_shpapfhe
+hev p_hgrvmeey
+hev p_qlwoztrf
+pab
+pab
+probe q_azrftedt x_a
+Answer:
+1775
+
+Example 6
+Program prefix:
+dut x_b 1134
+dut x_a 9864
+vomu n_tyonnqti
+dut x_a 4034
+hev p_bneqoyft
+pab
+zafi n_zumeyzwo
+dut x_a 7362
+zafi n_svppttop
+dut x_a 9968
+hev p_duhfiapp
+pab
+zafi n_hfinelpx
+zafi n_btantfyt
+dut x_a 5771
+nelo n_rozsaqva
+dut x_a 2454
+hev p_jlrxmplc
+hev p_edrrrins
+hev p_ebylllhm
+hev p_iqroapfl
+hev p_qvfomogd
+pab
+pab
+probe q_smrujqtl x_a
+Answer:
+7362
+
+Example 7
+Program prefix:
+dut x_b 6259
+dut x_a 8415
+zafi n_jjsggzpc
+dut x_a 1241
+hev p_qzsnyrmp
+pab
+zafi n_wjfyport
+dut x_a 2363
+vomu n_lephpreg
+dut x_a 6811
+hev p_forfkwze
+pab
+vomu n_bpcqoznq
+dut x_a 8625
+hev p_amteviko
+hev p_mpcobtyq
+hev p_exmjvecm
+hev p_xqjinttp
+hev p_tzxzsusn
+hev p_kzrptmdu
+pab
+probe q_iglmuvnu x_a
+Answer:
+2363
+
+Example 8
+Program prefix:
+dut x_b 8707
+dut x_a 6260
+zafi n_gzwokkrx
+dut x_a 6180
+hev p_vazrrapk
+pab
+zafi n_jklqiklj
+nelo n_cdoyhwqj
+dut x_a 5254
+hev p_dgrdtjdm
+pab
+vomu n_mdlaxrnb
+dut x_a 6264
+zafi n_mhrfhtuz
+dut x_a 3058
+hev p_mdxdngyi
+hev p_azlenkox
+hev p_kuelkeio
+hev p_lediertt
+hev p_zxscckam
+hev p_vsopddqw
+hev p_lasnjtfs
+pab
+pab
+probe q_brsxfyge x_a
+Answer:
+6260
+
+TEST
+Program prefix:
+dut x_a 2324
+vomu n_bldbmdcl
+dut x_a 7246
+hev p_tmehkilh
+pab
+vomu n_zcssrplk
+dut x_a 5523
+vomu n_njypbylt
+dut x_a 8720
+hev p_pfccbepy
+pab
+nelo n_ijzopixu
+zafi n_yrzobfkb
+dut x_a 6985
+zafi n_krgroayo
+dut x_a 9816
+pab
+pab
+probe q_kvlrfuxc x_a
+Answer:

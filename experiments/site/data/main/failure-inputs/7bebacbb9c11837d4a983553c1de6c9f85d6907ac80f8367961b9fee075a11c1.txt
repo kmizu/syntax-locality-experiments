@@ -1,0 +1,254 @@
+Follow the task and return only the requested answer, without explanation or Markdown fences.
+You will read a prefix of a small scope language.
+Every block, regardless of its kind, creates a local scope.
+Statements are processed once, from top to bottom.
+A let statement binds a variable in the current scope.
+The nearest still-open scope containing the variable determines its value.
+Bindings in closed scopes are no longer visible.
+A nop statement has no effect.
+The final probe marks the observation point.
+Open blocks at the end of this prefix are intentional.
+Do not complete or repair the program.
+Return only the decimal integer visible at the final probe.
+
+SYNTAX
+The kind keywords are xaru for unit, telo for func, and gupi for area. Each creates a local scope.
+Open a block with KIND NAME on one line.
+Close the innermost open block with nix on its own line.
+KIND is one of xaru, telo, gupi; NAME is n_ followed by exactly eight lowercase letters and is unique in the program.
+A binding statement (let) is sem VARIABLE VALUE. VARIABLE is x_ followed by one letter a through f; VALUE is a four digit integer from 1000 through 9999.
+Within one scope a variable is bound at most once. Inner bindings hide outer bindings until their scope closes.
+A no-effect statement (nop) is bov PAYLOAD. PAYLOAD is p_ followed by eight lowercase letters.
+The observation marker is probe PROBE_ID VARIABLE. PROBE_ID is q_ followed by eight lowercase letters.
+Use one statement per line. Indentation has no meaning; scope is determined solely by explicit opening and closing lines.
+
+EXAMPLES
+Example 1
+Program prefix:
+sem x_b 4122
+sem x_a 2890
+telo n_xubbtrah
+sem x_a 3834
+bov p_gwsvasbv
+nix
+xaru n_svuhbhuc
+sem x_a 9147
+gupi n_vatidpaw
+sem x_a 2381
+bov p_bmncluwq
+nix
+telo n_bitcouov
+sem x_a 2353
+nix
+probe q_weiyabfx x_a
+Answer:
+9147
+
+Example 2
+Program prefix:
+sem x_b 4643
+sem x_a 9240
+gupi n_jwjtonjy
+sem x_a 5060
+bov p_zvrdujac
+nix
+telo n_elakdjlt
+xaru n_zkugdafl
+sem x_a 7468
+bov p_djjwjykg
+nix
+gupi n_pqsktqal
+sem x_a 1017
+xaru n_pijimsaw
+sem x_a 5749
+bov p_bkcqvgef
+nix
+nix
+probe q_onitejyk x_a
+Answer:
+9240
+
+Example 3
+Program prefix:
+sem x_b 2603
+sem x_a 4534
+gupi n_igwgjwxr
+sem x_a 7717
+bov p_arlbtehc
+nix
+gupi n_yzroehmu
+sem x_a 1287
+xaru n_wztpbctn
+sem x_a 2226
+bov p_onjrbqqr
+nix
+xaru n_jhlqzdhf
+sem x_a 9616
+xaru n_plmwzuun
+sem x_a 1008
+xaru n_zjasycsp
+sem x_a 7252
+bov p_kzrmnund
+bov p_ldxedvla
+nix
+nix
+probe q_emfmlypw x_a
+Answer:
+9616
+
+Example 4
+Program prefix:
+sem x_b 7712
+sem x_a 1404
+xaru n_orcqilwv
+sem x_a 5947
+bov p_tnxbymlx
+nix
+telo n_vptgxaqc
+telo n_jtejogmc
+sem x_a 9799
+bov p_ggijypnl
+nix
+gupi n_bjobaqua
+sem x_a 6432
+bov p_odshpixa
+bov p_iojfbaoo
+bov p_psdmjcpx
+nix
+probe q_ekhnwdvf x_a
+Answer:
+1404
+
+Example 5
+Program prefix:
+sem x_b 2396
+sem x_a 1875
+telo n_vtoyqqhf
+sem x_a 5155
+bov p_jmjfcnjr
+nix
+gupi n_jugfmzum
+sem x_a 1775
+telo n_mprryqun
+sem x_a 6576
+bov p_agedtkcg
+nix
+xaru n_orkqqzbn
+sem x_a 9387
+telo n_pqcoyknm
+sem x_a 7662
+bov p_secslvsx
+bov p_shpapfhe
+bov p_hgrvmeey
+bov p_qlwoztrf
+nix
+nix
+probe q_azrftedt x_a
+Answer:
+1775
+
+Example 6
+Program prefix:
+sem x_b 1134
+sem x_a 9864
+xaru n_tyonnqti
+sem x_a 4034
+bov p_bneqoyft
+nix
+telo n_zumeyzwo
+sem x_a 7362
+telo n_svppttop
+sem x_a 9968
+bov p_duhfiapp
+nix
+telo n_hfinelpx
+telo n_btantfyt
+sem x_a 5771
+gupi n_rozsaqva
+sem x_a 2454
+bov p_jlrxmplc
+bov p_edrrrins
+bov p_ebylllhm
+bov p_iqroapfl
+bov p_qvfomogd
+nix
+nix
+probe q_smrujqtl x_a
+Answer:
+7362
+
+Example 7
+Program prefix:
+sem x_b 6259
+sem x_a 8415
+telo n_jjsggzpc
+sem x_a 1241
+bov p_qzsnyrmp
+nix
+telo n_wjfyport
+sem x_a 2363
+xaru n_lephpreg
+sem x_a 6811
+bov p_forfkwze
+nix
+xaru n_bpcqoznq
+sem x_a 8625
+bov p_amteviko
+bov p_mpcobtyq
+bov p_exmjvecm
+bov p_xqjinttp
+bov p_tzxzsusn
+bov p_kzrptmdu
+nix
+probe q_iglmuvnu x_a
+Answer:
+2363
+
+Example 8
+Program prefix:
+sem x_b 8707
+sem x_a 6260
+telo n_gzwokkrx
+sem x_a 6180
+bov p_vazrrapk
+nix
+telo n_jklqiklj
+gupi n_cdoyhwqj
+sem x_a 5254
+bov p_dgrdtjdm
+nix
+xaru n_mdlaxrnb
+sem x_a 6264
+telo n_mhrfhtuz
+sem x_a 3058
+bov p_mdxdngyi
+bov p_azlenkox
+bov p_kuelkeio
+bov p_lediertt
+bov p_zxscckam
+bov p_vsopddqw
+bov p_lasnjtfs
+nix
+nix
+probe q_brsxfyge x_a
+Answer:
+6260
+
+TEST
+Program prefix:
+sem x_a 4556
+telo n_bggzuhnz
+sem x_a 6142
+bov p_bmlivkpi
+nix
+xaru n_xbrqlbvd
+sem x_a 3037
+gupi n_wxrpkvxi
+sem x_a 6798
+bov p_cgfwrofw
+nix
+telo n_ibtqgsaz
+sem x_a 6834
+nix
+probe q_jgpjyjlj x_a
+Answer:

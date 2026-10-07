@@ -4,7 +4,7 @@
 
 Status: **provisional / incomplete run**. synthetic_mock=false.
 
-Strict model-evaluable accuracy: 87.185%; observed primary D−B: 5.677 percentage points.
+Strict model-evaluable accuracy: 86.719%; observed primary D−B: 5.742 percentage points.
 
 ## 2. Experiment conditions
 
@@ -20,9 +20,9 @@ Bootstrap seed: 20261005; iterations when eligible: 10,000; unit: structural fam
 
 | planned | dispatched | terminal | model-evaluable | correct | infrastructure missing | not-dispatched | incomplete | refusal |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 5120 | 1409 | 1412 | 1350 | 1177 | 59 | 3711 | 0 | 0 |
+| 5120 | 2748 | 2753 | 2688 | 2331 | 60 | 2372 | 0 | 0 |
 
-Primary matched families: 41 / 512. Operational success correct/dispatched: 83.534%; upper bound if unresolved dispatched outcomes all succeed: 83.605%.
+Primary matched families: 136 / 512. Operational success correct/dispatched: 84.825%; upper bound if unresolved dispatched outcomes all succeed: 84.862%.
 
 Infrastructure missingness exceeds 1% of planned trials. Investigate causes and imbalance across conditions before drawing a definitive superiority conclusion.
 
@@ -32,9 +32,9 @@ Missing trials are not model errors. The sensitivity bounds below assign all non
 
 | task | view | contrast | families | effect pp | 95% CI pp | discordant | CI status |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| scope_lookup | after_close | named_end − generic_end | 41/512 | 5.677 | not_computed | 14 | not_computed |
+| scope_lookup | after_close | named_end − generic_end | 136/512 | 5.742 | not_computed | 45 | not_computed |
 
-Relative error reduction: 0.522 (NA at zero baseline error). Missingness sensitivity: [-72.754, 74.609] percentage points.
+Relative error reduction: 0.404 (NA at zero baseline error). Missingness sensitivity: [-45.410, 49.805] percentage points.
 
 Replicates are averaged within family and lexical regime, regimes have equal weight, and depth × filler cells have equal weight. A wholly missing planned cell leaves the overall effect undefined. Exact McNemar values, where available for single-regime unaveraged binary family pairs, are descriptive.
 
@@ -42,15 +42,15 @@ Replicates are averaged within family and lexical regime, regimes have equal wei
 
 | task | view | style | evaluable | accuracy | incomplete | input known | output known | reasoning known | cached known | tokens/correct | retry rate | mean latency ms |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| scope_lookup | after_close | braces | 270 | 74.074% | 0 | 822579 | 43154 | 40994 | 0 | NA | 0.000% | 15588.601 |
-| scope_lookup | after_close | generic_end | 270 | 88.889% | 0 | 834021 | 43895 | 41737 | 0 | NA | 0.000% | 9776.155 |
-| scope_lookup | after_close | named_end | 269 | 92.565% | 0 | 901055 | 32550 | 30406 | 0 | NA | 0.000% | 15110.770 |
-| scope_lookup | after_close | padded_end | 270 | 92.222% | 0 | 876590 | 44486 | 42326 | 0 | NA | 0.000% | 14682.872 |
-| scope_lookup | after_close | typed_end | 271 | 88.192% | 0 | 856256 | 40196 | 38030 | 0 | NA | 0.000% | 9813.145 |
+| scope_lookup | after_close | braces | 538 | 74.164% | 0 | 1667519 | 82001 | 77697 | 0 | NA | 0.000% | 13170.750 |
+| scope_lookup | after_close | generic_end | 537 | 86.965% | 0 | 1684753 | 84192 | 79900 | 0 | NA | 0.000% | 10454.013 |
+| scope_lookup | after_close | named_end | 536 | 91.231% | 0 | 1819401 | 61508 | 57236 | 0 | NA | 0.000% | 180093.727 |
+| scope_lookup | after_close | padded_end | 538 | 92.379% | 0 | 1772584 | 85986 | 81682 | 0 | NA | 0.000% | 12918.067 |
+| scope_lookup | after_close | typed_end | 539 | 88.868% | 0 | 1729025 | 76996 | 72686 | 0 | NA | 0.000% | 177012.254 |
 
-Known tokens from unique final trial usage: 4494782; known generation-attempt tokens across retries: 4494782; trials without full input/output usage: 3770; generation attempts without full usage: 59.
+Known tokens from unique final trial usage: 9063965; known generation-attempt tokens across retries: 9063965; trials without full input/output usage: 2432; generation attempts without full usage: 60.
 
-HTTP attempts (count, generation, retry): 2823; known estimated cost USD: NA; cost-known trials: 0 / 5120. Estimates are not verified billing or free-quota balances.
+HTTP attempts (count, generation, retry): 5503; known estimated cost USD: NA; cost-known trials: 0 / 5120. Estimates are not verified billing or free-quota balances.
 
 Unknown usage is excluded from known sums and explicitly counted, never replaced with a zero estimate. Cost ratios are NA when usage is incomplete or there are no correct answers. summary.csv separately reports unique-trial and all-generation-attempt tokens per correct result. Non-reasoning output is output minus reasoning only where both fields exist; it is not an exact answer-text token count. Retried and non-retried latency summaries are in summary.csv.
 
@@ -60,47 +60,47 @@ Full task/view/style/natural-or-nonce/depth/filler counts, usage completeness, a
 
 | lexical | depth | filler | planned | evaluable | accuracy | infra missing |
 | --- | --- | --- | --- | --- | --- | --- |
-| natural | 2 | 0 | 160 | 55 | 83.636% | 5 |
-| natural | 2 | 32 | 160 | 40 | 92.500% | 5 |
-| natural | 2 | 128 | 160 | 25 | 96.000% | 0 |
-| natural | 2 | 512 | 160 | 30 | 100.000% | 0 |
-| natural | 4 | 0 | 160 | 45 | 55.556% | 0 |
-| natural | 4 | 32 | 160 | 40 | 80.000% | 0 |
-| natural | 4 | 128 | 160 | 55 | 90.909% | 5 |
-| natural | 4 | 512 | 160 | 25 | 96.000% | 5 |
-| natural | 8 | 0 | 160 | 45 | 84.444% | 0 |
-| natural | 8 | 32 | 160 | 30 | 86.667% | 5 |
-| natural | 8 | 128 | 160 | 55 | 89.091% | 0 |
-| natural | 8 | 512 | 160 | 42 | 92.857% | 1 |
-| natural | 16 | 0 | 160 | 40 | 90.000% | 0 |
-| natural | 16 | 32 | 160 | 30 | 96.667% | 5 |
-| natural | 16 | 128 | 160 | 40 | 97.500% | 7 |
-| natural | 16 | 512 | 160 | 50 | 94.000% | 0 |
-| nonce | 2 | 0 | 160 | 39 | 66.667% | 1 |
-| nonce | 2 | 32 | 160 | 35 | 77.143% | 0 |
-| nonce | 2 | 128 | 160 | 20 | 90.000% | 0 |
-| nonce | 2 | 512 | 160 | 40 | 95.000% | 0 |
-| nonce | 4 | 0 | 160 | 50 | 68.000% | 0 |
-| nonce | 4 | 32 | 160 | 35 | 77.143% | 0 |
-| nonce | 4 | 128 | 160 | 50 | 90.000% | 0 |
-| nonce | 4 | 512 | 160 | 44 | 100.000% | 0 |
-| nonce | 8 | 0 | 160 | 60 | 78.333% | 0 |
-| nonce | 8 | 32 | 160 | 50 | 82.000% | 10 |
-| nonce | 8 | 128 | 160 | 35 | 88.571% | 5 |
-| nonce | 8 | 512 | 160 | 45 | 93.333% | 0 |
-| nonce | 16 | 0 | 160 | 40 | 90.000% | 0 |
-| nonce | 16 | 32 | 160 | 65 | 96.923% | 0 |
-| nonce | 16 | 128 | 160 | 55 | 96.364% | 0 |
-| nonce | 16 | 512 | 160 | 40 | 85.000% | 5 |
+| natural | 2 | 0 | 160 | 95 | 81.053% | 5 |
+| natural | 2 | 32 | 160 | 85 | 87.059% | 5 |
+| natural | 2 | 128 | 160 | 65 | 93.846% | 0 |
+| natural | 2 | 512 | 160 | 50 | 100.000% | 0 |
+| natural | 4 | 0 | 160 | 100 | 56.000% | 0 |
+| natural | 4 | 32 | 160 | 90 | 78.889% | 0 |
+| natural | 4 | 128 | 160 | 90 | 88.889% | 5 |
+| natural | 4 | 512 | 160 | 75 | 93.333% | 5 |
+| natural | 8 | 0 | 160 | 70 | 82.857% | 0 |
+| natural | 8 | 32 | 160 | 50 | 88.000% | 5 |
+| natural | 8 | 128 | 160 | 105 | 91.429% | 0 |
+| natural | 8 | 512 | 160 | 82 | 90.244% | 1 |
+| natural | 16 | 0 | 160 | 105 | 90.476% | 0 |
+| natural | 16 | 32 | 160 | 45 | 95.556% | 5 |
+| natural | 16 | 128 | 160 | 76 | 93.421% | 7 |
+| natural | 16 | 512 | 160 | 97 | 95.876% | 1 |
+| nonce | 2 | 0 | 160 | 99 | 66.667% | 1 |
+| nonce | 2 | 32 | 160 | 95 | 80.000% | 0 |
+| nonce | 2 | 128 | 160 | 75 | 92.000% | 0 |
+| nonce | 2 | 512 | 160 | 95 | 95.789% | 0 |
+| nonce | 4 | 0 | 160 | 95 | 66.316% | 0 |
+| nonce | 4 | 32 | 160 | 60 | 76.667% | 0 |
+| nonce | 4 | 128 | 160 | 95 | 88.421% | 0 |
+| nonce | 4 | 512 | 160 | 99 | 97.980% | 0 |
+| nonce | 8 | 0 | 160 | 95 | 76.842% | 0 |
+| nonce | 8 | 32 | 160 | 100 | 84.000% | 10 |
+| nonce | 8 | 128 | 160 | 65 | 92.308% | 5 |
+| nonce | 8 | 512 | 160 | 85 | 95.294% | 0 |
+| nonce | 16 | 0 | 160 | 70 | 91.429% | 0 |
+| nonce | 16 | 32 | 160 | 100 | 98.000% | 0 |
+| nonce | 16 | 128 | 160 | 100 | 93.000% | 0 |
+| nonce | 16 | 512 | 160 | 80 | 91.250% | 5 |
 
 ## 7. Exploratory paired comparisons
 
 | task | view | contrast | families | effect pp | 95% CI pp | discordant | CI status |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| scope_lookup | after_close | named_end − padded_end | 41/512 | 3.750 | not_computed | 9 | not_computed |
-| scope_lookup | after_close | named_end − typed_end | 41/512 | 3.229 | not_computed | 7 | not_computed |
-| scope_lookup | after_close | typed_end − generic_end | 41/512 | 2.448 | not_computed | 17 | not_computed |
-| scope_lookup | after_close | named_end − braces | 41/512 | 12.708 | not_computed | 15 | not_computed |
+| scope_lookup | after_close | named_end − padded_end | 135/512 | -0.961 | not_computed | 36 | not_computed |
+| scope_lookup | after_close | named_end − typed_end | 136/512 | 2.943 | not_computed | 32 | not_computed |
+| scope_lookup | after_close | typed_end − generic_end | 137/512 | 2.919 | not_computed | 59 | not_computed |
+| scope_lookup | after_close | named_end − braces | 136/512 | 14.688 | not_computed | 53 | not_computed |
 
 All D−E, D−C, C−B, A contrasts, other tasks/views, and pilot comparisons are exploratory unless a separate testing plan was frozen. See [paired-comparisons.csv](paired-comparisons.csv).
 
@@ -446,6 +446,116 @@ Raw answer:
 
 ### D wrong / B correct
 
+**named_end**; trial `04443f9a40ad1d4283ba5072f6888df1b670bbc5cb0632f7e024a0707812bbb9`; outcome `wrong_answer`; gold `3037`.
+
+Input:
+
+Full input: [failure-inputs/04443f9a40ad1d4283ba5072f6888df1b670bbc5cb0632f7e024a0707812bbb9.txt](failure-inputs/04443f9a40ad1d4283ba5072f6888df1b670bbc5cb0632f7e024a0707812bbb9.txt). Excerpt lines 1–40 of 255:
+
+```
+Follow the task and return only the requested answer, without explanation or Markdown fences.
+You will read a prefix of a small scope language.
+Every block, regardless of its kind, creates a local scope.
+Statements are processed once, from top to bottom.
+A let statement binds a variable in the current scope.
+The nearest still-open scope containing the variable determines its value.
+Bindings in closed scopes are no longer visible.
+A nop statement has no effect.
+The final probe marks the observation point.
+Open blocks at the end of this prefix are intentional.
+Do not complete or repair the program.
+Return only the decimal integer visible at the final probe.
+
+SYNTAX
+The kind keywords are xaru for unit, telo for func, and gupi for area. Each creates a local scope.
+Open a block with KIND NAME on one line.
+Close the innermost open block with nix KIND NAME on one line. KIND and NAME must repeat that block's opening keyword and name.
+KIND is one of xaru, telo, gupi; NAME is n_ followed by exactly eight lowercase letters and is unique in the program.
+A binding statement (let) is sem VARIABLE VALUE. VARIABLE is x_ followed by one letter a through f; VALUE is a four digit integer from 1000 through 9999.
+Within one scope a variable is bound at most once. Inner bindings hide outer bindings until their scope closes.
+A no-effect statement (nop) is bov PAYLOAD. PAYLOAD is p_ followed by eight lowercase letters.
+The observation marker is probe PROBE_ID VARIABLE. PROBE_ID is q_ followed by eight lowercase letters.
+Use one statement per line. Indentation has no meaning; scope is determined solely by explicit opening and closing lines.
+
+EXAMPLES
+Example 1
+Program prefix:
+sem x_b 4122
+sem x_a 2890
+telo n_xubbtrah
+sem x_a 3834
+bov p_gwsvasbv
+nix telo n_xubbtrah
+xaru n_svuhbhuc
+sem x_a 9147
+gupi n_vatidpaw
+sem x_a 2381
+bov p_bmncluwq
+nix gupi n_vatidpaw
+telo n_bitcouov
+```
+
+Raw answer:
+
+```
+4556
+```
+
+**generic_end**; trial `7bebacbb9c11837d4a983553c1de6c9f85d6907ac80f8367961b9fee075a11c1`; outcome `correct`; gold `3037`.
+
+Input:
+
+Full input: [failure-inputs/7bebacbb9c11837d4a983553c1de6c9f85d6907ac80f8367961b9fee075a11c1.txt](failure-inputs/7bebacbb9c11837d4a983553c1de6c9f85d6907ac80f8367961b9fee075a11c1.txt). Excerpt lines 1–40 of 255:
+
+```
+Follow the task and return only the requested answer, without explanation or Markdown fences.
+You will read a prefix of a small scope language.
+Every block, regardless of its kind, creates a local scope.
+Statements are processed once, from top to bottom.
+A let statement binds a variable in the current scope.
+The nearest still-open scope containing the variable determines its value.
+Bindings in closed scopes are no longer visible.
+A nop statement has no effect.
+The final probe marks the observation point.
+Open blocks at the end of this prefix are intentional.
+Do not complete or repair the program.
+Return only the decimal integer visible at the final probe.
+
+SYNTAX
+The kind keywords are xaru for unit, telo for func, and gupi for area. Each creates a local scope.
+Open a block with KIND NAME on one line.
+Close the innermost open block with nix on its own line.
+KIND is one of xaru, telo, gupi; NAME is n_ followed by exactly eight lowercase letters and is unique in the program.
+A binding statement (let) is sem VARIABLE VALUE. VARIABLE is x_ followed by one letter a through f; VALUE is a four digit integer from 1000 through 9999.
+Within one scope a variable is bound at most once. Inner bindings hide outer bindings until their scope closes.
+A no-effect statement (nop) is bov PAYLOAD. PAYLOAD is p_ followed by eight lowercase letters.
+The observation marker is probe PROBE_ID VARIABLE. PROBE_ID is q_ followed by eight lowercase letters.
+Use one statement per line. Indentation has no meaning; scope is determined solely by explicit opening and closing lines.
+
+EXAMPLES
+Example 1
+Program prefix:
+sem x_b 4122
+sem x_a 2890
+telo n_xubbtrah
+sem x_a 3834
+bov p_gwsvasbv
+nix
+xaru n_svuhbhuc
+sem x_a 9147
+gupi n_vatidpaw
+sem x_a 2381
+bov p_bmncluwq
+nix
+telo n_bitcouov
+```
+
+Raw answer:
+
+```
+3037
+```
+
 **named_end**; trial `08f28ea6d6b87b1eaddefb8eb637a19d4bd96028270f2fe15566d8705abdcd8f`; outcome `wrong_answer`; gold `8351`.
 
 Input:
@@ -556,11 +666,11 @@ Raw answer:
 8351
 ```
 
-**named_end**; trial `15b3107d3086cac432e448fa6e4b0bf326346ffd14d6ebc378d2b9fa88f9c1c6`; outcome `wrong_answer`; gold `5392`.
+**named_end**; trial `0ad1430561048a29e49cfdc6a20d77c810ae74e90cb627ac1cab8db0bd29e815`; outcome `wrong_answer`; gold `8902`.
 
 Input:
 
-Full input: [failure-inputs/15b3107d3086cac432e448fa6e4b0bf326346ffd14d6ebc378d2b9fa88f9c1c6.txt](failure-inputs/15b3107d3086cac432e448fa6e4b0bf326346ffd14d6ebc378d2b9fa88f9c1c6.txt). Excerpt lines 1–40 of 286:
+Full input: [failure-inputs/0ad1430561048a29e49cfdc6a20d77c810ae74e90cb627ac1cab8db0bd29e815.txt](failure-inputs/0ad1430561048a29e49cfdc6a20d77c810ae74e90cb627ac1cab8db0bd29e815.txt). Excerpt lines 1–40 of 260:
 
 ```
 Follow the task and return only the requested answer, without explanation or Markdown fences.
@@ -577,45 +687,45 @@ Do not complete or repair the program.
 Return only the decimal integer visible at the final probe.
 
 SYNTAX
-The kind keywords are raku for unit, weso for func, and bifo for area. Each creates a local scope.
+The kind keywords are unit for unit, func for func, and area for area. Each creates a local scope.
 Open a block with KIND NAME on one line.
-Close the innermost open block with hud KIND NAME on one line. KIND and NAME must repeat that block's opening keyword and name.
-KIND is one of raku, weso, bifo; NAME is n_ followed by exactly eight lowercase letters and is unique in the program.
-A binding statement (let) is zim VARIABLE VALUE. VARIABLE is x_ followed by one letter a through f; VALUE is a four digit integer from 1000 through 9999.
+Close the innermost open block with end KIND NAME on one line. KIND and NAME must repeat that block's opening keyword and name.
+KIND is one of unit, func, area; NAME is n_ followed by exactly eight lowercase letters and is unique in the program.
+A binding statement (let) is let VARIABLE VALUE. VARIABLE is x_ followed by one letter a through f; VALUE is a four digit integer from 1000 through 9999.
 Within one scope a variable is bound at most once. Inner bindings hide outer bindings until their scope closes.
-A no-effect statement (nop) is vop PAYLOAD. PAYLOAD is p_ followed by eight lowercase letters.
+A no-effect statement (nop) is nop PAYLOAD. PAYLOAD is p_ followed by eight lowercase letters.
 The observation marker is probe PROBE_ID VARIABLE. PROBE_ID is q_ followed by eight lowercase letters.
 Use one statement per line. Indentation has no meaning; scope is determined solely by explicit opening and closing lines.
 
 EXAMPLES
 Example 1
 Program prefix:
-zim x_b 4122
-zim x_a 2890
-weso n_xubbtrah
-zim x_a 3834
-vop p_gwsvasbv
-hud weso n_xubbtrah
-raku n_svuhbhuc
-zim x_a 9147
-bifo n_vatidpaw
-zim x_a 2381
-vop p_bmncluwq
-hud bifo n_vatidpaw
-weso n_bitcouov
+let x_b 4122
+let x_a 2890
+func n_xubbtrah
+let x_a 3834
+nop p_gwsvasbv
+end func n_xubbtrah
+unit n_svuhbhuc
+let x_a 9147
+area n_vatidpaw
+let x_a 2381
+nop p_bmncluwq
+end area n_vatidpaw
+func n_bitcouov
 ```
 
 Raw answer:
 
 ```
-9299
+8724
 ```
 
-**generic_end**; trial `3919b9eaa5868d4535c77783a3bb14b0e6f50f8230cb412ceae25076d1d5fc55`; outcome `correct`; gold `5392`.
+**generic_end**; trial `de7afb22252d9f38e0fb0f387ce96228a7da37cadd1e76e46b152480d08526b8`; outcome `correct`; gold `8902`.
 
 Input:
 
-Full input: [failure-inputs/3919b9eaa5868d4535c77783a3bb14b0e6f50f8230cb412ceae25076d1d5fc55.txt](failure-inputs/3919b9eaa5868d4535c77783a3bb14b0e6f50f8230cb412ceae25076d1d5fc55.txt). Excerpt lines 1–40 of 286:
+Full input: [failure-inputs/de7afb22252d9f38e0fb0f387ce96228a7da37cadd1e76e46b152480d08526b8.txt](failure-inputs/de7afb22252d9f38e0fb0f387ce96228a7da37cadd1e76e46b152480d08526b8.txt). Excerpt lines 1–40 of 260:
 
 ```
 Follow the task and return only the requested answer, without explanation or Markdown fences.
@@ -632,157 +742,47 @@ Do not complete or repair the program.
 Return only the decimal integer visible at the final probe.
 
 SYNTAX
-The kind keywords are raku for unit, weso for func, and bifo for area. Each creates a local scope.
+The kind keywords are unit for unit, func for func, and area for area. Each creates a local scope.
 Open a block with KIND NAME on one line.
-Close the innermost open block with hud on its own line.
-KIND is one of raku, weso, bifo; NAME is n_ followed by exactly eight lowercase letters and is unique in the program.
-A binding statement (let) is zim VARIABLE VALUE. VARIABLE is x_ followed by one letter a through f; VALUE is a four digit integer from 1000 through 9999.
+Close the innermost open block with end on its own line.
+KIND is one of unit, func, area; NAME is n_ followed by exactly eight lowercase letters and is unique in the program.
+A binding statement (let) is let VARIABLE VALUE. VARIABLE is x_ followed by one letter a through f; VALUE is a four digit integer from 1000 through 9999.
 Within one scope a variable is bound at most once. Inner bindings hide outer bindings until their scope closes.
-A no-effect statement (nop) is vop PAYLOAD. PAYLOAD is p_ followed by eight lowercase letters.
+A no-effect statement (nop) is nop PAYLOAD. PAYLOAD is p_ followed by eight lowercase letters.
 The observation marker is probe PROBE_ID VARIABLE. PROBE_ID is q_ followed by eight lowercase letters.
 Use one statement per line. Indentation has no meaning; scope is determined solely by explicit opening and closing lines.
 
 EXAMPLES
 Example 1
 Program prefix:
-zim x_b 4122
-zim x_a 2890
-weso n_xubbtrah
-zim x_a 3834
-vop p_gwsvasbv
-hud
-raku n_svuhbhuc
-zim x_a 9147
-bifo n_vatidpaw
-zim x_a 2381
-vop p_bmncluwq
-hud
-weso n_bitcouov
+let x_b 4122
+let x_a 2890
+func n_xubbtrah
+let x_a 3834
+nop p_gwsvasbv
+end
+unit n_svuhbhuc
+let x_a 9147
+area n_vatidpaw
+let x_a 2381
+nop p_bmncluwq
+end
+func n_bitcouov
 ```
 
 Raw answer:
 
 ```
-5392
-```
-
-**named_end**; trial `28fe6eb35d1da239cc5ddc097dd2e76c1e6066ef0e850740d6440ba2efb04bb3`; outcome `wrong_answer`; gold `4949`.
-
-Input:
-
-Full input: [failure-inputs/28fe6eb35d1da239cc5ddc097dd2e76c1e6066ef0e850740d6440ba2efb04bb3.txt](failure-inputs/28fe6eb35d1da239cc5ddc097dd2e76c1e6066ef0e850740d6440ba2efb04bb3.txt). Excerpt lines 1–40 of 259:
-
-```
-Follow the task and return only the requested answer, without explanation or Markdown fences.
-You will read a prefix of a small scope language.
-Every block, regardless of its kind, creates a local scope.
-Statements are processed once, from top to bottom.
-A let statement binds a variable in the current scope.
-The nearest still-open scope containing the variable determines its value.
-Bindings in closed scopes are no longer visible.
-A nop statement has no effect.
-The final probe marks the observation point.
-Open blocks at the end of this prefix are intentional.
-Do not complete or repair the program.
-Return only the decimal integer visible at the final probe.
-
-SYNTAX
-The kind keywords are feni for unit, havu for func, and zomu for area. Each creates a local scope.
-Open a block with KIND NAME on one line.
-Close the innermost open block with tek KIND NAME on one line. KIND and NAME must repeat that block's opening keyword and name.
-KIND is one of feni, havu, zomu; NAME is n_ followed by exactly eight lowercase letters and is unique in the program.
-A binding statement (let) is dal VARIABLE VALUE. VARIABLE is x_ followed by one letter a through f; VALUE is a four digit integer from 1000 through 9999.
-Within one scope a variable is bound at most once. Inner bindings hide outer bindings until their scope closes.
-A no-effect statement (nop) is nup PAYLOAD. PAYLOAD is p_ followed by eight lowercase letters.
-The observation marker is probe PROBE_ID VARIABLE. PROBE_ID is q_ followed by eight lowercase letters.
-Use one statement per line. Indentation has no meaning; scope is determined solely by explicit opening and closing lines.
-
-EXAMPLES
-Example 1
-Program prefix:
-dal x_b 4122
-dal x_a 2890
-havu n_xubbtrah
-dal x_a 3834
-nup p_gwsvasbv
-tek havu n_xubbtrah
-feni n_svuhbhuc
-dal x_a 9147
-zomu n_vatidpaw
-dal x_a 2381
-nup p_bmncluwq
-tek zomu n_vatidpaw
-havu n_bitcouov
-```
-
-Raw answer:
-
-```
-8568
-```
-
-**generic_end**; trial `9f2d6583d99e82290e9a23d3f5f1edb8642e77299dd1e8a5b79a1c16c213bbc1`; outcome `correct`; gold `4949`.
-
-Input:
-
-Full input: [failure-inputs/9f2d6583d99e82290e9a23d3f5f1edb8642e77299dd1e8a5b79a1c16c213bbc1.txt](failure-inputs/9f2d6583d99e82290e9a23d3f5f1edb8642e77299dd1e8a5b79a1c16c213bbc1.txt). Excerpt lines 1–40 of 259:
-
-```
-Follow the task and return only the requested answer, without explanation or Markdown fences.
-You will read a prefix of a small scope language.
-Every block, regardless of its kind, creates a local scope.
-Statements are processed once, from top to bottom.
-A let statement binds a variable in the current scope.
-The nearest still-open scope containing the variable determines its value.
-Bindings in closed scopes are no longer visible.
-A nop statement has no effect.
-The final probe marks the observation point.
-Open blocks at the end of this prefix are intentional.
-Do not complete or repair the program.
-Return only the decimal integer visible at the final probe.
-
-SYNTAX
-The kind keywords are feni for unit, havu for func, and zomu for area. Each creates a local scope.
-Open a block with KIND NAME on one line.
-Close the innermost open block with tek on its own line.
-KIND is one of feni, havu, zomu; NAME is n_ followed by exactly eight lowercase letters and is unique in the program.
-A binding statement (let) is dal VARIABLE VALUE. VARIABLE is x_ followed by one letter a through f; VALUE is a four digit integer from 1000 through 9999.
-Within one scope a variable is bound at most once. Inner bindings hide outer bindings until their scope closes.
-A no-effect statement (nop) is nup PAYLOAD. PAYLOAD is p_ followed by eight lowercase letters.
-The observation marker is probe PROBE_ID VARIABLE. PROBE_ID is q_ followed by eight lowercase letters.
-Use one statement per line. Indentation has no meaning; scope is determined solely by explicit opening and closing lines.
-
-EXAMPLES
-Example 1
-Program prefix:
-dal x_b 4122
-dal x_a 2890
-havu n_xubbtrah
-dal x_a 3834
-nup p_gwsvasbv
-tek
-feni n_svuhbhuc
-dal x_a 9147
-zomu n_vatidpaw
-dal x_a 2381
-nup p_bmncluwq
-tek
-havu n_bitcouov
-```
-
-Raw answer:
-
-```
-4949
+8902
 ```
 
 ### both wrong
 
-**named_end**; trial `e267a9b4f912e5c63fb2de78ceb453fda03970d6bf9698eccf3ca1a7cb1691fa`; outcome `wrong_answer`; gold `6191`.
+**named_end**; trial `334c9049b3b8c636ebc43235f1422b0ede1652f9b9638c0795b6584dcf13c5b0`; outcome `wrong_answer`; gold `9063`.
 
 Input:
 
-Full input: [failure-inputs/e267a9b4f912e5c63fb2de78ceb453fda03970d6bf9698eccf3ca1a7cb1691fa.txt](failure-inputs/e267a9b4f912e5c63fb2de78ceb453fda03970d6bf9698eccf3ca1a7cb1691fa.txt). Excerpt lines 1–40 of 286:
+Full input: [failure-inputs/334c9049b3b8c636ebc43235f1422b0ede1652f9b9638c0795b6584dcf13c5b0.txt](failure-inputs/334c9049b3b8c636ebc43235f1422b0ede1652f9b9638c0795b6584dcf13c5b0.txt). Excerpt lines 1–40 of 291:
 
 ```
 Follow the task and return only the requested answer, without explanation or Markdown fences.
@@ -830,14 +830,14 @@ fazu n_bitcouov
 Raw answer:
 
 ```
-8357
+6717
 ```
 
-**generic_end**; trial `dd53c66605c0a2aa319e56ec156e17137899e27e3fe06c569be945c275aa4480`; outcome `wrong_answer`; gold `6191`.
+**generic_end**; trial `7c00d860f22f8c92f6af0ed23c9585515d4c1574426e6fb020361c7c2748a7ff`; outcome `wrong_answer`; gold `9063`.
 
 Input:
 
-Full input: [failure-inputs/dd53c66605c0a2aa319e56ec156e17137899e27e3fe06c569be945c275aa4480.txt](failure-inputs/dd53c66605c0a2aa319e56ec156e17137899e27e3fe06c569be945c275aa4480.txt). Excerpt lines 1–40 of 286:
+Full input: [failure-inputs/7c00d860f22f8c92f6af0ed23c9585515d4c1574426e6fb020361c7c2748a7ff.txt](failure-inputs/7c00d860f22f8c92f6af0ed23c9585515d4c1574426e6fb020361c7c2748a7ff.txt). Excerpt lines 1–40 of 291:
 
 ```
 Follow the task and return only the requested answer, without explanation or Markdown fences.
@@ -885,14 +885,124 @@ fazu n_bitcouov
 Raw answer:
 
 ```
-8357
+7670
 ```
 
-**named_end**; trial `f8033fe62abc210f1f1147d9ce71b586557f77e2e1fb4001810875c2978bec10`; outcome `wrong_answer`; gold `8192`.
+**named_end**; trial `3b54e32a3e1e92bcb143ba1cf0f5bc14cdfb96d77fb33d252e3f78b5a1d613be`; outcome `wrong_answer`; gold `7941`.
 
 Input:
 
-Full input: [failure-inputs/f8033fe62abc210f1f1147d9ce71b586557f77e2e1fb4001810875c2978bec10.txt](failure-inputs/f8033fe62abc210f1f1147d9ce71b586557f77e2e1fb4001810875c2978bec10.txt). Excerpt lines 1–40 of 292:
+Full input: [failure-inputs/3b54e32a3e1e92bcb143ba1cf0f5bc14cdfb96d77fb33d252e3f78b5a1d613be.txt](failure-inputs/3b54e32a3e1e92bcb143ba1cf0f5bc14cdfb96d77fb33d252e3f78b5a1d613be.txt). Excerpt lines 1–40 of 259:
+
+```
+Follow the task and return only the requested answer, without explanation or Markdown fences.
+You will read a prefix of a small scope language.
+Every block, regardless of its kind, creates a local scope.
+Statements are processed once, from top to bottom.
+A let statement binds a variable in the current scope.
+The nearest still-open scope containing the variable determines its value.
+Bindings in closed scopes are no longer visible.
+A nop statement has no effect.
+The final probe marks the observation point.
+Open blocks at the end of this prefix are intentional.
+Do not complete or repair the program.
+Return only the decimal integer visible at the final probe.
+
+SYNTAX
+The kind keywords are unit for unit, func for func, and area for area. Each creates a local scope.
+Open a block with KIND NAME on one line.
+Close the innermost open block with end KIND NAME on one line. KIND and NAME must repeat that block's opening keyword and name.
+KIND is one of unit, func, area; NAME is n_ followed by exactly eight lowercase letters and is unique in the program.
+A binding statement (let) is let VARIABLE VALUE. VARIABLE is x_ followed by one letter a through f; VALUE is a four digit integer from 1000 through 9999.
+Within one scope a variable is bound at most once. Inner bindings hide outer bindings until their scope closes.
+A no-effect statement (nop) is nop PAYLOAD. PAYLOAD is p_ followed by eight lowercase letters.
+The observation marker is probe PROBE_ID VARIABLE. PROBE_ID is q_ followed by eight lowercase letters.
+Use one statement per line. Indentation has no meaning; scope is determined solely by explicit opening and closing lines.
+
+EXAMPLES
+Example 1
+Program prefix:
+let x_b 4122
+let x_a 2890
+func n_xubbtrah
+let x_a 3834
+nop p_gwsvasbv
+end func n_xubbtrah
+unit n_svuhbhuc
+let x_a 9147
+area n_vatidpaw
+let x_a 2381
+nop p_bmncluwq
+end area n_vatidpaw
+func n_bitcouov
+```
+
+Raw answer:
+
+```
+8225
+```
+
+**generic_end**; trial `8dd693c4dbed2530ebc5814a5f2d8e30fd25ed2172ee7b9836a466806c3b5883`; outcome `wrong_answer`; gold `7941`.
+
+Input:
+
+Full input: [failure-inputs/8dd693c4dbed2530ebc5814a5f2d8e30fd25ed2172ee7b9836a466806c3b5883.txt](failure-inputs/8dd693c4dbed2530ebc5814a5f2d8e30fd25ed2172ee7b9836a466806c3b5883.txt). Excerpt lines 1–40 of 259:
+
+```
+Follow the task and return only the requested answer, without explanation or Markdown fences.
+You will read a prefix of a small scope language.
+Every block, regardless of its kind, creates a local scope.
+Statements are processed once, from top to bottom.
+A let statement binds a variable in the current scope.
+The nearest still-open scope containing the variable determines its value.
+Bindings in closed scopes are no longer visible.
+A nop statement has no effect.
+The final probe marks the observation point.
+Open blocks at the end of this prefix are intentional.
+Do not complete or repair the program.
+Return only the decimal integer visible at the final probe.
+
+SYNTAX
+The kind keywords are unit for unit, func for func, and area for area. Each creates a local scope.
+Open a block with KIND NAME on one line.
+Close the innermost open block with end on its own line.
+KIND is one of unit, func, area; NAME is n_ followed by exactly eight lowercase letters and is unique in the program.
+A binding statement (let) is let VARIABLE VALUE. VARIABLE is x_ followed by one letter a through f; VALUE is a four digit integer from 1000 through 9999.
+Within one scope a variable is bound at most once. Inner bindings hide outer bindings until their scope closes.
+A no-effect statement (nop) is nop PAYLOAD. PAYLOAD is p_ followed by eight lowercase letters.
+The observation marker is probe PROBE_ID VARIABLE. PROBE_ID is q_ followed by eight lowercase letters.
+Use one statement per line. Indentation has no meaning; scope is determined solely by explicit opening and closing lines.
+
+EXAMPLES
+Example 1
+Program prefix:
+let x_b 4122
+let x_a 2890
+func n_xubbtrah
+let x_a 3834
+nop p_gwsvasbv
+end
+unit n_svuhbhuc
+let x_a 9147
+area n_vatidpaw
+let x_a 2381
+nop p_bmncluwq
+end
+func n_bitcouov
+```
+
+Raw answer:
+
+```
+8225
+```
+
+**named_end**; trial `650ede8347c52e77016bbed8d21ff30a3e1a2062fb6f3e28c7e25c3598cf5e42`; outcome `wrong_answer`; gold `5523`.
+
+Input:
+
+Full input: [failure-inputs/650ede8347c52e77016bbed8d21ff30a3e1a2062fb6f3e28c7e25c3598cf5e42.txt](failure-inputs/650ede8347c52e77016bbed8d21ff30a3e1a2062fb6f3e28c7e25c3598cf5e42.txt). Excerpt lines 1–40 of 259:
 
 ```
 Follow the task and return only the requested answer, without explanation or Markdown fences.
@@ -940,14 +1050,14 @@ zafi n_bitcouov
 Raw answer:
 
 ```
-1972
+6985
 ```
 
-**generic_end**; trial `d78f8e173f032cbb7b999f79277aa27dc9ec8ae488f8c5ba679773c44914851b`; outcome `wrong_answer`; gold `8192`.
+**generic_end**; trial `e3981e266b48e668b4755de29bbf076c86a2ffe87ab1164a9c98d013e8950c0e`; outcome `wrong_answer`; gold `5523`.
 
 Input:
 
-Full input: [failure-inputs/d78f8e173f032cbb7b999f79277aa27dc9ec8ae488f8c5ba679773c44914851b.txt](failure-inputs/d78f8e173f032cbb7b999f79277aa27dc9ec8ae488f8c5ba679773c44914851b.txt). Excerpt lines 1–40 of 292:
+Full input: [failure-inputs/e3981e266b48e668b4755de29bbf076c86a2ffe87ab1164a9c98d013e8950c0e.txt](failure-inputs/e3981e266b48e668b4755de29bbf076c86a2ffe87ab1164a9c98d013e8950c0e.txt). Excerpt lines 1–40 of 259:
 
 ```
 Follow the task and return only the requested answer, without explanation or Markdown fences.
@@ -995,7 +1105,7 @@ zafi n_bitcouov
 Raw answer:
 
 ```
-5145
+2324
 ```
 
 

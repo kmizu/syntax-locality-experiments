@@ -24,7 +24,7 @@ In the published GitHub repository, the standalone generator is checked in under
 
 ```sh
 cd reports
-sbt "run ../experiments/data ../experiments/site"
+sbt test "run ../experiments/data ../experiments/site"
 ```
 
 These are native sbt commands and require no archive extraction or shell wrapper. sbt resolves the pinned Scala compiler; a populated Maven/sbt cache or network access is needed for the build tools, while the report generator itself remains offline. Input and output paths are positional arguments relative to the generator's working directory.
@@ -55,8 +55,10 @@ Paths in this section are relative to the selected input directory: local `data/
 
 ## Publish
 
+The generator's `sbt test` exercises saved reports with operational snapshot fixtures. Terminal dispositions can exceed generation dispatches when a count-only trial expires before dispatch. Completed/incomplete responses must not exceed dispatches; dispatched trials and `not_dispatched` dispositions must fit the 960-trial plan. Infrastructure status counts must match their recorded total. Count-stage infrastructure failures cannot be assumed to represent generation dispatches. These checks preserve report grades and reject inconsistent or unsupported snapshots before writing HTML.
+
 Deploy the contents of `experiments/site/` in the public source layout using GitHub Pages, or `site/` for the local standalone layout. The checked-in workflow builds the ordinary Scala sources and saved report artifacts directly. The report generator does not create a repository, handle credentials, or publish files.
 
 All P1 and P2 results are exploratory. An interrupted main snapshot has only the CI status and estimates supported by its persisted report; the generator never computes missing intervals. P2 has no measured success rate until actual responses have been saved and graded under its separate protocol. Exact AST accuracy includes identifier/value/payload copying as well as structure, and a measured generation advantage does not uniquely identify its mechanism.
 
-The optional saved data/supporting/live-interruption.txt is displayed as escaped text near the start of the report and linked for download. It records operational interruption and partial-data status; it does not supply grades or modify any denominator. The current interruption is the provider credit rejection on 2026-10-06, with both native model runners stopped. A partial graded P2 report keeps its status badge partial until all planned terminal dispositions are saved.
+The optional saved `data/supporting/live-recovery-20261007.txt` is displayed as the current execution history and saved-result note near the start of the report. When present, `data/supporting/live-interruption.txt` stays linked and displayed inside an explicitly historical detail rather than leading as the current blocker. Both files are copied byte-for-byte, and rendered note text is HTML-escaped, trimmed, non-empty and limited to 4,000 characters. Without the recovery note, the existing interruption notice retains its original behavior. Notes describe saved operational events only; they supply no grades, change no denominator or interval, and do not cause the generator to infer recovery or completion from the current date. A partial graded P2 report keeps its status badge partial until all planned terminal dispositions are saved.

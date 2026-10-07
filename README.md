@@ -52,12 +52,12 @@ sbt "bench / run --help"
 | 実験 | 内容と保存された状態 |
 | --- | --- |
 | P1 pilot | 1,800件の実モデル試行を完了、strict correctは1,622件。生成を含む探索的結果。prefixのscope lookup / active stackは全プログラムの解析ではない |
-| 凍結済みP1 main | 読解`scope_lookup / after_close`の別課題。残高拒否による中断後の保存済み採点：計画5,120件、送信1,409件、terminal 1,412件、評価可能1,350件、correct 1,177件。infra missing 59件、未送信3,711件。途中結果の推測統計CIは未計算 |
-| P2 | 全体の`ast_to_source`生成と`source_to_ast`解析。計画960件のうち送信・terminal 300件、評価可能295件、correct 196件、API拒否5件、未送信660件。2方向は別表で表示し、途中結果のCIは未計算 |
+| 凍結済みP1 main | 読解`scope_lookup / after_close`の別課題。2026-10-07の再中断後の保存済み採点：計画5,120件、送信2,748件、terminal2,753件、評価可能2,688件、correct2,331件。infra missing60件、未送信2,372件。途中結果のCIは未計算 |
+| P2 | 全文の`ast_to_source`生成と`source_to_ast`解析。計画960件のうち送信519件、terminal521件、評価可能512件、correct348件、API拒否7件、未送信441件。生成168/268、解析180/244を別表で表示。途中結果のCIは未計算 |
 
-2026-10-06（UTC）にAPIが`credit_balance_exhausted`を返したため、MainとP2の追加送信を停止した。全計画の実行は完了していない。正解率や有意差による停止ではない。保存した応答は全文で厳密採点し、誤答・拒否されたterminal trialを再送していない。P2の入力は閉じ終わりまである全文。元のMainはprobeまでのprefix読解なので、全文解析の結果には含めない。[保存済み中断記録](experiments/data/supporting/live-interruption.txt)を参照。自動課金の操作は行っていない。
+2026-10-06の残高拒否後、2026-10-07（UTC）の入金申告と実通信probe成功を確認して同じ計画を継続した。その後APIが再び`credit_balance_exhausted`を返したため、MainとP2を停止した。全計画の実行は完了していない。正解率・有意差による停止ではない。保存した応答は全文で厳密採点し、terminalを再送していない。P2の入力は閉じ終わりまである全文。元のMainはprobeまでのprefix読解なので、全文解析には含めない。[現在の実行経過](experiments/data/supporting/live-recovery-20261007.txt)と[以前の中断記録](experiments/data/supporting/live-interruption.txt)を区別する。自動課金の操作は行っていない。
 
-Mainでは、1,350件の回答を採点し、58件のAPI拒否、元の結果不明1件、count-onlyの未送信terminal 3件を保持する。terminalがない3,708件には、count-only 2件と未着手3,706件を含む。報告上の未送信3,711件は、その3,708件と未送信terminal 3件の合計。Mainの未確定予約は60件・692,889 tokensで、以前からの28,969 tokensも保持する。P2の未確定予約は5件・119,976 tokens。利用量不明をゼロに置き換えない。
+Mainでは2,688件の回答を採点し、59件のAPI拒否、元の結果不明1件、未送信terminal5件を保持する。terminalがない2,367件にはcount-only2件と未着手2,365件を含み、報告上の未送信2,372件はそれらと未送信terminal5件の合計。未確定予約は61件・707,127 tokensで、旧60件・692,889 tokensをすべて保持する。P2は未確定予約7件・166,039 tokens、count-only待ち1件、未着手438件。使用量不明をゼロへ置き換えない。P2生成のD（種類＋名前）は52/53正解、C（種類）は34/54、B（汎用end）は25/54だが、途中の探索的結果として読む。
 
 P1の生成結果は、閉じラベルの生成への効果を見る探索的pilotの結果。既存mainの主比較は読解のD−Bで、生成の主比較へ読み替えない。P2は48構造family、深さ`[2,4,8,16]`、filler`[0,8,32]`、2方向×2語彙×5構文の別pilot。[P2の設計と検証状態](docs/full-program-structures.md)と[HTMLの生成・解析別表](https://kmizu.github.io/syntax-locality-experiments/)を参照。保存済みP2 reportとCSVから厳密採点結果を表示し、execution snapshot、synthetic mock、P1、Mainと合算しない。
 

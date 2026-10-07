@@ -257,7 +257,7 @@ object HtmlReport:
       val planned = number("planned")
       val dispatched = number("distinctDispatched")
       val terminal = number("terminal")
-      require(planned == 960 && dispatched > 0 && dispatched <= planned && terminal <= dispatched,
+      require(planned == 960 && dispatched > 0 && dispatched <= planned && terminal <= planned,
         "Invalid P2 execution planned/dispatched/terminal counts")
       require(number("batchLimit") > 0 && number("batchLimit") <= planned &&
         number("generationDispatchAttempts") >= dispatched && number("tokenCountAttempts") >= dispatched &&
@@ -277,6 +277,16 @@ object HtmlReport:
         case _ => throw IllegalArgumentException("P2 execution statuses must be an array")
       require(statuses.map(_._1).distinct.size == statuses.size && statuses.map(_._2).sum == terminal,
         "P2 execution statuses must partition terminal dispositions without duplicates")
+      val infrastructureStatuses = Set("api_rejected", "transport_failure", "ambiguous_outcome", "decode_failure")
+      val allowedStatuses = infrastructureStatuses ++ Set("completed", "incomplete", "not_dispatched")
+      require(statuses.forall(s => allowedStatuses.contains(s._1)), "Unsupported P2 execution terminal status")
+      val modelResponses = statuses.filter(s => s._1 == "completed" || s._1 == "incomplete").map(_._2).sum
+      val notDispatched = statuses.filter(_._1 == "not_dispatched").map(_._2).sum
+      val infrastructure = statuses.filter(s => infrastructureStatuses.contains(s._1)).map(_._2).sum
+      require(modelResponses <= dispatched && dispatched <= planned - notDispatched,
+        "Invalid P2 execution response/dispatch/unexecuted partition")
+      require(number("infrastructureTerminalCount") == infrastructure,
+        "P2 execution infrastructure count disagrees with its terminal statuses")
       val known = number("actualKnownTokens")
       val reserved = number("openReservedTokens")
       val cap = number("cumulativeCap")
@@ -448,12 +458,24 @@ object HtmlReport:
     val mainCiStates = main.comparisons.map(_("ci_status")).distinct.sorted.mkString(" / ")
     val mainNotice = s"${runState(main)}。${counts(main)}CSV の CI status: $mainCiStates。"
     val interruptionPath = "supporting/live-interruption.txt"
+    val recoveryNotePath = "supporting/live-recovery-20261007.txt"
+    val recoveryNote =
+      if Files.isRegularFile(input.resolve(recoveryNotePath)) then
+        val note = Files.readString(input.resolve(recoveryNotePath), UTF_8).trim
+        require(note.nonEmpty && note.length <= 4000, "Invalid saved execution recovery note")
+        Some(note)
+      else None
     val interruptionNotice =
-      if Files.isRegularFile(input.resolve(interruptionPath)) then
+      val current = recoveryNote.map(note =>
+        s"<aside class=\"callout\"><strong>実行経過・保存結果。</strong><p>${h(note)}</p>${link(recoveryNotePath, "保存済み実行経過")}</aside>").getOrElse("")
+      val historical = if Files.isRegularFile(input.resolve(interruptionPath)) then
         val note = Files.readString(input.resolve(interruptionPath), UTF_8).trim
         require(note.nonEmpty && note.length <= 4000, "Invalid saved execution interruption note")
-        s"<aside class=\"callout\"><strong>実行の中断と途中結果。</strong><p>${h(note)}</p>${link(interruptionPath, "保存済み中断記録")}</aside>"
+        if recoveryNote.nonEmpty then
+          detail("以前の中断記録（履歴）", s"<p>${h(note)}</p><p>${link(interruptionPath, "保存済み中断記録")}</p>")
+        else s"<aside class=\"callout\"><strong>実行の中断と途中結果。</strong><p>${h(note)}</p>${link(interruptionPath, "保存済み中断記録")}</aside>"
       else ""
+      current + historical
     val supportRecovery = "supporting/main-zero-http-recovery.json"
     val historicalRecovery =
       if Files.isRegularFile(input.resolve(supportRecovery)) then
