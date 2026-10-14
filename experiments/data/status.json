@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAtUtc": "2026-10-07T14:14:10.7964371Z",
+  "generatedAtUtc": "2026-10-14T14:20:00.0000000Z",
   "synthetic_mock": false,
   "syntheticLanguageExamples": true,
   "resultSource": "Saved Scala-graded reports and CSVs; no new grades or statistical estimates were computed for publication.",
@@ -201,6 +201,145 @@
     "knownGenerationTokensAllWindows": 3293502,
     "checkpointSource": ".worktrees/grammar-structures/verification/p2-checkpoints-v3/terminal-521",
     "checkpointManifestSha256": "0d19355dca589179157836f7742ec6b82c17baea166e56e050032090c5a3f2ed"
+  },
+  "shortDependencyExtension": {
+    "state": "complete_exploratory_single_replicate_not_frozen",
+    "phase": "p3",
+    "worktreeBranch": "p3-short-dependency",
+    "worktreeCommits": [
+      "6aed57575a56abcbd2dc111a535db1535a54a836",
+      "d98fc14352ea11e25ed432b42f66649d7db61c1b"
+    ],
+    "sourceHash": "f57b680ff77f4a0b4190ede060a71f008bb1671a65d82f100fc9e6a5ffa4aff0",
+    "sourceHashRecomputedFromPublishedSnapshot": true,
+    "sourceSnapshot": "supporting/p3-source/README.md",
+    "publicRootSourcesContainP3Code": false,
+    "model": "gpt-5.6-terra",
+    "reasoningEffort": "low",
+    "replicates": 1,
+    "fewShotCount": 8,
+    "depths": [
+      4,
+      8,
+      16
+    ],
+    "fillers": [
+      0,
+      32,
+      128
+    ],
+    "lexicalRegimes": [
+      "natural",
+      "nonce"
+    ],
+    "samplingUnit": "structural_family",
+    "preflight": "p3-preflight/capabilities.json",
+    "design": "docs/p3-short-dependency-design.md",
+    "configs": [
+      "supporting/p3a-pilot.json",
+      "supporting/p3b-fq-pilot.json",
+      "supporting/p3b-short-pilot.json",
+      "supporting/p3.md"
+    ],
+    "inferentialCiStatus": "not_computed",
+    "runs": {
+      "p3a": {
+        "planned": 288,
+        "terminal": 288,
+        "modelEvaluable": 288,
+        "correct": 191,
+        "infrastructureMissing": 0,
+        "families": 36,
+        "tasks": [
+          "ast_to_source"
+        ],
+        "styles": [
+          "generic_end",
+          "named_end",
+          "depth_end",
+          "indent"
+        ],
+        "strictCorrectOf72": {
+          "generic_end": 15,
+          "named_end": 62,
+          "depth_end": 54,
+          "indent": 60
+        },
+        "protocolHash": "b7fa756e73e53321ccebf9b0080aa5de75f23efcce70310503e8eaf49749e35a",
+        "report": "p3a/report.md"
+      },
+      "p3b-fq": {
+        "planned": 216,
+        "terminal": 216,
+        "modelEvaluable": 216,
+        "correct": 187,
+        "infrastructureMissing": 0,
+        "families": 72,
+        "tasks": [
+          "scope_lookup",
+          "ast_to_source"
+        ],
+        "styles": [
+          "named_end"
+        ],
+        "importQualification": "fq",
+        "strictCorrectOf72": {
+          "ast_to_source/complete": 55,
+          "scope_lookup/before_close": 72,
+          "scope_lookup/after_close": 60
+        },
+        "protocolHash": "326f29ffbd4735878c67f6ebeb76183f732c22dbb27241fefb043e5ce99ab0e4",
+        "report": "p3b-fq/report.md"
+      },
+      "p3b-short": {
+        "planned": 216,
+        "terminal": 216,
+        "modelEvaluable": 216,
+        "correct": 177,
+        "infrastructureMissing": 0,
+        "families": 72,
+        "tasks": [
+          "scope_lookup",
+          "ast_to_source"
+        ],
+        "styles": [
+          "named_end"
+        ],
+        "importQualification": "short",
+        "strictCorrectOf72": {
+          "ast_to_source/complete": 50,
+          "scope_lookup/before_close": 72,
+          "scope_lookup/after_close": 55
+        },
+        "protocolHash": "256e503ae744e165c61804b9f6cf92e13073bd66e8f66069f4799f0cd3d4c9d0",
+        "report": "p3b-short/report.md"
+      }
+    },
+    "pairedDiscordance": {
+      "pairing": "familyId + task + view + lexicalRegime; model-evaluable pairs only",
+      "ast_to_source/complete": {
+        "pairs": 72,
+        "bothCorrect": 41,
+        "fqOnly": 14,
+        "shortOnly": 9,
+        "bothWrong": 8
+      },
+      "scope_lookup/after_close": {
+        "pairs": 72,
+        "bothCorrect": 46,
+        "fqOnly": 14,
+        "shortOnly": 9,
+        "bothWrong": 3
+      },
+      "scope_lookup/before_close": {
+        "pairs": 72,
+        "bothCorrect": 72,
+        "fqOnly": 0,
+        "shortOnly": 0,
+        "bothWrong": 0
+      }
+    },
+    "note": "Three live exploratory P3 pilots executed on 2026-10-14 from the isolated p3-short-dependency worktree after preflight p3-preflight/capabilities.json passed. Every planned trial is terminal with zero infrastructure missingness, zero refusal and zero incomplete; synthetic_mock=false. One replicate, no frozen confirmatory plan, no confidence intervals; differences are descriptive. Short-distance cues alone (G depth_end) do not reach D named_end; redundant explicit information (D, fq import paths) performs best in this pilot; filler 128 lowers D/G/F at depth >= 8. Not evidence that the short-dependency hypothesis is supported. Raw trials/ bodies, budget and usage ledgers remain private; cases, scores, summaries, paired comparisons, errors, reports, failure inputs and protocols are published byte-identically. P3 is not pooled with P1, main or P2."
   },
   "promptExemplar": {
     "trialId": "024fb909d07dabef1ff984148793631a0780afdb01b69520a4154755b8637602",

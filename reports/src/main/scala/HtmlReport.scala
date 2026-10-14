@@ -20,6 +20,54 @@ object HtmlReport:
   private val p2MockWorkflowRunUrl = "https://github.com/kmizu/syntax-locality-experiments/actions/runs/37371856651"
   private val p2LiveStatusPath = "supporting/p2-live-current-status.json"
   private val p2LiveProtocolHash = "2ac04cc60928800d0c1fdd37986546a6fee23bd1955ccc011c76099cbde60471"
+  private val p3SourceHash = "f57b680ff77f4a0b4190ede060a71f008bb1671a65d82f100fc9e6a5ffa4aff0"
+  private val p3RunNames = Vector("p3a", "p3b-fq", "p3b-short")
+  private val p3Styles = Vector("generic_end", "named_end", "depth_end", "indent")
+  private val p3Labels = Map("generic_end" -> "B · generic end", "named_end" -> "D · named end",
+    "depth_end" -> "G · depth end", "indent" -> "F · indent")
+  private val p3Depths = Vector("4", "8", "16")
+  private val p3Fillers = Vector("0", "32", "128")
+  private val p3Views = Vector(("ast_to_source", "complete"), ("scope_lookup", "before_close"), ("scope_lookup", "after_close"))
+
+  /** One saved P3 trial: a `cases.jsonl` row joined to its `scores.jsonl` grade by trial id. */
+  final case class P3Trial(id: String, familyId: String, task: String, view: String, style: String,
+    lexicalRegime: String, depth: String, filler: String, evaluable: Boolean, correct: Boolean, outcome: String,
+    firstError: String)
+
+  /** A saved exploratory P3 run. Styles may differ from the five P1/P2 treatments. */
+  final case class P3Run(name: String, trials: Vector[P3Trial], summary: Vector[Row], errors: Vector[Row],
+    protocol: String):
+    val total: Row =
+      val totals = summary.filter(r => dimensions.forall(k => r(k) == "ALL"))
+      require(totals.size == 1, s"$name must have exactly one overall summary")
+      totals.head
+    require(trials.map(_.id).distinct.size == trials.size, s"$name has duplicate trial ids")
+    require(trials.size.toLong == total.number("planned") && total.number("terminal") == total.number("planned"),
+      s"$name must save every planned trial as terminal")
+    require(trials.count(_.evaluable).toLong == total.number("model_evaluable") &&
+      trials.count(_.correct).toLong == total.number("correct"), s"$name trial grades disagree with summary.csv")
+    require(trials.forall(t => p3Styles.contains(t.style) && p3Depths.contains(t.depth) && p3Fillers.contains(t.filler) &&
+      Set("natural", "nonce").contains(t.lexicalRegime) && p3Views.contains((t.task, t.view))), s"$name has an unsupported trial condition")
+    require(errors.size.toLong == total.number("planned") - total.number("correct"), s"$name error rows must preserve every non-correct trial")
+    val styles: Vector[String] = p3Styles.filter(s => trials.exists(_.style == s))
+    val views: Vector[(String, String)] = p3Views.filter(v => trials.exists(t => (t.task, t.view) == v))
+    def select(task: String, view: String, style: String, depth: String = "ALL", filler: String = "ALL"): Vector[P3Trial] =
+      trials.filter(t => t.task == task && t.view == view && t.style == style &&
+        (depth == "ALL" || t.depth == depth) && (filler == "ALL" || t.filler == filler))
+    def count(task: String, view: String, style: String, depth: String = "ALL", filler: String = "ALL"): (Long, Long) =
+      val found = select(task, view, style, depth, filler).filter(_.evaluable)
+      (found.count(_.correct).toLong, found.size.toLong)
+    def wholeStyle(task: String, view: String, style: String): Row =
+      val found = summary.filter(r => r("task") == task && r("view") == view && r("style") == style &&
+        Vector("lexical_regime", "depth", "filler").forall(k => r(k) == "ALL"))
+      require(found.size == 1, s"Missing or duplicate persisted $name/$task/$view/$style summary")
+      val row = found.head
+      require((row.number("correct"), row.number("model_evaluable")) == count(task, view, style),
+        s"$name/$task/$view/$style summary disagrees with joined trial grades")
+      row
+    def firstErrors(task: String, view: String, style: String): Vector[(String, Long)] =
+      select(task, view, style).filter(t => t.evaluable && !t.correct).groupBy(_.firstError).toVector
+        .map((code, ts) => code -> ts.size.toLong).sortBy((code, n) => (-n, code))
 
   final case class ExecutionSnapshot(capturedAt: String, utcWindow: String, planned: Long,
     distinctDispatched: Long, terminal: Long, actualKnownTokens: Long, openReservedTokens: Long,
@@ -156,6 +204,7 @@ object HtmlReport:
     val main = readRun(input, "main")
     val p2 = if Files.isDirectory(input.resolve("p2")) then Some(readRun(input, "p2")) else None
     val p2Execution = readP2ExecutionSnapshot(input)
+    val p3 = readP3Runs(input)
     require(pilot.total.number("planned") == 1800 && pilot.total.number("terminal") == 1800 &&
       pilot.total.number("model_evaluable") == 1800 && pilot.total.number("correct") == 1622,
       "This report requires the complete original P1 pilot; do not pool changed protocols")
@@ -204,10 +253,10 @@ object HtmlReport:
     val p2Verified = sys.env.get("SYNTAX_P2_TEST_VERIFIED").contains("true")
     require(!p2Verified || workflowUrl.nonEmpty, "Verified P2 test status requires its workflow-run evidence URL")
     val p2LiveCountsBasis = if p2.nonEmpty then "graded_report" else if p2Execution.nonEmpty then "execution_snapshot" else "no_saved_live_counts"
-    val buildProvenance = s"""{"schemaVersion":1,"p2PostChangeFullTestVerified":$p2Verified,"workflowRunUrl":${workflowUrl.map(js).getOrElse("null")},"p2StandaloneMockVerified":$p2MockVerified,"p2MockWitness":${if p2MockVerified then js("data/" + p2MockWitnessPath) else "null"},"p2MockWitnessSha256":${if p2MockVerified then js(p2MockWitnessSha256) else "null"},"p2MockSourceHash":${if p2MockVerified then js(p2MockSourceHash) else "null"},"p2MockWorkflowRunUrl":${if p2MockVerified then js(p2MockWorkflowRunUrl) else "null"},"p2LiveCountsBasis":${js(p2LiveCountsBasis)},"p2LiveReportDispatched":${p2.map(_.total.number("dispatched").toString).getOrElse("null")},"p2LiveReportTerminalDispositions":${p2.map(_.total.number("terminal").toString).getOrElse("null")},"p2LiveExecutionDistinctDispatched":${p2Execution.map(_.distinctDispatched.toString).getOrElse("null")},"p2LiveExecutionTerminalDispositions":${p2Execution.map(_.terminal.toString).getOrElse("null")},"p2LiveGenerations":${p2.map(_.total.number("dispatched")).orElse(p2Execution.map(_.distinctDispatched)).getOrElse(0L)},"p2LiveTerminalDispositions":${p2.map(_.total.number("terminal")).orElse(p2Execution.map(_.terminal)).getOrElse(0L)},"p2LivePlannedTrials":${p2.map(_.total.number("planned")).orElse(p2Execution.map(_.planned)).getOrElse(960L)},"p2LiveReportAvailable":${p2.nonEmpty},"p2LiveExecutionStatusAvailable":${p2Execution.nonEmpty},"p2LiveExecutionSnapshotAt":${p2Execution.map(s => js(s.capturedAt)).getOrElse("null")},"p2LiveExecutionStatusPath":${if p2Execution.nonEmpty then js("data/" + p2LiveStatusPath) else "null"},"p2LiveExecutionStatusSha256":${p2Execution.map(s => js(s.sha256)).getOrElse("null")},"inputManifestSha256":${js(fingerprint)},"note":"The full-test flag is supplied by the publication workflow after its required full-test step. Standalone P2 mock status requires its fixed saved witness. P2 live count basis is explicit: report counts take precedence, while separately named execution counts and timestamp identify the saved heartbeat. These artifacts can represent different snapshots. Execution snapshots measure dispatch/terminal/accounting progress only, never model accuracy or CI. Synthetic wiring verification is not model measurement."}
+    val buildProvenance = s"""{"schemaVersion":1,"p2PostChangeFullTestVerified":$p2Verified,"workflowRunUrl":${workflowUrl.map(js).getOrElse("null")},"p2StandaloneMockVerified":$p2MockVerified,"p2MockWitness":${if p2MockVerified then js("data/" + p2MockWitnessPath) else "null"},"p2MockWitnessSha256":${if p2MockVerified then js(p2MockWitnessSha256) else "null"},"p2MockSourceHash":${if p2MockVerified then js(p2MockSourceHash) else "null"},"p2MockWorkflowRunUrl":${if p2MockVerified then js(p2MockWorkflowRunUrl) else "null"},"p2LiveCountsBasis":${js(p2LiveCountsBasis)},"p2LiveReportDispatched":${p2.map(_.total.number("dispatched").toString).getOrElse("null")},"p2LiveReportTerminalDispositions":${p2.map(_.total.number("terminal").toString).getOrElse("null")},"p2LiveExecutionDistinctDispatched":${p2Execution.map(_.distinctDispatched.toString).getOrElse("null")},"p2LiveExecutionTerminalDispositions":${p2Execution.map(_.terminal.toString).getOrElse("null")},"p2LiveGenerations":${p2.map(_.total.number("dispatched")).orElse(p2Execution.map(_.distinctDispatched)).getOrElse(0L)},"p2LiveTerminalDispositions":${p2.map(_.total.number("terminal")).orElse(p2Execution.map(_.terminal)).getOrElse(0L)},"p2LivePlannedTrials":${p2.map(_.total.number("planned")).orElse(p2Execution.map(_.planned)).getOrElse(960L)},"p2LiveReportAvailable":${p2.nonEmpty},"p2LiveExecutionStatusAvailable":${p2Execution.nonEmpty},"p2LiveExecutionSnapshotAt":${p2Execution.map(s => js(s.capturedAt)).getOrElse("null")},"p2LiveExecutionStatusPath":${if p2Execution.nonEmpty then js("data/" + p2LiveStatusPath) else "null"},"p2LiveExecutionStatusSha256":${p2Execution.map(s => js(s.sha256)).getOrElse("null")},"p3ReportsAvailable":${p3.nonEmpty},"p3SourceHash":${if p3.nonEmpty then js(p3SourceHash) else "null"},"p3PlannedTrials":${p3.map(_.map(_.total.number("planned")).sum.toString).getOrElse("null")},"p3TerminalDispositions":${p3.map(_.map(_.total.number("terminal")).sum.toString).getOrElse("null")},"inputManifestSha256":${js(fingerprint)},"note":"The full-test flag is supplied by the publication workflow after its required full-test step. Standalone P2 mock status requires its fixed saved witness. P2 live count basis is explicit: report counts take precedence, while separately named execution counts and timestamp identify the saved heartbeat. These artifacts can represent different snapshots. Execution snapshots measure dispatch/terminal/accounting progress only, never model accuracy or CI. Synthetic wiring verification is not model measurement."}
 """
     Files.writeString(output.resolve("build-provenance.json"), buildProvenance, UTF_8)
-    val html = render(pilot, main, p2, p2Execution, hashes, fingerprint, input, p2Verified, workflowUrl, p2MockVerified)
+    val html = render(pilot, main, p2, p2Execution, p3, hashes, fingerprint, input, p2Verified, workflowUrl, p2MockVerified)
     Files.writeString(output.resolve("index.html"), html, UTF_8)
     println(s"Generated ${output.resolve("index.html")} from ${artifacts.size} saved public artifacts")
     println(s"Input manifest SHA-256: $fingerprint")
@@ -219,6 +268,80 @@ object HtmlReport:
     requiredFiles.foreach(f => require(Files.isRegularFile(dir.resolve(f), LinkOption.NOFOLLOW_LINKS), s"Missing $name/$f"))
     Run(name, readCsv(dir.resolve("summary.csv")), readCsv(dir.resolve("paired-comparisons.csv")),
       readCsv(dir.resolve("errors.csv")), Files.readString(dir.resolve("protocol.json"), UTF_8))
+
+  /** All three P3 run directories must be present together, or none of them. */
+  private def readP3Runs(root: Path): Option[Vector[P3Run]] =
+    val present = p3RunNames.filter(name => Files.isDirectory(root.resolve(name)))
+    if present.isEmpty then None
+    else
+      require(present == p3RunNames, s"P3 publication requires all of ${p3RunNames.mkString(", ")}; found ${present.mkString(", ")}")
+      val runs = p3RunNames.map(readP3Run(root, _))
+      val (p3a, fq, short) = (runs(0), runs(1), runs(2))
+      require(p3a.total.number("planned") == 288 && p3a.styles == p3Styles && p3a.views == Vector(("ast_to_source", "complete")),
+        "P3a must retain its 288-trial generation plan over B/D/G/F")
+      Vector(fq, short).foreach { run =>
+        require(run.total.number("planned") == 216 && run.styles == Vector("named_end") && run.views == p3Views,
+          s"${run.name} must retain its 216-trial named_end import plan over T1 (both views) and T3")
+        require(jsonBool(run.protocol, "imports"), s"${run.name} must enable imports")
+      }
+      require(protocolScalar(fq.protocol, "importQualification") == "fq" &&
+        protocolScalar(short.protocol, "importQualification") == "short", "P3b runs must differ only in import qualification")
+      require(fq.trials.map(_.familyId).toSet == short.trials.map(_.familyId).toSet && fq.trials.map(_.familyId).distinct.size == 72,
+        "P3b fq/short must share the same 72 structural families")
+      Some(runs)
+
+  private def readP3Run(root: Path, name: String): P3Run =
+    val dir = root.resolve(name)
+    (requiredFiles ++ Vector("cases.jsonl", "scores.jsonl")).foreach(f =>
+      require(Files.isRegularFile(dir.resolve(f), LinkOption.NOFOLLOW_LINKS), s"Missing $name/$f"))
+    val protocol = Files.readString(dir.resolve("protocol.json"), UTF_8)
+    require(protocolScalar(protocol, "sourceHash") == p3SourceHash && protocolScalar(protocol, "preset") == "p3" &&
+      protocolScalar(protocol, "model") == "gpt-5.6-terra" && protocolScalar(protocol, "reasoningEffort") == "low",
+      s"$name must match the published P3 source snapshot, preset, model and effort")
+    require(jsonNumber(protocol, "replicates") == "1", s"$name must be a single-replicate pilot")
+    require(Files.readString(dir.resolve("report.md"), UTF_8).contains("synthetic_mock=false"),
+      s"$name must be explicitly non-synthetic")
+    val cases = jsonLines(dir.resolve("cases.jsonl")).map { line =>
+      jsonString(line, "id") -> line
+    }
+    require(cases.map(_._1).distinct.size == cases.size, s"$name has duplicate case ids")
+    val caseById = cases.toMap
+    val trials = jsonLines(dir.resolve("scores.jsonl")).map { score =>
+      val id = jsonString(score, "trial_id")
+      val c = caseById.getOrElse(id, throw IllegalArgumentException(s"$name score $id has no saved case"))
+      require(jsonString(score, "family_id") == jsonString(c, "familyId"), s"$name family mismatch for $id")
+      val evaluable = jsonBool(score, "model_evaluable")
+      val correct = jsonBool(score, "strict_correct")
+      require(!correct || evaluable, s"$name correct trial must be evaluable: $id")
+      require(!jsonBool(score, "infrastructure_missing") || !evaluable, s"$name infrastructure-missing trial cannot be evaluable: $id")
+      val outcome = jsonString(score, "outcome")
+      val firstError = jsonOptionalString(score, "parse_error_code").getOrElse(outcome)
+      P3Trial(id, jsonString(c, "familyId"), jsonString(c, "task"), jsonString(c, "view"), jsonString(c, "style"),
+        jsonString(c, "lexicalRegime"), jsonNumber(c, "depth"), jsonNumber(c, "filler"), evaluable, correct, outcome, firstError)
+    }
+    require(trials.size == cases.size, s"$name must grade every saved case exactly once")
+    P3Run(name, trials, readCsv(dir.resolve("summary.csv")), readCsv(dir.resolve("errors.csv")), protocol)
+
+  private def jsonLines(path: Path): Vector[String] =
+    Files.readString(path, UTF_8).split("\n").toVector.map(_.stripSuffix("\r")).filter(_.nonEmpty)
+  /** Narrow extraction from saved flat JSON lines whose string values contain no escapes. */
+  private def jsonOptionalString(line: String, key: String): Option[String] =
+    val pattern = ("\\\"" + java.util.regex.Pattern.quote(key) + "\\\":\\\"([^\\\"\\\\]*)\\\"").r
+    val found = pattern.findAllMatchIn(line).map(_.group(1)).toVector
+    require(found.size <= 1, s"Ambiguous JSON field $key")
+    found.headOption
+  private def jsonString(line: String, key: String): String =
+    jsonOptionalString(line, key).getOrElse(throw IllegalArgumentException(s"Missing JSON string field $key"))
+  private def jsonNumber(line: String, key: String): String =
+    val pattern = ("\\\"" + java.util.regex.Pattern.quote(key) + "\\\":(0|[1-9][0-9]*)(?=[,}])").r
+    val found = pattern.findAllMatchIn(line).map(_.group(1)).toVector
+    require(found.size == 1, s"Expected exactly one JSON integer field $key")
+    found.head
+  private def jsonBool(line: String, key: String): Boolean =
+    val pattern = ("\\\"" + java.util.regex.Pattern.quote(key) + "\\\":(true|false)(?=[,}])").r
+    val found = pattern.findAllMatchIn(line).map(_.group(1)).toVector
+    require(found.size == 1, s"Expected exactly one JSON boolean field $key")
+    found.head == "true"
 
   /** A heartbeat records operational progress only; it is never a grading/statistics input. */
   private def readP2ExecutionSnapshot(root: Path): Option[ExecutionSnapshot] =
@@ -439,7 +562,7 @@ object HtmlReport:
     require(values.size == 1, s"Expected exactly one protocol string field $key")
     values.head
 
-  private def render(pilot: Run, main: Run, p2: Option[Run], p2Execution: Option[ExecutionSnapshot], hashes: Vector[(String, String)],
+  private def render(pilot: Run, main: Run, p2: Option[Run], p2Execution: Option[ExecutionSnapshot], p3: Option[Vector[P3Run]], hashes: Vector[(String, String)],
     fingerprint: String, input: Path, p2Verified: Boolean, workflowUrl: Option[String], p2MockVerified: Boolean): String =
     val named = pilot.wholeStyle("ast_to_source", "complete", "named_end")
     val typed = pilot.wholeStyle("ast_to_source", "complete", "typed_end")
@@ -601,6 +724,114 @@ object HtmlReport:
       s"<tr><th scope=\"row\">${h(name)}</th><td><code>${h(protocolScalar(run.protocol, "protocolHash"))}</code></td>" +
         s"<td><code>${h(protocolScalar(run.protocol, "sourceHash"))}</code></td><td>${source(run.name, "protocol.json", "protocol.json")}</td></tr>"
     }.mkString
+    def p3RunTitle(name: String): String = name match
+      case "p3a" => "P3a exploratory pilot · closer locality"
+      case "p3b-fq" => "P3b exploratory pilot · import fq"
+      case "p3b-short" => "P3b exploratory pilot · import short"
+    val p3ProtocolRows = p3.map(_.map { run =>
+      s"<tr><th scope=\"row\">${h(p3RunTitle(run.name))}</th><td><code>${h(protocolScalar(run.protocol, "protocolHash"))}</code></td>" +
+        s"<td><code>${h(protocolScalar(run.protocol, "sourceHash"))}</code></td><td>${source(run.name, "protocol.json", "protocol.json")}</td></tr>"
+    }.mkString).getOrElse("")
+    def p3Cell(count: (Long, Long)): String = s"${count._1}/${count._2}"
+    def p3GridHeader(first: String): String =
+      s"<thead><tr><th scope=\"col\" rowspan=\"2\">${h(first)}</th>" +
+        p3Depths.map(d => s"<th scope=\"colgroup\" colspan=\"${p3Fillers.size}\">深さ $d</th>").mkString + "</tr><tr>" +
+        p3Depths.flatMap(_ => p3Fillers.map(f => s"<th scope=\"col\">filler $f</th>")).mkString + "</tr></thead>"
+    def p3Grid(run: P3Run, rows: Vector[(String, String, String, String)], first: String, title: String): String =
+      val body = rows.map { (label, task, view, style) =>
+        val cells = p3Depths.flatMap(d => p3Fillers.map(f =>
+          s"<td${if f == p3Fillers.last && d != p3Depths.head then " class=\"focus-cell\"" else ""}>${p3Cell(run.count(task, view, style, d, f))}</td>")).mkString
+        s"<tr><th scope=\"row\">${h(label)}</th>$cells</tr>"
+      }.mkString
+      s"<div class=\"table-scroll\"><table><caption>${h(title)}</caption>${p3GridHeader(first)}<tbody>$body</tbody></table></div>"
+    def p3ViewLabel(task: String, view: String): String = s"$task / $view"
+    val p3Reslice = styles.map { style =>
+      val cells = Vector("0", "8", "32").map { filler =>
+        val found = pilot.leaves.filter(r => r("task") == "ast_to_source" && r("view") == "complete" && r("style") == style &&
+          r("depth") == "8" && r("filler") == filler)
+        require(found.nonEmpty, s"Missing saved P1 depth-8 filler-$filler cell for $style")
+        s"${found.map(_.number("correct")).sum}/${found.map(_.number("model_evaluable")).sum}"
+      }
+      s"${labels(style).take(1)} ${cells.mkString(" / ")}"
+    }.mkString("、")
+    val p3Section = p3.map { runs =>
+      val (p3a, fq, short) = (runs(0), runs(1), runs(2))
+      def styleRows(run: P3Run): String = run.styles.map { style =>
+        val row = run.wholeStyle("ast_to_source", "complete", style)
+        val errors = run.firstErrors("ast_to_source", "complete", style).map((code, n) => s"<code>${h(code)}</code> $n").mkString("、")
+        s"<tr${if style == "named_end" then " class=\"named-row\"" else ""}><th scope=\"row\">${h(p3Labels(style))}</th>" +
+          s"<td>${row.number("correct")}/${row.number("model_evaluable")}</td><td>${percent(row.number("correct"), row.number("model_evaluable"))}</td>" +
+          s"<td>${row.number("invalid_generated_syntax")}</td><td>${row.number("valid_syntax_wrong_ast")}</td><td>${if errors.isEmpty then "—" else errors}</td></tr>"
+      }.mkString
+      val p3aTable = "<div class=\"table-scroll\"><table><caption>P3a · ast_to_source / complete · 各表記72応答、36 structural families、natural + nonce</caption>" +
+        "<thead><tr><th scope=\"col\">表記</th><th scope=\"col\">正解 / 評価可能</th><th scope=\"col\">厳密正解率</th><th scope=\"col\">構文不成立</th>" +
+        "<th scope=\"col\">構文成立・AST不一致</th><th scope=\"col\">最初のparser error / outcome の内訳（不正解のみ）</th></tr></thead>" +
+        s"<tbody>${styleRows(p3a)}</tbody></table></div>"
+      val p3aGrid = p3Grid(p3a, p3a.styles.map(s => (p3Labels(s), "ast_to_source", "complete", s)), "表記",
+        "P3a · 表記 × 深さ × filler の厳密生成正解 / 評価可能 · 各セル8応答（4 family × natural/nonce）")
+      val totalsRows = p3Views.map { (task, view) =>
+        val a = fq.count(task, view, "named_end")
+        val b = short.count(task, view, "named_end")
+        s"<tr><th scope=\"row\">${h(p3ViewLabel(task, view))}</th><td>${p3Cell(a)}</td><td>${percent(a._1, a._2)}</td>" +
+          s"<td>${p3Cell(b)}</td><td>${percent(b._1, b._2)}</td></tr>"
+      }.mkString
+      val totalsTable = "<div class=\"table-scroll\"><table><caption>P3b · 課題・観測位置別の厳密正解 · named_end固定、同一72 family、各セル72応答</caption>" +
+        "<thead><tr><th scope=\"col\">課題 / 観測位置</th><th scope=\"col\">fq 正解 / 評価可能</th><th scope=\"col\">fq 正解率</th>" +
+        s"<th scope=\"col\">short 正解 / 評価可能</th><th scope=\"col\">short 正解率</th></tr></thead><tbody>$totalsRows</tbody></table></div>"
+      def pairKey(t: P3Trial): (String, String, String, String) = (t.familyId, t.task, t.view, t.lexicalRegime)
+      val shortByKey = short.trials.groupBy(pairKey)
+      require(shortByKey.values.forall(_.size == 1) && fq.trials.groupBy(pairKey).values.forall(_.size == 1), "P3b pairing requires one trial per family/task/view/regime")
+      val pairedRows = p3Views.map { (task, view) =>
+        val pairs = fq.trials.filter(t => t.task == task && t.view == view).map { t =>
+          val partner = shortByKey.getOrElse(pairKey(t), throw IllegalArgumentException(s"Unpaired P3b trial ${t.id}")).head
+          (t, partner)
+        }.filter((a, b) => a.evaluable && b.evaluable)
+        val both = pairs.count((a, b) => a.correct && b.correct)
+        val fqOnly = pairs.count((a, b) => a.correct && !b.correct)
+        val shortOnly = pairs.count((a, b) => !a.correct && b.correct)
+        val neither = pairs.count((a, b) => !a.correct && !b.correct)
+        s"<tr><th scope=\"row\">${h(p3ViewLabel(task, view))}</th><td>${pairs.size}</td><td>$both</td><td>$fqOnly</td><td>$shortOnly</td><td>$neither</td>" +
+          s"<td>${if fqOnly >= shortOnly then "+" else ""}${fqOnly - shortOnly}</td></tr>"
+      }.mkString
+      val pairedTable = "<div class=\"table-scroll\"><table><caption>P3b · 対応付き不一致表 · family × 課題 × 観測位置 × 語彙で対にした評価可能ペア</caption>" +
+        "<thead><tr><th scope=\"col\">課題 / 観測位置</th><th scope=\"col\">対</th><th scope=\"col\">両方正解</th><th scope=\"col\">fqのみ正解</th>" +
+        s"<th scope=\"col\">shortのみ正解</th><th scope=\"col\">両方不正解</th><th scope=\"col\">正解数の差（fq−short）</th></tr></thead><tbody>$pairedRows</tbody></table></div>"
+      val viewRows = p3Views.map((task, view) => (p3ViewLabel(task, view), task, view, "named_end"))
+      val fqGrid = p3Grid(fq, viewRows, "課題 / 観測位置", "P3b fq（import n_a.n_b.n_c）· 深さ × filler の厳密正解 / 評価可能 · 各セル8応答")
+      val shortGrid = p3Grid(short, viewRows, "課題 / 観測位置", "P3b short（import n_c）· 深さ × filler の厳密正解 / 評価可能 · 各セル8応答")
+      def whole(run: P3Run, style: String): Long = run.wholeStyle("ast_to_source", "complete", style).number("correct")
+      def runFacts(run: P3Run): String =
+        s"計画 ${comma(run.total.number("planned"))}、処置保存 ${comma(run.total.number("terminal"))}、評価可能 ${comma(run.total.number("model_evaluable"))}、" +
+          s"正解 ${comma(run.total.number("correct"))}、infrastructure missing ${comma(run.total.number("infrastructure_missing"))}、" +
+          s"既知使用量 ${comma(run.total.number("unique_total_tokens_known"))} tokens"
+      val errorLine = p3a.styles.map { style =>
+        val top = p3a.firstErrors("ast_to_source", "complete", style).headOption.map((code, n) => s"<code>${h(code)}</code> ${n}件").getOrElse("不正解なし")
+        s"${h(p3Labels(style).take(1))}は$top"
+      }.mkString("、")
+      s"""<section id="p3">
+<p class="section-label">P3 / SHORT-DISTANCE DEPENDENCIES</p><h2>P3：依存を短くした閉じ方と、importの修飾。</h2>
+<aside class="callout"><strong>探索的pilot。</strong>1 replicate、凍結済みのconfirmatory計画なし、CIは計算しない。以下の差はすべて記述的な観測で、仮説の支持を主張しない。P1・main・P2とは別のソース・別のprotocolで、プールしない。</aside>
+<p>動機は、公開済みP1 pilotデータの再集計。深さ8に限ると、filler 0/8/32で各表記の厳密正解はほぼ平坦（${p3Reslice}、各8応答）で、表記を分けているのはopenerとcloserの線形距離ではなく、同時に開いているブロックの数に見える。P3はこの二つの軸を分けて動かし、閉じる依存が本当に局所的な文法を加える。</p>
+<p>実装は分離worktree <code>p3-short-dependency</code>（source hash <code>${h(p3SourceHash)}</code>）。公開リポジトリのルートの <code>bench/</code> / <code>llm-core/</code> にはP3のコードは含まれず、runを生成した正確なソースは ${link("supporting/p3-source/README.md", "p3-source snapshot")} に別途保存する。${link("docs/p3-short-dependency-design.md", "P3設計")} / ${link("p3-preflight/capabilities.json", "preflight能力確認")}。</p>
+<h3>P3a：閉じ構文の局所性。</h3>
+<p>同じAST・名前・値・例・語彙対応で、閉じ方だけを4通りにする。B <code>end</code>（共通の終端）、D <code>end KIND NAME</code>（遠いopenerの種類と名前を写す）、G <code>end K</code>（Kは閉じるブロックのネスト深さ。直前の行の深さだけで書ける）、F 閉じ行なしの2スペースindent（直前の行のindentだけで書ける。Python風で事前学習の交絡あり）。課題は <code>ast_to_source</code> のみ、深さ4/8/16 × filler 0/32/128、36 structural families、natural + nonce、各表記72応答。${runFacts(p3a)}。</p>
+$p3aTable
+<p>${errorLine}。局所的な手掛かりだけのGは、このpilotではDに届かなかった。Fは高いがDも超えない。</p>
+$p3aGrid
+<p>深さ8以上ではfiller 128がD/G/Fを下げる（深さ8・filler 128でD ${p3Cell(p3a.count("ast_to_source", "complete", "named_end", "8", "128"))}、G ${p3Cell(p3a.count("ast_to_source", "complete", "depth_end", "8", "128"))}、F ${p3Cell(p3a.count("ast_to_source", "complete", "indent", "8", "128"))}）。filler 32以下のP1では見えなかった線形距離の効果が、より長いfillerでは現れる。Bは深さ8以上でほぼ全滅する。</p>
+<h3>P3b：importの修飾。</h3>
+<p>言語に <code>import</code> を加える。閉じ終わったモジュール（ブロック）の直接の束縛を現在のスコープに持ち込み、変数は自分の <code>let</code>、次にimport（後のimportが勝つ）、次に外側のスコープの順で解決する。両oracleは独立に実装。閉じ方はDに固定し、同一の72 familyで修飾だけを変える：<code>fq</code> は <code>import n_a.n_b.n_c</code>（祖先の全path）、<code>short</code> は <code>import n_c</code>（モジュール名のみ）。課題は <code>scope_lookup</code>（before_close / after_close）と <code>ast_to_source</code>。fq: ${runFacts(fq)}。short: ${runFacts(short)}。</p>
+$totalsTable
+$pairedTable
+<p>対はfamily・課題・観測位置・語彙で一意に取れる。before_closeは両runとも全正解で差がない。after_closeとast_to_sourceではfqが上回るが、不一致の件数は小さく、1 replicateの記述的な差として読む。</p>
+$fqGrid
+$shortGrid
+<p>このpilotで最も高かったのは、冗長で明示的な情報を持つ条件（D、fq）だった。短距離の手掛かりだけ（G）はDに届かず、importでも自己完結したfull pathのほうが高い。これは「依存が短ければ有利」という仮説をそのまま支持する結果ではなく、別の凍結計画と独立holdoutで確かめる必要がある。${source("p3a", "report.md", "P3a report")} / ${source("p3a", "summary.csv", "summary.csv")} / ${source("p3a", "scores.jsonl", "scores.jsonl")} / ${source("p3a", "cases.jsonl", "cases.jsonl")} / ${source("p3b-fq", "report.md", "P3b fq report")} / ${source("p3b-short", "report.md", "P3b short report")} / ${link("supporting/p3a-pilot.json", "P3a config")} / ${link("supporting/p3b-fq-pilot.json", "fq config")} / ${link("supporting/p3b-short-pilot.json", "short config")}。</p>
+</section>"""
+    }.getOrElse("""<section id="p3">
+<p class="section-label">P3 / SHORT-DISTANCE DEPENDENCIES</p><h2>P3：依存を短くした閉じ方と、importの修飾。</h2>
+<p>公開資料にP3の保存済み採点結果（p3a / p3b-fq / p3b-short）がないため、P3の成績を表示しない。</p>
+</section>""")
     val promptLink = "supporting/pilot-named-end-ast-to-source-prompt.txt"
     val prompt =
       if Files.isRegularFile(input.resolve(promptLink)) then
@@ -661,7 +892,7 @@ object HtmlReport:
 <div class="hero-facts"><div><span class="big">${typed.number("correct")} / ${typed.number("model_evaluable")}</span><span>P1 · C：種類付き終端<br>${percent(typed.number("correct"), typed.number("model_evaluable"))} 厳密生成正解</span></div><div><span class="big">${named.number("correct")} / ${named.number("model_evaluable")}</span><span>P1 · D：種類＋名前付き終端<br>${percent(named.number("correct"), named.number("model_evaluable"))} 厳密生成正解</span></div><div><span class="big">${generic.number("correct")} / ${generic.number("model_evaluable")}</span><span>P1 · B：共通の end<br>${percent(generic.number("correct"), generic.number("model_evaluable"))} 厳密生成正解</span></div></div>
 <p class="hero-source">出典: ${source("pilot", "summary.csv", "P1の保存済みsummary.csv")}。生成結果は探索的pilotの有限の観測。モデル内部の依存長は測っていない。</p>
 </div></header>
-<nav aria-label="レポートの章"><div class="wrap"><a href="#question">問いと仮説</a><a href="#syntax">比較する閉じ方</a><a href="#method">生成の採点</a><a href="#results">生成結果</a><a href="#interpretation">解釈と限界</a><a href="#adjunct">補助実験</a><a href="#status">状態と資料</a></div></nav>
+<nav aria-label="レポートの章"><div class="wrap"><a href="#question">問いと仮説</a><a href="#syntax">比較する閉じ方</a><a href="#method">生成の採点</a><a href="#results">生成結果</a><a href="#interpretation">解釈と限界</a><a href="#p3">P3 短距離依存</a><a href="#adjunct">補助実験</a><a href="#status">状態と資料</a></div></nav>
 <main class="wrap">
 $interruptionNotice
 <section id="question">
@@ -721,6 +952,7 @@ $p2Generation
 <p>測定対象は、明示された文法と固定8例の下での<strong>全文AST一致</strong>。構造に加えて識別子や値のコピーも含むため、純粋な閉じ括弧処理だけの指標ではない。有限のdepth/filler、固定語彙、単一モデルと設定に条件づけられ、任意の未知言語へ一般化した結論ではない。</p>
 <p>P1生成差は探索的で、旧reading mainの事前固定主仮説とは別。P2も別の探索的pilotとして扱う。生成についてconfirmatoryな判断を得るには、生成を主目的にした新しい固定計画と独立holdoutが必要になる。既存の凍結済み計画を読み替えない。</p>
 </section>
+$p3Section
 <section id="adjunct">
 <p class="section-label">06 / ADJUNCT TASKS</p><h2>全文parsingと読み取りは、生成を補足する別の結果。</h2>
 <h3>全文parsing：生成したい木を、読んで復元できるか。</h3>
@@ -744,7 +976,7 @@ ${detail("P2 mockの配線検証の詳細", if p2MockVerified then s"<p><code>sy
 <section id="artifacts">
 <p class="section-label">APPENDIX / ARTIFACTS</p><h2>数値から、保存資料へ戻れる。</h2>
 <p>HTMLは保存済みScala採点・統計成果物だけから生成する。再採点、再bootstrap、API接続は行わない。部分群の割合はCSVの正解数と評価可能数の比で、CIは <code>paired-comparisons.csv</code> からコピーする。以下は実際にコピーした各ファイルのSHA-256。</p>
-<div class="table-scroll"><table class="protocol-table"><caption>別々に保持するprotocolとsource</caption><thead><tr><th scope="col">実験</th><th scope="col">Protocol hash</th><th scope="col">Source hash</th><th scope="col">Download</th></tr></thead><tbody>$protocolRows</tbody></table></div>
+<div class="table-scroll"><table class="protocol-table"><caption>別々に保持するprotocolとsource</caption><thead><tr><th scope="col">実験</th><th scope="col">Protocol hash</th><th scope="col">Source hash</th><th scope="col">Download</th></tr></thead><tbody>$protocolRows$p3ProtocolRows</tbody></table></div>
 <p>Pilot v1は完全なcanonical logical requestを保存したが、transport wireのJSON key orderをbyte-for-byteでは記録していない。再構成したbodyを当時のraw wireとは呼ばない。元のsource・採点・応答を維持し、変更後のmain/P2と統合しない。${link("docs/pilot-interpretation.md", "provenanceの説明")}</p>
 ${detail("公開資料のハッシュとダウンロード", s"<div class=\"table-scroll\"><table class=\"artifact-table\"><caption>Public input artifacts / SHA-256</caption><thead><tr><th scope=\"col\">File</th><th scope=\"col\">SHA-256</th></tr></thead><tbody>$artifacts</tbody></table></div>")}
 <p class="muted">Input manifest SHA-256: <code class="hash">$fingerprint</code>。HTMLは外部asset・analytics・秘密鍵・ローカル絶対パスを含まない。</p>

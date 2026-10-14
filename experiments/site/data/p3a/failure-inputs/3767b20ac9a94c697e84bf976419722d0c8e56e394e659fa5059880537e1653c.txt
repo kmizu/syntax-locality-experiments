@@ -1,0 +1,533 @@
+Follow the task and return only the requested answer, without explanation or Markdown fences.
+Translate the neutral AST table into a complete program in the following scope language.
+Every block, regardless of its kind, creates a local scope.
+ROOT is the implicit global scope and produces no source line. SCOPE opens a block and must be closed after its children.
+LET binds its variable to its value. NOP produces a no-effect statement with its payload.
+Each node's parent identifies its containing body. The order field gives the statement order within that body.
+Rows are in parent-before-child order; their presentation order does not give statement order.
+Node IDs are references for the table only and must not appear in source.
+Use the grammar's keywords for the table's semantic kinds unit, func, and area.
+Return only the complete program, without Markdown fences or explanation.
+
+SYNTAX
+The kind keywords are xaru for unit, telo for func, and gupi for area. Each creates a local scope.
+Open a block with KIND NAME on one line.
+Close the innermost open block with nix KIND NAME on one line. KIND and NAME must repeat that block's opening keyword and name.
+KIND is one of xaru, telo, gupi; NAME is n_ followed by exactly eight lowercase letters and is unique in the program.
+A binding statement (let) is sem VARIABLE VALUE. VARIABLE is x_ followed by one letter a through f; VALUE is a four digit integer from 1000 through 9999.
+Within one scope a variable is bound at most once. Inner bindings hide outer bindings until their scope closes.
+A no-effect statement (nop) is bov PAYLOAD. PAYLOAD is p_ followed by eight lowercase letters.
+The observation marker is probe PROBE_ID VARIABLE. PROBE_ID is q_ followed by eight lowercase letters.
+Use one statement per line. Indentation has no meaning; scope is determined solely by explicit opening and closing lines.
+
+EXAMPLES
+Example 1
+AST table:
+node	parent	order	tag	kind	name	variable	value	payload
+d_ygkbjtiizwiz	-	0	ROOT	-	-	-	-	-
+d_ioxidbxkwavg	d_ygkbjtiizwiz	3	SCOPE	func	n_pvasduls	-	-	-
+d_ezpvatoznsnj	d_ygkbjtiizwiz	2	SCOPE	unit	n_sjzfpnsg	-	-	-
+d_nqarxjmjnoda	d_ygkbjtiizwiz	1	LET	-	-	x_a	8455	-
+d_lkyluvhygbwg	d_ioxidbxkwavg	1	SCOPE	area	n_oqhfrkbf	-	-	-
+d_ymqvznahvpox	d_lkyluvhygbwg	0	LET	-	-	x_a	7922	-
+d_dzejrrjruttm	d_ezpvatoznsnj	1	NOP	-	-	-	-	p_nwwqezma
+d_mhoprnhyrulc	d_ioxidbxkwavg	0	LET	-	-	x_a	4128	-
+d_krrzmxuttrpx	d_ioxidbxkwavg	2	SCOPE	area	n_hehsgesn	-	-	-
+d_fhbxtuumipuq	d_ygkbjtiizwiz	0	LET	-	-	x_b	6980	-
+d_gsahkufqisrh	d_ezpvatoznsnj	0	LET	-	-	x_a	4969	-
+d_yudqiujtgbvs	d_krrzmxuttrpx	0	LET	-	-	x_a	9296	-
+d_qdkyqxdblvxm	d_lkyluvhygbwg	1	NOP	-	-	-	-	p_uanvnwgz
+Program:
+sem x_b 6980
+sem x_a 8455
+xaru n_sjzfpnsg
+sem x_a 4969
+bov p_nwwqezma
+nix xaru n_sjzfpnsg
+telo n_pvasduls
+sem x_a 4128
+gupi n_oqhfrkbf
+sem x_a 7922
+bov p_uanvnwgz
+nix gupi n_oqhfrkbf
+gupi n_hehsgesn
+sem x_a 9296
+nix gupi n_hehsgesn
+nix telo n_pvasduls
+
+Example 2
+AST table:
+node	parent	order	tag	kind	name	variable	value	payload
+d_tbhachqjzsff	-	0	ROOT	-	-	-	-	-
+d_hmplcrubibtr	d_tbhachqjzsff	2	SCOPE	unit	n_afrpibuu	-	-	-
+d_tewryulaqzdg	d_hmplcrubibtr	0	LET	-	-	x_a	3051	-
+d_peralhhhknhf	d_hmplcrubibtr	1	NOP	-	-	-	-	p_goaoquwu
+d_aaseuziobdjo	d_tbhachqjzsff	0	LET	-	-	x_b	4880	-
+d_rnxqnyuweiep	d_tbhachqjzsff	3	SCOPE	func	n_ttisreah	-	-	-
+d_kcbcwbpvvlqm	d_rnxqnyuweiep	0	SCOPE	area	n_ufpjtuhq	-	-	-
+d_fvhwurmqlkoi	d_tbhachqjzsff	1	LET	-	-	x_a	8839	-
+d_hvxtesjnjjvo	d_kcbcwbpvvlqm	0	LET	-	-	x_a	1550	-
+d_zlhrgkuhmlot	d_rnxqnyuweiep	1	SCOPE	unit	n_nsxdygfv	-	-	-
+d_hryflnykxgro	d_zlhrgkuhmlot	1	SCOPE	area	n_wvdnctcm	-	-	-
+d_tyimmkpirgfa	d_hryflnykxgro	1	NOP	-	-	-	-	p_dsqlxviz
+d_bnvwafomfrpd	d_kcbcwbpvvlqm	1	NOP	-	-	-	-	p_ujiipruz
+d_dprhdcjytcmx	d_zlhrgkuhmlot	0	LET	-	-	x_a	6716	-
+d_fspvollabuac	d_hryflnykxgro	0	LET	-	-	x_a	7218	-
+Program:
+sem x_b 4880
+sem x_a 8839
+xaru n_afrpibuu
+sem x_a 3051
+bov p_goaoquwu
+nix xaru n_afrpibuu
+telo n_ttisreah
+gupi n_ufpjtuhq
+sem x_a 1550
+bov p_ujiipruz
+nix gupi n_ufpjtuhq
+xaru n_nsxdygfv
+sem x_a 6716
+gupi n_wvdnctcm
+sem x_a 7218
+bov p_dsqlxviz
+nix gupi n_wvdnctcm
+nix xaru n_nsxdygfv
+nix telo n_ttisreah
+
+Example 3
+AST table:
+node	parent	order	tag	kind	name	variable	value	payload
+d_sfdnrxdrzmcg	-	0	ROOT	-	-	-	-	-
+d_azphcrzhscpv	d_sfdnrxdrzmcg	0	LET	-	-	x_b	8820	-
+d_maamivmhdkxb	d_sfdnrxdrzmcg	1	LET	-	-	x_a	4516	-
+d_tnhxvoiddigb	d_sfdnrxdrzmcg	3	SCOPE	unit	n_nytrzfhh	-	-	-
+d_qfnabwfaxbmt	d_tnhxvoiddigb	2	SCOPE	func	n_zpizzkao	-	-	-
+d_svydqalyehac	d_qfnabwfaxbmt	1	SCOPE	area	n_bhlnrvgk	-	-	-
+d_dccfuxabbdhl	d_tnhxvoiddigb	1	SCOPE	unit	n_gyqxcpqr	-	-	-
+d_qzhercuocvzl	d_sfdnrxdrzmcg	2	SCOPE	func	n_zuoroqts	-	-	-
+d_dfdjgmoklniz	d_qzhercuocvzl	0	LET	-	-	x_a	1322	-
+d_uwcjfcvfkmwl	d_svydqalyehac	0	LET	-	-	x_a	3422	-
+d_njixcdjzbztx	d_qfnabwfaxbmt	0	LET	-	-	x_a	8791	-
+d_zvbyyqnwvgif	d_qzhercuocvzl	1	NOP	-	-	-	-	p_hxradulj
+d_cnbfhxjyrwqy	d_tnhxvoiddigb	0	LET	-	-	x_a	7609	-
+d_iqjjdmcnciwa	d_dccfuxabbdhl	0	LET	-	-	x_a	5217	-
+d_qqdhfvtefggr	d_dccfuxabbdhl	1	NOP	-	-	-	-	p_uanmwxmk
+d_lifcucdsquxi	d_svydqalyehac	1	SCOPE	unit	n_arndrvra	-	-	-
+d_svnkttrgmjop	d_lifcucdsquxi	0	LET	-	-	x_a	2028	-
+d_ablbbcmhmkmc	d_lifcucdsquxi	1	NOP	-	-	-	-	p_zzcivnag
+d_xkyhuapwrzto	d_lifcucdsquxi	2	NOP	-	-	-	-	p_jxmklltf
+Program:
+sem x_b 8820
+sem x_a 4516
+telo n_zuoroqts
+sem x_a 1322
+bov p_hxradulj
+nix telo n_zuoroqts
+xaru n_nytrzfhh
+sem x_a 7609
+xaru n_gyqxcpqr
+sem x_a 5217
+bov p_uanmwxmk
+nix xaru n_gyqxcpqr
+telo n_zpizzkao
+sem x_a 8791
+gupi n_bhlnrvgk
+sem x_a 3422
+xaru n_arndrvra
+sem x_a 2028
+bov p_zzcivnag
+bov p_jxmklltf
+nix xaru n_arndrvra
+nix gupi n_bhlnrvgk
+nix telo n_zpizzkao
+nix xaru n_nytrzfhh
+
+Example 4
+AST table:
+node	parent	order	tag	kind	name	variable	value	payload
+d_ajdytlerxrvh	-	0	ROOT	-	-	-	-	-
+d_enhokmtrkagl	d_ajdytlerxrvh	0	LET	-	-	x_b	9336	-
+d_iqsvbgfgxnvq	d_ajdytlerxrvh	1	LET	-	-	x_a	6621	-
+d_vnyzhgfwpqao	d_ajdytlerxrvh	2	SCOPE	area	n_jrnyvcbn	-	-	-
+d_qcbkawsypkqy	d_vnyzhgfwpqao	1	NOP	-	-	-	-	p_kurgofbv
+d_diipbdroesug	d_vnyzhgfwpqao	0	LET	-	-	x_a	9639	-
+d_lbjbzlvvdmvl	d_ajdytlerxrvh	3	SCOPE	unit	n_evyxvwhe	-	-	-
+d_nsqngpwwmqwd	d_lbjbzlvvdmvl	1	SCOPE	area	n_lqpwxgod	-	-	-
+d_erbmvpubcysr	d_nsqngpwwmqwd	0	LET	-	-	x_a	9687	-
+d_kopknegkuchp	d_lbjbzlvvdmvl	0	SCOPE	unit	n_unprvats	-	-	-
+d_ubwxsehfinzm	d_nsqngpwwmqwd	2	NOP	-	-	-	-	p_yemvcztb
+d_jzefponoqake	d_nsqngpwwmqwd	1	NOP	-	-	-	-	p_beoxayra
+d_ohbryxqwqoyw	d_kopknegkuchp	1	NOP	-	-	-	-	p_iywhinbe
+d_wlbesgmohotx	d_nsqngpwwmqwd	3	NOP	-	-	-	-	p_awcjswhh
+d_oxbnyyodydjz	d_kopknegkuchp	0	LET	-	-	x_a	1685	-
+Program:
+sem x_b 9336
+sem x_a 6621
+gupi n_jrnyvcbn
+sem x_a 9639
+bov p_kurgofbv
+nix gupi n_jrnyvcbn
+xaru n_evyxvwhe
+xaru n_unprvats
+sem x_a 1685
+bov p_iywhinbe
+nix xaru n_unprvats
+gupi n_lqpwxgod
+sem x_a 9687
+bov p_beoxayra
+bov p_yemvcztb
+bov p_awcjswhh
+nix gupi n_lqpwxgod
+nix xaru n_evyxvwhe
+
+Example 5
+AST table:
+node	parent	order	tag	kind	name	variable	value	payload
+d_tzqycsfvmdkq	-	0	ROOT	-	-	-	-	-
+d_qchufvkcdqbg	d_tzqycsfvmdkq	3	SCOPE	func	n_ygelscxf	-	-	-
+d_vixhnffaijvp	d_qchufvkcdqbg	2	SCOPE	func	n_bpiwxjkz	-	-	-
+d_rzmrocotcfno	d_tzqycsfvmdkq	2	SCOPE	func	n_akzsaxcp	-	-	-
+d_wligxqyfmtjj	d_vixhnffaijvp	1	SCOPE	area	n_mwszpoep	-	-	-
+d_zwvjaidogaaf	d_wligxqyfmtjj	1	NOP	-	-	-	-	p_pnnscrcg
+d_kvpcudmylfnh	d_rzmrocotcfno	0	LET	-	-	x_a	8921	-
+d_rtzlivgkrxew	d_tzqycsfvmdkq	1	LET	-	-	x_a	9512	-
+d_wxyfesfmxiap	d_tzqycsfvmdkq	0	LET	-	-	x_b	2208	-
+d_bjhiwyfgqmky	d_vixhnffaijvp	0	LET	-	-	x_a	6590	-
+d_ayrdcmkbsnsz	d_qchufvkcdqbg	0	LET	-	-	x_a	9314	-
+d_ojecamdmvrav	d_wligxqyfmtjj	0	LET	-	-	x_a	6543	-
+d_oexavkledlmw	d_wligxqyfmtjj	2	NOP	-	-	-	-	p_qcwqgkvx
+d_boanbaizuidl	d_wligxqyfmtjj	4	NOP	-	-	-	-	p_tahgtzji
+d_uwznskbpiops	d_rzmrocotcfno	1	NOP	-	-	-	-	p_iforvxqc
+d_sgtrtoexbbmb	d_qchufvkcdqbg	1	SCOPE	unit	n_jodvpjnh	-	-	-
+d_bjybpugodywr	d_sgtrtoexbbmb	0	LET	-	-	x_a	9252	-
+d_swnjqjwiawmc	d_sgtrtoexbbmb	1	NOP	-	-	-	-	p_zvfixjim
+d_kohlagjvpvex	d_wligxqyfmtjj	3	NOP	-	-	-	-	p_kvfkjyqe
+Program:
+sem x_b 2208
+sem x_a 9512
+telo n_akzsaxcp
+sem x_a 8921
+bov p_iforvxqc
+nix telo n_akzsaxcp
+telo n_ygelscxf
+sem x_a 9314
+xaru n_jodvpjnh
+sem x_a 9252
+bov p_zvfixjim
+nix xaru n_jodvpjnh
+telo n_bpiwxjkz
+sem x_a 6590
+gupi n_mwszpoep
+sem x_a 6543
+bov p_pnnscrcg
+bov p_qcwqgkvx
+bov p_kvfkjyqe
+bov p_tahgtzji
+nix gupi n_mwszpoep
+nix telo n_bpiwxjkz
+nix telo n_ygelscxf
+
+Example 6
+AST table:
+node	parent	order	tag	kind	name	variable	value	payload
+d_zvknrrxaafqh	-	0	ROOT	-	-	-	-	-
+d_smgoawbuiuwx	d_zvknrrxaafqh	3	SCOPE	area	n_githtwlq	-	-	-
+d_mrgnwfjecyzh	d_zvknrrxaafqh	0	LET	-	-	x_b	5882	-
+d_dvddwczaqesp	d_smgoawbuiuwx	1	SCOPE	func	n_ubbgctvl	-	-	-
+d_gvvhoocwrhkd	d_zvknrrxaafqh	2	SCOPE	area	n_urjuzfgm	-	-	-
+d_suffanooeejq	d_smgoawbuiuwx	0	LET	-	-	x_a	4431	-
+d_tnfctvcaixgy	d_smgoawbuiuwx	2	SCOPE	unit	n_nkspyjqb	-	-	-
+d_rjltfvbejvqb	d_gvvhoocwrhkd	1	NOP	-	-	-	-	p_zzhzwaez
+d_ehningmrwqld	d_dvddwczaqesp	1	NOP	-	-	-	-	p_macoytni
+d_anhwcmanobme	d_gvvhoocwrhkd	0	LET	-	-	x_a	7834	-
+d_aprcxbwnbnmf	d_tnfctvcaixgy	0	SCOPE	area	n_aeyrxgzh	-	-	-
+d_foabavtqghlo	d_zvknrrxaafqh	1	LET	-	-	x_a	9768	-
+d_suvibihcqimx	d_aprcxbwnbnmf	0	LET	-	-	x_a	5890	-
+d_wtqpvohbfgqe	d_dvddwczaqesp	0	LET	-	-	x_a	4719	-
+d_zylhypheqlgv	d_aprcxbwnbnmf	1	SCOPE	func	n_gmyrutmq	-	-	-
+d_obzsmmgilvqw	d_zylhypheqlgv	2	NOP	-	-	-	-	p_rejhuwlo
+d_insjvtvrpkrr	d_zylhypheqlgv	1	NOP	-	-	-	-	p_nqtcymox
+d_amppzsjylcua	d_zylhypheqlgv	5	NOP	-	-	-	-	p_iewriekw
+d_ehowoqvoicoy	d_zylhypheqlgv	0	LET	-	-	x_a	7129	-
+d_epjqpdcuaygs	d_zylhypheqlgv	4	NOP	-	-	-	-	p_duqzhcev
+d_oqzbygkgorak	d_zylhypheqlgv	3	NOP	-	-	-	-	p_gejgclft
+Program:
+sem x_b 5882
+sem x_a 9768
+gupi n_urjuzfgm
+sem x_a 7834
+bov p_zzhzwaez
+nix gupi n_urjuzfgm
+gupi n_githtwlq
+sem x_a 4431
+telo n_ubbgctvl
+sem x_a 4719
+bov p_macoytni
+nix telo n_ubbgctvl
+xaru n_nkspyjqb
+gupi n_aeyrxgzh
+sem x_a 5890
+telo n_gmyrutmq
+sem x_a 7129
+bov p_nqtcymox
+bov p_rejhuwlo
+bov p_gejgclft
+bov p_duqzhcev
+bov p_iewriekw
+nix telo n_gmyrutmq
+nix gupi n_aeyrxgzh
+nix xaru n_nkspyjqb
+nix gupi n_githtwlq
+
+Example 7
+AST table:
+node	parent	order	tag	kind	name	variable	value	payload
+d_yxaqbakowgjj	-	0	ROOT	-	-	-	-	-
+d_wcfbikuctupc	d_yxaqbakowgjj	0	LET	-	-	x_b	2853	-
+d_yoraolqmsqtk	d_yxaqbakowgjj	3	SCOPE	func	n_qrknydvb	-	-	-
+d_mpahmewjxwtx	d_yoraolqmsqtk	1	SCOPE	unit	n_yrieutsk	-	-	-
+d_mlpufucditee	d_yxaqbakowgjj	1	LET	-	-	x_a	7861	-
+d_gjdlatldlfga	d_yxaqbakowgjj	2	SCOPE	area	n_urarjrvv	-	-	-
+d_ogvcdpyullka	d_gjdlatldlfga	1	NOP	-	-	-	-	p_lmmlcmhz
+d_jyliteqkhmis	d_gjdlatldlfga	0	LET	-	-	x_a	3094	-
+d_rrpruzikovpj	d_yoraolqmsqtk	0	LET	-	-	x_a	6005	-
+d_vqagywovqbpp	d_mpahmewjxwtx	0	LET	-	-	x_a	7197	-
+d_zaanfepkctwh	d_mpahmewjxwtx	1	NOP	-	-	-	-	p_pfcbrifg
+d_oljsztpmcrnp	d_yoraolqmsqtk	2	SCOPE	unit	n_jufbqbnf	-	-	-
+d_xilfimwildkf	d_oljsztpmcrnp	6	NOP	-	-	-	-	p_nfijmifm
+d_ebdvhsufylmi	d_oljsztpmcrnp	3	NOP	-	-	-	-	p_spkinadl
+d_xsbcnkopatax	d_oljsztpmcrnp	1	NOP	-	-	-	-	p_kgqfhytx
+d_qvraylqejsjr	d_oljsztpmcrnp	2	NOP	-	-	-	-	p_jizckbfx
+d_icewgbjvvzhq	d_oljsztpmcrnp	4	NOP	-	-	-	-	p_icsxnybc
+d_lvbcgkzeozig	d_oljsztpmcrnp	0	LET	-	-	x_a	9609	-
+d_adcrdaqgtdxm	d_oljsztpmcrnp	5	NOP	-	-	-	-	p_gcyvkhis
+Program:
+sem x_b 2853
+sem x_a 7861
+gupi n_urarjrvv
+sem x_a 3094
+bov p_lmmlcmhz
+nix gupi n_urarjrvv
+telo n_qrknydvb
+sem x_a 6005
+xaru n_yrieutsk
+sem x_a 7197
+bov p_pfcbrifg
+nix xaru n_yrieutsk
+xaru n_jufbqbnf
+sem x_a 9609
+bov p_kgqfhytx
+bov p_jizckbfx
+bov p_spkinadl
+bov p_icsxnybc
+bov p_gcyvkhis
+bov p_nfijmifm
+nix xaru n_jufbqbnf
+nix telo n_qrknydvb
+
+Example 8
+AST table:
+node	parent	order	tag	kind	name	variable	value	payload
+d_idlnlzdficsi	-	0	ROOT	-	-	-	-	-
+d_qbtetvjxcqvx	d_idlnlzdficsi	3	SCOPE	area	n_nknebimi	-	-	-
+d_kczgnlyqkcng	d_qbtetvjxcqvx	0	SCOPE	unit	n_wuxdxrwe	-	-	-
+d_rxnbzvuckbmx	d_kczgnlyqkcng	1	NOP	-	-	-	-	p_rhzzhjqd
+d_pjatddjmivhh	d_idlnlzdficsi	1	LET	-	-	x_a	6879	-
+d_ovilcowetlta	d_idlnlzdficsi	0	LET	-	-	x_b	5214	-
+d_mhbttdkzslyu	d_idlnlzdficsi	2	SCOPE	func	n_gnkkhorl	-	-	-
+d_ibyxfnxpnlev	d_mhbttdkzslyu	0	LET	-	-	x_a	5676	-
+d_kfwjjzmpzade	d_mhbttdkzslyu	1	NOP	-	-	-	-	p_rhgtoosr
+d_jvakvbnkyzkg	d_qbtetvjxcqvx	1	SCOPE	area	n_jhgwzhnr	-	-	-
+d_rdjsqatdzjlw	d_jvakvbnkyzkg	1	SCOPE	unit	n_tqkpgksi	-	-	-
+d_oumoxvbijchi	d_rdjsqatdzjlw	4	NOP	-	-	-	-	p_wlorlcas
+d_goaioxehimvz	d_kczgnlyqkcng	0	LET	-	-	x_a	7036	-
+d_suqrgkykwift	d_rdjsqatdzjlw	6	NOP	-	-	-	-	p_fjvmwznc
+d_yuzrhggzkqxk	d_rdjsqatdzjlw	3	NOP	-	-	-	-	p_ozdqwpla
+d_mmutnsaoxgzb	d_rdjsqatdzjlw	5	NOP	-	-	-	-	p_qnkuqxjr
+d_zijmlcoevzct	d_rdjsqatdzjlw	1	NOP	-	-	-	-	p_rrppsbrt
+d_lnaduchofkle	d_rdjsqatdzjlw	2	NOP	-	-	-	-	p_ndsooalb
+d_bxmuyaaqldlc	d_jvakvbnkyzkg	0	LET	-	-	x_a	5592	-
+d_uakdqxdzfnfd	d_rdjsqatdzjlw	7	NOP	-	-	-	-	p_pwdcwtud
+d_ciahkrrxetor	d_rdjsqatdzjlw	0	LET	-	-	x_a	5231	-
+Program:
+sem x_b 5214
+sem x_a 6879
+telo n_gnkkhorl
+sem x_a 5676
+bov p_rhgtoosr
+nix telo n_gnkkhorl
+gupi n_nknebimi
+xaru n_wuxdxrwe
+sem x_a 7036
+bov p_rhzzhjqd
+nix xaru n_wuxdxrwe
+gupi n_jhgwzhnr
+sem x_a 5592
+xaru n_tqkpgksi
+sem x_a 5231
+bov p_rrppsbrt
+bov p_ndsooalb
+bov p_ozdqwpla
+bov p_wlorlcas
+bov p_qnkuqxjr
+bov p_fjvmwznc
+bov p_pwdcwtud
+nix xaru n_tqkpgksi
+nix gupi n_jhgwzhnr
+nix gupi n_nknebimi
+
+TEST
+AST table:
+node	parent	order	tag	kind	name	variable	value	payload
+d_zonezqdvslrk	-	0	ROOT	-	-	-	-	-
+d_cdrvcxhhqddk	d_zonezqdvslrk	0	LET	-	-	x_a	6856	-
+d_qdmkhvksveos	d_zonezqdvslrk	2	SCOPE	unit	n_azvajcko	-	-	-
+d_wojrlogxwzdv	d_qdmkhvksveos	0	LET	-	-	x_a	6541	-
+d_taqlovqtlxba	d_qdmkhvksveos	1	SCOPE	func	n_bsvlpcsv	-	-	-
+d_wcxpdmboyuhu	d_zonezqdvslrk	1	SCOPE	func	n_spswqjqw	-	-	-
+d_xhjgxpxyseyd	d_wcxpdmboyuhu	0	LET	-	-	x_a	7915	-
+d_uylephuogzxl	d_taqlovqtlxba	1	SCOPE	func	n_vyoejihl	-	-	-
+d_igsxtcxymntd	d_uylephuogzxl	2	SCOPE	unit	n_ykpuvpdz	-	-	-
+d_faqidseshpam	d_wcxpdmboyuhu	1	NOP	-	-	-	-	p_caxatvft
+d_yndgrhejewtv	d_taqlovqtlxba	0	LET	-	-	x_a	1972	-
+d_eotllzofsytb	d_uylephuogzxl	0	LET	-	-	x_a	6395	-
+d_smewzdtupodw	d_igsxtcxymntd	0	SCOPE	area	n_ukgblnbb	-	-	-
+d_mdlkgxyuzibn	d_smewzdtupodw	1	SCOPE	area	n_mwugjsab	-	-	-
+d_rijlnowqlddd	d_uylephuogzxl	1	SCOPE	func	n_jycysmye	-	-	-
+d_ndlqmoiuueex	d_rijlnowqlddd	0	LET	-	-	x_a	8936	-
+d_qctpqreqshga	d_mdlkgxyuzibn	1	SCOPE	unit	n_flcbumjf	-	-	-
+d_jtflipfhortl	d_mdlkgxyuzibn	0	LET	-	-	x_a	9793	-
+d_chtiqznfrnyo	d_rijlnowqlddd	1	NOP	-	-	-	-	p_lyhkznvu
+d_viiiyoowgphe	d_smewzdtupodw	0	LET	-	-	x_a	3116	-
+d_czxpjvvnvvmf	d_qctpqreqshga	0	LET	-	-	x_a	5664	-
+d_eivwybmmofxr	d_qctpqreqshga	1	SCOPE	unit	n_wrrplnuw	-	-	-
+d_afhedyobznua	d_eivwybmmofxr	115	NOP	-	-	-	-	p_wavhzinb
+d_xracyorgobcw	d_eivwybmmofxr	106	NOP	-	-	-	-	p_xpmbwpnl
+d_topwmqpmmszc	d_eivwybmmofxr	15	NOP	-	-	-	-	p_kiluamhs
+d_dmytzihpsosg	d_eivwybmmofxr	90	NOP	-	-	-	-	p_pcqvlwir
+d_iivkkkauozvj	d_eivwybmmofxr	17	NOP	-	-	-	-	p_etvwlfgj
+d_yordglsfxgzr	d_eivwybmmofxr	116	NOP	-	-	-	-	p_ilscawiu
+d_gwrmhjdlrqvx	d_eivwybmmofxr	105	NOP	-	-	-	-	p_iazhdxhj
+d_bhgdssijbwzj	d_eivwybmmofxr	22	NOP	-	-	-	-	p_ouxnocdq
+d_gyqwjutnellg	d_eivwybmmofxr	80	NOP	-	-	-	-	p_nmtqxoow
+d_kgozvjksefhb	d_eivwybmmofxr	6	NOP	-	-	-	-	p_kgonuglq
+d_hwezhmoxajcj	d_eivwybmmofxr	29	NOP	-	-	-	-	p_niidmopo
+d_aeqgbxkdbivk	d_eivwybmmofxr	75	NOP	-	-	-	-	p_jpeyyyaa
+d_chgqspiyyuew	d_eivwybmmofxr	20	NOP	-	-	-	-	p_lauiqmje
+d_jbfmsecmkehp	d_eivwybmmofxr	61	NOP	-	-	-	-	p_tunvyxuk
+d_ssnrikdnhghe	d_eivwybmmofxr	53	NOP	-	-	-	-	p_iotxoxsk
+d_jpcblgfhvvey	d_eivwybmmofxr	76	NOP	-	-	-	-	p_vqbjvclu
+d_oznsoklfuudj	d_eivwybmmofxr	70	NOP	-	-	-	-	p_dugsoznh
+d_iytpqfcpkynb	d_eivwybmmofxr	103	NOP	-	-	-	-	p_vayhnusi
+d_bhaqgtcfiitz	d_eivwybmmofxr	33	NOP	-	-	-	-	p_dpjwffjp
+d_rmcxhpdwzrjk	d_eivwybmmofxr	18	NOP	-	-	-	-	p_zkuweopa
+d_siflixcdplcv	d_eivwybmmofxr	67	NOP	-	-	-	-	p_naxztxnc
+d_ucudbzyqcmoa	d_eivwybmmofxr	11	NOP	-	-	-	-	p_qsvjxdjp
+d_ggrrsglqgshf	d_eivwybmmofxr	2	NOP	-	-	-	-	p_yydgwspz
+d_trssvgfrezgh	d_eivwybmmofxr	108	NOP	-	-	-	-	p_tdattnve
+d_tzfqhphvxwox	d_eivwybmmofxr	36	NOP	-	-	-	-	p_lrviyfuf
+d_yzvxzfxfgvuh	d_eivwybmmofxr	13	NOP	-	-	-	-	p_ffjhjheh
+d_cgdipaugoovl	d_eivwybmmofxr	113	NOP	-	-	-	-	p_zmavbbmg
+d_rupmomoyuqsh	d_eivwybmmofxr	63	NOP	-	-	-	-	p_xpvkrwsb
+d_jdhoiwvabzcw	d_eivwybmmofxr	82	NOP	-	-	-	-	p_dnmpjdul
+d_ulagcfdgyali	d_eivwybmmofxr	95	NOP	-	-	-	-	p_eckyeipe
+d_rwtraflkyiss	d_eivwybmmofxr	26	NOP	-	-	-	-	p_cngimvuj
+d_ldeifwmoigfk	d_eivwybmmofxr	10	NOP	-	-	-	-	p_rpqjkdoa
+d_gncqundwvtrt	d_eivwybmmofxr	7	NOP	-	-	-	-	p_bwaiiaol
+d_jfrlbzjprcun	d_eivwybmmofxr	50	NOP	-	-	-	-	p_ouwqdijh
+d_iiucltiktbba	d_eivwybmmofxr	126	NOP	-	-	-	-	p_dswtjpga
+d_dxslvxmqdgmn	d_eivwybmmofxr	85	NOP	-	-	-	-	p_wgjlynvl
+d_wqhystjluvla	d_eivwybmmofxr	9	NOP	-	-	-	-	p_hltlbrba
+d_wiuolvrkeozo	d_eivwybmmofxr	97	NOP	-	-	-	-	p_fhxfotej
+d_sjregdnpusor	d_eivwybmmofxr	25	NOP	-	-	-	-	p_yyhmvhor
+d_enldniahncbw	d_eivwybmmofxr	24	NOP	-	-	-	-	p_hixkuahg
+d_whxybxpavsln	d_eivwybmmofxr	4	NOP	-	-	-	-	p_dbyesgtz
+d_dfzqeyzmjecu	d_eivwybmmofxr	72	NOP	-	-	-	-	p_fnnbqefc
+d_vfdqcgzemtkk	d_eivwybmmofxr	34	NOP	-	-	-	-	p_uebhyyzh
+d_blkzwzejrzqr	d_eivwybmmofxr	89	NOP	-	-	-	-	p_atwmsoem
+d_khmclfzllere	d_eivwybmmofxr	83	NOP	-	-	-	-	p_vlxhbcuh
+d_nsnfoasdzutz	d_eivwybmmofxr	78	NOP	-	-	-	-	p_ljzxvzzf
+d_cbqpakwpheqx	d_eivwybmmofxr	60	NOP	-	-	-	-	p_svnsruhf
+d_rmgopiscxgdi	d_eivwybmmofxr	21	NOP	-	-	-	-	p_kwfjjofz
+d_guzbrjwxjurp	d_eivwybmmofxr	92	NOP	-	-	-	-	p_dohwhpsp
+d_owtipxzgctsr	d_eivwybmmofxr	47	NOP	-	-	-	-	p_tjcsgqaq
+d_ftbalzwravrz	d_eivwybmmofxr	8	NOP	-	-	-	-	p_gsukoxnj
+d_zstyetrnqxrm	d_eivwybmmofxr	41	NOP	-	-	-	-	p_exexnnpd
+d_xptxbmfaegbu	d_eivwybmmofxr	102	NOP	-	-	-	-	p_hlhqjeoj
+d_zdtrhahvvdfe	d_eivwybmmofxr	66	NOP	-	-	-	-	p_ivadlzgo
+d_lnzwgwgyxcec	d_eivwybmmofxr	37	NOP	-	-	-	-	p_nddfbgdr
+d_pqpfiuzlmdjf	d_eivwybmmofxr	88	NOP	-	-	-	-	p_wzjuzkll
+d_xlvtouugmmuv	d_eivwybmmofxr	23	NOP	-	-	-	-	p_gelrmetw
+d_incjmpxdjzal	d_eivwybmmofxr	107	NOP	-	-	-	-	p_zghsenit
+d_mzfedoewfeww	d_eivwybmmofxr	38	NOP	-	-	-	-	p_ulxzbroi
+d_qhrofbafedci	d_eivwybmmofxr	56	NOP	-	-	-	-	p_xyvesgzl
+d_xysktgbsrgvt	d_eivwybmmofxr	12	NOP	-	-	-	-	p_vbkecxxb
+d_xsknlfyypuzm	d_eivwybmmofxr	77	NOP	-	-	-	-	p_jrlfjxrk
+d_ncejzkhuqkqk	d_eivwybmmofxr	64	NOP	-	-	-	-	p_xafvkjqn
+d_lsqaetezekty	d_eivwybmmofxr	14	NOP	-	-	-	-	p_rgshkfqm
+d_pmlcmplkdwuu	d_eivwybmmofxr	51	NOP	-	-	-	-	p_yapycfli
+d_bacrlfddxlce	d_eivwybmmofxr	71	NOP	-	-	-	-	p_tpuftwmu
+d_umcupehkkgqv	d_eivwybmmofxr	48	NOP	-	-	-	-	p_punekksa
+d_ilmckcrtcwwq	d_eivwybmmofxr	19	NOP	-	-	-	-	p_gzrgwbhx
+d_fkcvughozqsz	d_eivwybmmofxr	45	NOP	-	-	-	-	p_wuvoolwy
+d_hyxhwdkmgria	d_eivwybmmofxr	100	NOP	-	-	-	-	p_npncnjdt
+d_myvgmoyumqdh	d_eivwybmmofxr	118	NOP	-	-	-	-	p_ayrkqjph
+d_svfinvqvpjsk	d_eivwybmmofxr	111	NOP	-	-	-	-	p_iloemupl
+d_uvggpjoaeivi	d_eivwybmmofxr	84	NOP	-	-	-	-	p_pscnzxfh
+d_ldvfufmtufzs	d_eivwybmmofxr	65	NOP	-	-	-	-	p_gkqrwfrw
+d_jpfjvaubgxpw	d_eivwybmmofxr	43	NOP	-	-	-	-	p_uzuunavn
+d_totatrtkswwo	d_eivwybmmofxr	125	NOP	-	-	-	-	p_ancywtjs
+d_mevrgamklrvu	d_eivwybmmofxr	128	NOP	-	-	-	-	p_jyujbrhb
+d_bbrfntgvyeuy	d_eivwybmmofxr	31	NOP	-	-	-	-	p_zoiqsxqs
+d_xgwfqknwznec	d_eivwybmmofxr	5	NOP	-	-	-	-	p_gqmycjfn
+d_xalqksxrjhry	d_eivwybmmofxr	40	NOP	-	-	-	-	p_gobgkhcg
+d_yxsvhgnvfeys	d_eivwybmmofxr	30	NOP	-	-	-	-	p_mxkceepk
+d_gyviapkudfby	d_eivwybmmofxr	62	NOP	-	-	-	-	p_ucitiahh
+d_cpwdycsmyjno	d_eivwybmmofxr	49	NOP	-	-	-	-	p_blzagbfu
+d_zqwyterbaoje	d_eivwybmmofxr	81	NOP	-	-	-	-	p_fusdjidi
+d_rdaonfzicfej	d_eivwybmmofxr	96	NOP	-	-	-	-	p_mnxuukwa
+d_cabzxyqerwra	d_eivwybmmofxr	68	NOP	-	-	-	-	p_epocgpsv
+d_olxstwlseifq	d_eivwybmmofxr	28	NOP	-	-	-	-	p_blklaeje
+d_xsrghzukgrjk	d_eivwybmmofxr	94	NOP	-	-	-	-	p_zedgdzwh
+d_hrdkanxzswox	d_eivwybmmofxr	57	NOP	-	-	-	-	p_guxloplp
+d_velrxbaaoque	d_eivwybmmofxr	114	NOP	-	-	-	-	p_ggfufzwy
+d_eehwnsyxnqbc	d_eivwybmmofxr	35	NOP	-	-	-	-	p_myyumoqk
+d_lzvewwqbosnr	d_eivwybmmofxr	122	NOP	-	-	-	-	p_jfjjnxxw
+d_ktjwsjxjevfr	d_eivwybmmofxr	119	NOP	-	-	-	-	p_pqqngred
+d_byghfhuikwda	d_eivwybmmofxr	87	NOP	-	-	-	-	p_yeumzidn
+d_hvsnvsqcptvf	d_eivwybmmofxr	73	NOP	-	-	-	-	p_lrnrgspe
+d_dmnyhoqfxpyz	d_eivwybmmofxr	93	NOP	-	-	-	-	p_olnskawh
+d_ihoawklqilxj	d_eivwybmmofxr	39	NOP	-	-	-	-	p_vgtujywt
+d_msveyxbqxxko	d_eivwybmmofxr	117	NOP	-	-	-	-	p_qhpqjqga
+d_qzklmqpoemrq	d_eivwybmmofxr	99	NOP	-	-	-	-	p_dseajmxh
+d_tboapywqheft	d_eivwybmmofxr	124	NOP	-	-	-	-	p_gsqrevcg
+d_advcwnthwpyp	d_eivwybmmofxr	123	NOP	-	-	-	-	p_eribjuyo
+d_frqjxhnqplts	d_eivwybmmofxr	16	NOP	-	-	-	-	p_derglitg
+d_kcmnfoeqvywy	d_eivwybmmofxr	3	NOP	-	-	-	-	p_wcfdtukm
+d_fkpprnfuoutd	d_eivwybmmofxr	59	NOP	-	-	-	-	p_jwhqdafc
+d_gxbfycywdjcx	d_eivwybmmofxr	55	NOP	-	-	-	-	p_zeiojnek
+d_oclvpphmspco	d_eivwybmmofxr	54	NOP	-	-	-	-	p_rcpfyojl
+d_grmfcgjeaweo	d_eivwybmmofxr	32	NOP	-	-	-	-	p_ihmdjcjp
+d_rlxjohqhjohj	d_eivwybmmofxr	44	NOP	-	-	-	-	p_rkxehaqt
+d_srcwuhcspxgm	d_eivwybmmofxr	104	NOP	-	-	-	-	p_hloimpip
+d_rdvzmtzuibde	d_eivwybmmofxr	0	LET	-	-	x_a	1211	-
+d_sauzmzjewyim	d_eivwybmmofxr	27	NOP	-	-	-	-	p_usmxlnuv
+d_vvgtmdxtmgkq	d_eivwybmmofxr	46	NOP	-	-	-	-	p_udmpqssv
+d_rrdqyzssuuua	d_eivwybmmofxr	42	NOP	-	-	-	-	p_fxtrrrlv
+d_yibkvztwujsi	d_eivwybmmofxr	112	NOP	-	-	-	-	p_nebxzohh
+d_lklekhrwqhjb	d_eivwybmmofxr	98	NOP	-	-	-	-	p_mzvjsvxc
+d_zdmxcslmcvkv	d_eivwybmmofxr	120	NOP	-	-	-	-	p_qxbawxlh
+d_fajzrbqhhmmo	d_eivwybmmofxr	1	NOP	-	-	-	-	p_jhxpnhid
+d_ijnfmgyuqcng	d_eivwybmmofxr	86	NOP	-	-	-	-	p_zmdgwyrw
+d_tnxoudgpbnak	d_eivwybmmofxr	121	NOP	-	-	-	-	p_aquzsudg
+d_ukvwaqauazvm	d_eivwybmmofxr	69	NOP	-	-	-	-	p_oqnzdmmp
+d_qqeqldpkwmlw	d_eivwybmmofxr	79	NOP	-	-	-	-	p_zjqpupmj
+d_gnoboeavfiau	d_eivwybmmofxr	74	NOP	-	-	-	-	p_cnnmodqs
+d_zxegqxhuzxic	d_eivwybmmofxr	52	NOP	-	-	-	-	p_zdaaqrxp
+d_heosntxjuegj	d_eivwybmmofxr	101	NOP	-	-	-	-	p_rwkwdjur
+d_cgdbobfapplz	d_eivwybmmofxr	58	NOP	-	-	-	-	p_leitfnmt
+d_rhoyrjhshizz	d_eivwybmmofxr	109	NOP	-	-	-	-	p_dkqqsvfo
+d_ekfdvvyuwzdg	d_eivwybmmofxr	110	NOP	-	-	-	-	p_emdlxrjp
+d_ymjlgieditlr	d_eivwybmmofxr	91	NOP	-	-	-	-	p_tbxbsmtw
+d_pxhbdemyxbdw	d_eivwybmmofxr	127	NOP	-	-	-	-	p_ascflcfz
+Program:
