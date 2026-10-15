@@ -22,7 +22,7 @@ object Renderer:
     walk(program.body, Vector.empty)
 
   private def indent(depth: Int, spec: RenderSpec): String =
-    if spec.indentation || spec.style == SyntaxStyle.Indent then "  " * depth else ""
+    if spec.indentation || spec.style.indented then "  " * depth else ""
   private def lines(program: Program, spec: RenderSpec): Vector[Line] =
     val out = Vector.newBuilder[Line]
     lazy val chains = ancestorChains(program)
@@ -46,6 +46,8 @@ object Renderer:
           case SyntaxStyle.PaddedEnd => Some(s"${spec.lexicon.end} junk z_aaaaaaaa")
           case SyntaxStyle.DepthEnd => Some(s"${spec.lexicon.end} ${depth + 1}")
           case SyntaxStyle.Indent => None
+          case SyntaxStyle.IndentNamedEnd => Some(s"${spec.lexicon.end} ${spec.lexicon.keyword(kind)} $name")
+          case SyntaxStyle.IndentGenericEnd => Some(spec.lexicon.end)
         out += Line(closing.map(indent(depth, spec) + _), depth)
     }
     emit(program.body, 0)

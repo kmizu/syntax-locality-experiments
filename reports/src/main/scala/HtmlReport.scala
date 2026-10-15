@@ -21,18 +21,24 @@ object HtmlReport:
   private val p2LiveStatusPath = "supporting/p2-live-current-status.json"
   private val p2LiveProtocolHash = "2ac04cc60928800d0c1fdd37986546a6fee23bd1955ccc011c76099cbde60471"
   private val p3SourceHash = "f57b680ff77f4a0b4190ede060a71f008bb1671a65d82f100fc9e6a5ffa4aff0"
+  /** Source hash of the later snapshot (P3c combined styles added) that produced the optional p3c run. */
+  private val p3cSourceHash = "9d1d8aaf7ab703c39702f518386873b091a4d1f3f0b967ba13dc0b5f856b193c"
   private val p3RunNames = Vector("p3a", "p3b-fq", "p3b-short")
-  private val p3Styles = Vector("generic_end", "named_end", "depth_end", "indent")
+  private val p3cRunName = "p3c"
+  private val p3Styles = Vector("generic_end", "named_end", "depth_end", "indent", "indent_named_end", "indent_generic_end")
+  private val p3aStyles = Vector("generic_end", "named_end", "depth_end", "indent")
+  private val p3cStyles = Vector("named_end", "indent", "indent_named_end", "indent_generic_end")
   private val p3Labels = Map("generic_end" -> "B · generic end", "named_end" -> "D · named end",
-    "depth_end" -> "G · depth end", "indent" -> "F · indent")
+    "depth_end" -> "G · depth end", "indent" -> "F · indent",
+    "indent_named_end" -> "H · indent + named end", "indent_generic_end" -> "I · indent + generic end")
   private val p3Depths = Vector("4", "8", "16")
   private val p3Fillers = Vector("0", "32", "128")
   private val p3Views = Vector(("ast_to_source", "complete"), ("scope_lookup", "before_close"), ("scope_lookup", "after_close"))
 
   /** One saved P3 trial: a `cases.jsonl` row joined to its `scores.jsonl` grade by trial id. */
   final case class P3Trial(id: String, familyId: String, task: String, view: String, style: String,
-    lexicalRegime: String, depth: String, filler: String, evaluable: Boolean, correct: Boolean, outcome: String,
-    firstError: String)
+    lexicalRegime: String, depth: String, filler: String, requestHash: String, evaluable: Boolean, correct: Boolean,
+    outcome: String, firstError: String)
 
   /** A saved exploratory P3 run. Styles may differ from the five P1/P2 treatments. */
   final case class P3Run(name: String, trials: Vector[P3Trial], summary: Vector[Row], errors: Vector[Row],
@@ -269,16 +275,33 @@ object HtmlReport:
     Run(name, readCsv(dir.resolve("summary.csv")), readCsv(dir.resolve("paired-comparisons.csv")),
       readCsv(dir.resolve("errors.csv")), Files.readString(dir.resolve("protocol.json"), UTF_8))
 
-  /** All three P3 run directories must be present together, or none of them. */
+  /** All three P3 run directories must be present together, or none of them. The optional fourth
+    * `p3c` run (combined indentation + closer cues) is appended when its directory exists; it
+    * requires the three others because it is validated against P3a's families. */
   private def readP3Runs(root: Path): Option[Vector[P3Run]] =
     val present = p3RunNames.filter(name => Files.isDirectory(root.resolve(name)))
-    if present.isEmpty then None
+    val p3cPresent = Files.isDirectory(root.resolve(p3cRunName))
+    if present.isEmpty then
+      require(!p3cPresent, s"$p3cRunName requires ${p3RunNames.mkString(", ")}")
+      None
     else
       require(present == p3RunNames, s"P3 publication requires all of ${p3RunNames.mkString(", ")}; found ${present.mkString(", ")}")
-      val runs = p3RunNames.map(readP3Run(root, _))
+      val runs = p3RunNames.map(readP3Run(root, _, p3SourceHash))
       val (p3a, fq, short) = (runs(0), runs(1), runs(2))
-      require(p3a.total.number("planned") == 288 && p3a.styles == p3Styles && p3a.views == Vector(("ast_to_source", "complete")),
+      require(p3a.total.number("planned") == 288 && p3a.styles == p3aStyles && p3a.views == Vector(("ast_to_source", "complete")),
         "P3a must retain its 288-trial generation plan over B/D/G/F")
+      val p3c = Option.when(p3cPresent) {
+        val run = readP3Run(root, p3cRunName, p3cSourceHash)
+        require(run.total.number("planned") == 288 && run.styles == p3cStyles && run.views == Vector(("ast_to_source", "complete")),
+          "P3c must retain its 288-trial generation plan over D/F/H/I")
+        require(run.trials.map(_.familyId).toSet == p3a.trials.map(_.familyId).toSet && run.trials.map(_.familyId).distinct.size == 36,
+          "P3c must reuse P3a's 36 structural families")
+        require(jsonNumber(run.protocol, "masterSeed") == jsonNumber(p3a.protocol, "masterSeed"), "P3c must reuse P3a's master seed")
+        val p3aNamed = p3a.select("ast_to_source", "complete", "named_end").map(_.requestHash).toSet
+        require(run.select("ast_to_source", "complete", "named_end").map(_.requestHash).toSet == p3aNamed && p3aNamed.size == 72,
+          "P3c named_end requests must be the 72 P3a named_end requests")
+        run
+      }
       Vector(fq, short).foreach { run =>
         require(run.total.number("planned") == 216 && run.styles == Vector("named_end") && run.views == p3Views,
           s"${run.name} must retain its 216-trial named_end import plan over T1 (both views) and T3")
@@ -288,14 +311,14 @@ object HtmlReport:
         protocolScalar(short.protocol, "importQualification") == "short", "P3b runs must differ only in import qualification")
       require(fq.trials.map(_.familyId).toSet == short.trials.map(_.familyId).toSet && fq.trials.map(_.familyId).distinct.size == 72,
         "P3b fq/short must share the same 72 structural families")
-      Some(runs)
+      Some(runs ++ p3c)
 
-  private def readP3Run(root: Path, name: String): P3Run =
+  private def readP3Run(root: Path, name: String, sourceHash: String): P3Run =
     val dir = root.resolve(name)
     (requiredFiles ++ Vector("cases.jsonl", "scores.jsonl")).foreach(f =>
       require(Files.isRegularFile(dir.resolve(f), LinkOption.NOFOLLOW_LINKS), s"Missing $name/$f"))
     val protocol = Files.readString(dir.resolve("protocol.json"), UTF_8)
-    require(protocolScalar(protocol, "sourceHash") == p3SourceHash && protocolScalar(protocol, "preset") == "p3" &&
+    require(protocolScalar(protocol, "sourceHash") == sourceHash && protocolScalar(protocol, "preset") == "p3" &&
       protocolScalar(protocol, "model") == "gpt-5.6-terra" && protocolScalar(protocol, "reasoningEffort") == "low",
       s"$name must match the published P3 source snapshot, preset, model and effort")
     require(jsonNumber(protocol, "replicates") == "1", s"$name must be a single-replicate pilot")
@@ -317,7 +340,8 @@ object HtmlReport:
       val outcome = jsonString(score, "outcome")
       val firstError = jsonOptionalString(score, "parse_error_code").getOrElse(outcome)
       P3Trial(id, jsonString(c, "familyId"), jsonString(c, "task"), jsonString(c, "view"), jsonString(c, "style"),
-        jsonString(c, "lexicalRegime"), jsonNumber(c, "depth"), jsonNumber(c, "filler"), evaluable, correct, outcome, firstError)
+        jsonString(c, "lexicalRegime"), jsonNumber(c, "depth"), jsonNumber(c, "filler"), jsonString(c, "requestHash"),
+        evaluable, correct, outcome, firstError)
     }
     require(trials.size == cases.size, s"$name must grade every saved case exactly once")
     P3Run(name, trials, readCsv(dir.resolve("summary.csv")), readCsv(dir.resolve("errors.csv")), protocol)
@@ -728,6 +752,7 @@ object HtmlReport:
       case "p3a" => "P3a exploratory pilot · closer locality"
       case "p3b-fq" => "P3b exploratory pilot · import fq"
       case "p3b-short" => "P3b exploratory pilot · import short"
+      case "p3c" => "P3c exploratory pilot · combined indent + closer cues"
     val p3ProtocolRows = p3.map(_.map { run =>
       s"<tr><th scope=\"row\">${h(p3RunTitle(run.name))}</th><td><code>${h(protocolScalar(run.protocol, "protocolHash"))}</code></td>" +
         s"<td><code>${h(protocolScalar(run.protocol, "sourceHash"))}</code></td><td>${source(run.name, "protocol.json", "protocol.json")}</td></tr>"
@@ -808,11 +833,85 @@ object HtmlReport:
         val top = p3a.firstErrors("ast_to_source", "complete", style).headOption.map((code, n) => s"<code>${h(code)}</code> ${n}件").getOrElse("不正解なし")
         s"${h(p3Labels(style).take(1))}は$top"
       }.mkString("、")
+      val p3c = runs.lift(3)
+      val p3cSection = p3c.map { run =>
+        val generation = ("ast_to_source", "complete")
+        def total(style: String): (Long, Long) = run.count(generation._1, generation._2, style)
+        val p3cTable = "<div class=\"table-scroll\"><table><caption>P3c · ast_to_source / complete · 各表記72応答、P3aと同一の36 structural families、natural + nonce</caption>" +
+          "<thead><tr><th scope=\"col\">表記</th><th scope=\"col\">正解 / 評価可能</th><th scope=\"col\">厳密正解率</th><th scope=\"col\">構文不成立</th>" +
+          "<th scope=\"col\">構文成立・AST不一致</th><th scope=\"col\">最初のparser error / outcome の内訳（不正解のみ）</th></tr></thead>" +
+          s"<tbody>${styleRows(run)}</tbody></table></div>"
+        val p3cGrid = p3Grid(run, run.styles.map(s => (p3Labels(s), generation._1, generation._2, s)), "表記",
+          "P3c · 表記 × 深さ × filler の厳密生成正解 / 評価可能 · 各セル8応答（4 family × natural/nonce）")
+        val structuralCodes = Set("missing_close", "close_indent_mismatch", "invalid_indent", "unexpected_indent", "invalid_dedent",
+          "close_mismatch", "close_kind_mismatch", "close_name_mismatch", "close_depth_mismatch", "unclosed_scope")
+        val structuralErrors = Vector("indent_named_end", "indent_generic_end").flatMap(style =>
+          run.firstErrors(generation._1, generation._2, style).filter((code, _) => structuralCodes.contains(code)).map((code, n) => s"${p3Labels(style).take(1)} <code>${h(code)}</code> ${n}件"))
+        val invalidSyntax = run.trials.filter(t => t.evaluable && !t.correct && t.outcome == "invalid_generated_syntax")
+        val invalidSyntaxCodes = invalidSyntax.groupBy(_.firstError).toVector.sortBy((code, ts) => (-ts.size, code))
+          .map((code, ts) => s"<code>${h(code)}</code> ${ts.size}件").mkString("、")
+        val wrongAst = run.trials.count(t => t.evaluable && !t.correct && t.outcome == "valid_syntax_wrong_ast")
+        val otherFailures = run.trials.count(t => t.evaluable && !t.correct) - invalidSyntax.size - wrongAst
+        val structuralLine =
+          if structuralErrors.isEmpty then "H・Iの閉じ行とindentの整合をparserが検査するが、indentや閉じ行に関するparser errorは一件も起きていない。"
+          else s"H・Iでindentや閉じ行に関するparser errorが起きた：${structuralErrors.mkString("、")}。"
+        val failureLine = s"不正解の内訳は構文成立・AST不一致 ${wrongAst}件、構文不成立 ${invalidSyntax.size}件（${if invalidSyntaxCodes.isEmpty then "なし" else invalidSyntaxCodes}）" +
+          (if otherFailures > 0 then s"、その他 ${otherFailures}件" else "") + "。"
+        def cellKey(t: P3Trial): (String, String, String, String) = (t.familyId, t.lexicalRegime, t.depth, t.filler)
+        val namedByCell = run.select(generation._1, generation._2, "named_end").groupBy(cellKey)
+        require(namedByCell.size == 72 && namedByCell.values.forall(_.size == 1), "P3c pairing requires one named_end trial per family/regime/depth/filler")
+        final case class Discordance(pairs: Int, both: Int, firstOnly: Int, secondOnly: Int, neither: Int)
+        def discordance(pairs: Vector[(P3Trial, P3Trial)]): Discordance =
+          val evaluable = pairs.filter((a, b) => a.evaluable && b.evaluable)
+          Discordance(evaluable.size, evaluable.count((a, b) => a.correct && b.correct), evaluable.count((a, b) => a.correct && !b.correct),
+            evaluable.count((a, b) => !a.correct && b.correct), evaluable.count((a, b) => !a.correct && !b.correct))
+        def signed(n: Int): String = s"${if n >= 0 then "+" else ""}$n"
+        val comparisons = p3cStyles.filter(_ != "named_end").map { style =>
+          style -> discordance(run.select(generation._1, generation._2, style).map { t =>
+            (namedByCell.getOrElse(cellKey(t), throw IllegalArgumentException(s"Unpaired P3c trial ${t.id}")).head, t)
+          })
+        }
+        val pairedRows = comparisons.map { (style, d) =>
+          s"<tr><th scope=\"row\">D vs ${h(p3Labels(style))}</th><td>${d.pairs}</td><td>${d.both}</td><td>${d.firstOnly}</td><td>${d.secondOnly}</td><td>${d.neither}</td><td>${signed(d.firstOnly - d.secondOnly)}</td></tr>"
+        }.mkString
+        val pairedTable = "<div class=\"table-scroll\"><table><caption>P3c · 対応付き不一致表 · named_end（D）と各表記を family × 語彙 × 深さ × filler で対にした評価可能ペア（同一run内）</caption>" +
+          "<thead><tr><th scope=\"col\">比較</th><th scope=\"col\">対</th><th scope=\"col\">両方正解</th><th scope=\"col\">Dのみ正解</th>" +
+          s"<th scope=\"col\">相手のみ正解</th><th scope=\"col\">両方不正解</th><th scope=\"col\">正解数の差（D−相手）</th></tr></thead><tbody>$pairedRows</tbody></table></div>"
+        val p3aNamedByRequest = p3a.select(generation._1, generation._2, "named_end").groupBy(_.requestHash)
+        require(p3aNamedByRequest.size == 72 && p3aNamedByRequest.values.forall(_.size == 1), "P3a named_end requests must be unique")
+        val replicate = discordance(run.select(generation._1, generation._2, "named_end").map { t =>
+          (p3aNamedByRequest.getOrElse(t.requestHash, throw IllegalArgumentException(s"P3c named_end trial ${t.id} has no P3a request")).head, t)
+        })
+        val p3aNamed = p3a.count(generation._1, generation._2, "named_end")
+        val p3cNamed = total("named_end")
+        val replicateTable = "<div class=\"table-scroll\"><table><caption>P3a / P3c · named_end（D）のreplicate一致 · requestHashが一致する同一の72 request（同じAST・表記・例・語彙）を別runで生成</caption>" +
+          "<thead><tr><th scope=\"col\">対</th><th scope=\"col\">P3a 正解</th><th scope=\"col\">P3c 正解</th><th scope=\"col\">両方正解</th><th scope=\"col\">P3aのみ正解（正→誤）</th>" +
+          "<th scope=\"col\">P3cのみ正解（誤→正）</th><th scope=\"col\">両方不正解</th><th scope=\"col\">正解数の差（P3c−P3a）</th></tr></thead>" +
+          s"<tbody><tr><td>${replicate.pairs}</td><td>${p3Cell(p3aNamed)}</td><td>${p3Cell(p3cNamed)}</td><td>${replicate.both}</td><td>${replicate.firstOnly}</td><td>${replicate.secondOnly}</td><td>${replicate.neither}</td><td>${signed(replicate.secondOnly - replicate.firstOnly)}</td></tr></tbody></table></div>"
+        val depth16 = p3cStyles.map(s => s"${h(p3Labels(s).take(1))} ${p3Cell(run.count(generation._1, generation._2, s, "16", "128"))}").mkString("、")
+        val totalsLine = p3cStyles.map(s => s"${h(p3Labels(s).take(1))} ${p3Cell(total(s))}").mkString("、")
+        val byStyle = comparisons.toMap
+        def discordanceText(style: String): String =
+          val d = byStyle(style)
+          s"D正解・${p3Labels(style).take(1)}不正解 ${d.firstOnly}件、D不正解・${p3Labels(style).take(1)}正解 ${d.secondOnly}件"
+        s"""<h3>P3c：indentと閉じ行を重ねる。</h3>
+<p>P3aのFは「indentが構造を担う」ことと「閉じ行がない」ことを同時に変えている。P3cはこの二つを分け、indentを意味のあるものにしたまま閉じ行を戻す：H <code>indent_named_end</code>（2スペースindent + <code>end KIND NAME</code>）、I <code>indent_generic_end</code>（2スペースindent + <code>end</code>）。parserは両方の手掛かりを検査し、一致しなければ拒否する（閉じ行のない脱indentは <code>missing_close</code>、openerと違うindentの閉じ行は <code>close_indent_mismatch</code>）。D・Fを同じrunで再実行し、P3aと同じmaster seedで同一の36 familyを使う。BとGは再実行しない。P3aとはプールせず、family単位の記述的な比較だけを行う。課題は <code>ast_to_source</code> のみ、深さ4/8/16 × filler 0/32/128、natural + nonce、各表記72応答。${runFacts(run)}。</p>
+$p3cTable
+<p>各表記72応答の厳密正解は ${totalsLine}。${failureLine}${structuralLine}</p>
+$p3cGrid
+<p>深さ16・filler 128では ${depth16}（各8応答）。Iはこのセルで最も低い。</p>
+$pairedTable
+<p>同一runの中でDと対にすると、H（${discordanceText("indent_named_end")}）、F（${discordanceText("indent")}）、I（${discordanceText("indent_generic_end")}）。indentをnamed closerに重ねても、このpilotではnamed closer単独を上回らなかった。</p>
+$replicateTable
+<p>P3aとP3cのnamed_endは、同一の72 requestを別のrunで生成した2つのreplicate。P3a ${p3Cell(p3aNamed)}、P3c ${p3Cell(p3cNamed)}で、${replicate.secondOnly} familyが誤→正、${replicate.firstOnly} familyが正→誤に動いた。1 replicateでは72応答あたりおよそ5件程度の差はrun間の変動の範囲内で、P3a・P3cの表記間の差もこの尺度で読む。凍結計画もCIもなく、記述的な観測にとどまる。${source("p3c", "report.md", "P3c report")} / ${source("p3c", "summary.csv", "summary.csv")} / ${source("p3c", "scores.jsonl", "scores.jsonl")} / ${source("p3c", "cases.jsonl", "cases.jsonl")} / ${source("p3c", "paired-comparisons.csv", "paired-comparisons.csv")} / ${link("supporting/p3c-pilot.json", "P3c config")} / ${link("p3c-preflight/capabilities.json", "P3c preflight")}。</p>
+"""
+      }.getOrElse("")
+      val p3cSourceNote = p3c.map(_ => s"P3cは同じworktreeの後続commit（source hash <code>${h(p3cSourceHash)}</code>、同じsnapshotディレクトリに更新して保存）で生成した。").getOrElse("")
       s"""<section id="p3">
 <p class="section-label">P3 / SHORT-DISTANCE DEPENDENCIES</p><h2>P3：依存を短くした閉じ方と、importの修飾。</h2>
 <aside class="callout"><strong>探索的pilot。</strong>1 replicate、凍結済みのconfirmatory計画なし、CIは計算しない。以下の差はすべて記述的な観測で、仮説の支持を主張しない。P1・main・P2とは別のソース・別のprotocolで、プールしない。</aside>
 <p>動機は、公開済みP1 pilotデータの再集計。深さ8に限ると、filler 0/8/32で各表記の厳密正解はほぼ平坦（${p3Reslice}、各8応答）で、表記を分けているのはopenerとcloserの線形距離ではなく、同時に開いているブロックの数に見える。P3はこの二つの軸を分けて動かし、閉じる依存が本当に局所的な文法を加える。</p>
-<p>実装は分離worktree <code>p3-short-dependency</code>（source hash <code>${h(p3SourceHash)}</code>）。公開リポジトリのルートの <code>bench/</code> / <code>llm-core/</code> にはP3のコードは含まれず、runを生成した正確なソースは ${link("supporting/p3-source/README.md", "p3-source snapshot")} に別途保存する。${link("docs/p3-short-dependency-design.md", "P3設計")} / ${link("p3-preflight/capabilities.json", "preflight能力確認")}。</p>
+<p>実装は分離worktree <code>p3-short-dependency</code>（source hash <code>${h(p3SourceHash)}</code>）。公開リポジトリのルートの <code>bench/</code> / <code>llm-core/</code> にはP3のコードは含まれず、runを生成した正確なソースは ${link("supporting/p3-source/README.md", "p3-source snapshot")} に別途保存する。${p3cSourceNote}${link("docs/p3-short-dependency-design.md", "P3設計")} / ${link("p3-preflight/capabilities.json", "preflight能力確認")}。</p>
 <h3>P3a：閉じ構文の局所性。</h3>
 <p>同じAST・名前・値・例・語彙対応で、閉じ方だけを4通りにする。B <code>end</code>（共通の終端）、D <code>end KIND NAME</code>（遠いopenerの種類と名前を写す）、G <code>end K</code>（Kは閉じるブロックのネスト深さ。直前の行の深さだけで書ける）、F 閉じ行なしの2スペースindent（直前の行のindentだけで書ける。Python風で事前学習の交絡あり）。課題は <code>ast_to_source</code> のみ、深さ4/8/16 × filler 0/32/128、36 structural families、natural + nonce、各表記72応答。${runFacts(p3a)}。</p>
 $p3aTable
@@ -826,7 +925,7 @@ $pairedTable
 <p>対はfamily・課題・観測位置・語彙で一意に取れる。before_closeは両runとも全正解で差がない。after_closeとast_to_sourceではfqが上回るが、不一致の件数は小さく、1 replicateの記述的な差として読む。</p>
 $fqGrid
 $shortGrid
-<p>このpilotで最も高かったのは、冗長で明示的な情報を持つ条件（D、fq）だった。短距離の手掛かりだけ（G）はDに届かず、importでも自己完結したfull pathのほうが高い。これは「依存が短ければ有利」という仮説をそのまま支持する結果ではなく、別の凍結計画と独立holdoutで確かめる必要がある。${source("p3a", "report.md", "P3a report")} / ${source("p3a", "summary.csv", "summary.csv")} / ${source("p3a", "scores.jsonl", "scores.jsonl")} / ${source("p3a", "cases.jsonl", "cases.jsonl")} / ${source("p3b-fq", "report.md", "P3b fq report")} / ${source("p3b-short", "report.md", "P3b short report")} / ${link("supporting/p3a-pilot.json", "P3a config")} / ${link("supporting/p3b-fq-pilot.json", "fq config")} / ${link("supporting/p3b-short-pilot.json", "short config")}。</p>
+$p3cSection<p>このpilotで最も高かったのは、冗長で明示的な情報を持つ条件（D、fq）だった。短距離の手掛かりだけ（G）はDに届かず、importでも自己完結したfull pathのほうが高い。これは「依存が短ければ有利」という仮説をそのまま支持する結果ではなく、別の凍結計画と独立holdoutで確かめる必要がある。${source("p3a", "report.md", "P3a report")} / ${source("p3a", "summary.csv", "summary.csv")} / ${source("p3a", "scores.jsonl", "scores.jsonl")} / ${source("p3a", "cases.jsonl", "cases.jsonl")} / ${source("p3b-fq", "report.md", "P3b fq report")} / ${source("p3b-short", "report.md", "P3b short report")} / ${link("supporting/p3a-pilot.json", "P3a config")} / ${link("supporting/p3b-fq-pilot.json", "fq config")} / ${link("supporting/p3b-short-pilot.json", "short config")}。</p>
 </section>"""
     }.getOrElse("""<section id="p3">
 <p class="section-label">P3 / SHORT-DISTANCE DEPENDENCIES</p><h2>P3：依存を短くした閉じ方と、importの修飾。</h2>

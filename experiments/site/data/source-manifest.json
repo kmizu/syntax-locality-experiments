@@ -1,10 +1,10 @@
 {
   "schemaVersion": 2,
-  "generatedAtUtc": "2026-10-14T14:20:00.0000000Z",
+  "generatedAtUtc": "2026-10-15T01:30:00.0000000Z",
   "synthetic_mock": false,
   "pathBase": "experiments/data",
   "provenancePathBase": "original_experiment_repository",
-  "scope": "Current curated public reports, documents and separate live execution/mock evidence. Does not contain credentials, request headers, private instruction files, or the complete private live run. Unchanged historical inputs retain their original source provenance; transformed documents/status retain their legacy public hashes. P3 entries come from the isolated p3-short-dependency worktree (commits 6aed575, d98fc14); its raw trials/ bodies and ledgers are not published.",
+  "scope": "Current curated public reports, documents and separate live execution/mock evidence. Does not contain credentials, request headers, private instruction files, or the complete private live run. Unchanged historical inputs retain their original source provenance; transformed documents/status retain their legacy public hashes. P3 entries come from the isolated p3-short-dependency worktree (commits 6aed575, d98fc14 for p3a/p3b; 39d6949, 14a166a for p3c and the refreshed p3-source snapshot); its raw trials/ bodies and ledgers are not published.",
   "legacyManifest": "../archives/public-data-source-manifest-legacy.json",
   "legacyManifestSha256": "6ca2ce84d9d0c1c2f15c2761faa945d3f370827f561d8a77982b5a9d57c5d50d",
   "entries": [
@@ -31,12 +31,12 @@
     {
       "path": "docs/p3-short-dependency-design.md",
       "source": ".worktrees/short-dependency/docs/p3-short-dependency-design.md",
-      "sha256": "a5c01c6850821e35e148d5c35e09ed03a3f870371708ca5e9abd871438460661",
-      "sourceSha256": "a5c01c6850821e35e148d5c35e09ed03a3f870371708ca5e9abd871438460661",
-      "bytes": 4945,
+      "sha256": "a9c09d5347a49bedd12e7d78bac17040b5502e32bad1d12f2eaac34ab59cda96",
+      "sourceSha256": "a9c09d5347a49bedd12e7d78bac17040b5502e32bad1d12f2eaac34ab59cda96",
+      "bytes": 6990,
       "transformation": "byte_identical_copy",
       "worktreeBranch": "p3-short-dependency",
-      "worktreeCommit": "d98fc14352ea11e25ed432b42f66649d7db61c1b"
+      "worktreeCommit": "14a166a97a50779307c8969cfa0583eb33b3a824"
     },
     {
       "path": "docs/pilot-interpretation.md",
@@ -1399,6 +1399,120 @@
       "sourceHash": "f57b680ff77f4a0b4190ede060a71f008bb1671a65d82f100fc9e6a5ffa4aff0"
     },
     {
+      "path": "p3c-preflight/capabilities.json",
+      "source": ".worktrees/short-dependency/runs/preflight-p3c/capabilities.json",
+      "sha256": "f6e37d8e0d7ca6ec1f736f2a1a4605a8768e0a8582cdfd6e4f9811cefbba8bee",
+      "sourceSha256": "f6e37d8e0d7ca6ec1f736f2a1a4605a8768e0a8582cdfd6e4f9811cefbba8bee",
+      "bytes": 424,
+      "transformation": "byte_identical_copy",
+      "worktreeBranch": "p3-short-dependency",
+      "worktreeCommit": "14a166a97a50779307c8969cfa0583eb33b3a824"
+    },
+    {
+      "path": "p3c/cases.jsonl",
+      "source": ".worktrees/short-dependency/runs/p3c-pilot/cases.jsonl",
+      "sha256": "f9c654af4d1f3060a5e25513f917f49caf675fcd06d35764daf2e142af6c1faf",
+      "sourceSha256": "f9c654af4d1f3060a5e25513f917f49caf675fcd06d35764daf2e142af6c1faf",
+      "bytes": 173496,
+      "transformation": "byte_identical_copy",
+      "worktreeBranch": "p3-short-dependency",
+      "worktreeCommit": "14a166a97a50779307c8969cfa0583eb33b3a824",
+      "synthetic_mock": false,
+      "protocolHash": "a266e4cb45980b516d6d55b5df4f91fdadcf710c97de5b940ecaa1973ea9f01c",
+      "sourceHash": "9d1d8aaf7ab703c39702f518386873b091a4d1f3f0b967ba13dc0b5f856b193c"
+    },
+    {
+      "path": "p3c/errors.csv",
+      "source": ".worktrees/short-dependency/runs/p3c-pilot/errors.csv",
+      "sha256": "0459913bf1677f47bc6d72e442287f41d017c92cadedb2bd4e5aa52ab56ae453",
+      "sourceSha256": "0459913bf1677f47bc6d72e442287f41d017c92cadedb2bd4e5aa52ab56ae453",
+      "bytes": 8678,
+      "transformation": "byte_identical_copy",
+      "worktreeBranch": "p3-short-dependency",
+      "worktreeCommit": "14a166a97a50779307c8969cfa0583eb33b3a824",
+      "synthetic_mock": false,
+      "protocolHash": "a266e4cb45980b516d6d55b5df4f91fdadcf710c97de5b940ecaa1973ea9f01c",
+      "sourceHash": "9d1d8aaf7ab703c39702f518386873b091a4d1f3f0b967ba13dc0b5f856b193c"
+    },
+    {
+      "path": "p3c/manifest.json",
+      "source": ".worktrees/short-dependency/runs/p3c-pilot/manifest.json",
+      "sha256": "eff4270660e05965bbb5af784f1b721fc4e305447b56c919171767bad9d92c85",
+      "sourceSha256": "eff4270660e05965bbb5af784f1b721fc4e305447b56c919171767bad9d92c85",
+      "bytes": 457,
+      "transformation": "byte_identical_copy",
+      "worktreeBranch": "p3-short-dependency",
+      "worktreeCommit": "14a166a97a50779307c8969cfa0583eb33b3a824",
+      "synthetic_mock": false,
+      "protocolHash": "a266e4cb45980b516d6d55b5df4f91fdadcf710c97de5b940ecaa1973ea9f01c",
+      "sourceHash": "9d1d8aaf7ab703c39702f518386873b091a4d1f3f0b967ba13dc0b5f856b193c"
+    },
+    {
+      "path": "p3c/paired-comparisons.csv",
+      "source": ".worktrees/short-dependency/runs/p3c-pilot/paired-comparisons.csv",
+      "sha256": "21859339e197d3b5ecf867f6fbefe895054412a794fc8aca7d6cc4c9a8b6d9f1",
+      "sourceSha256": "21859339e197d3b5ecf867f6fbefe895054412a794fc8aca7d6cc4c9a8b6d9f1",
+      "bytes": 2450,
+      "transformation": "byte_identical_copy",
+      "worktreeBranch": "p3-short-dependency",
+      "worktreeCommit": "14a166a97a50779307c8969cfa0583eb33b3a824",
+      "synthetic_mock": false,
+      "protocolHash": "a266e4cb45980b516d6d55b5df4f91fdadcf710c97de5b940ecaa1973ea9f01c",
+      "sourceHash": "9d1d8aaf7ab703c39702f518386873b091a4d1f3f0b967ba13dc0b5f856b193c"
+    },
+    {
+      "path": "p3c/protocol.json",
+      "source": ".worktrees/short-dependency/runs/p3c-pilot/protocol.json",
+      "sha256": "ab5a0f6308af33784598b7d614e6887da0a9557fc750acde821dda5edff02fb9",
+      "sourceSha256": "ab5a0f6308af33784598b7d614e6887da0a9557fc750acde821dda5edff02fb9",
+      "bytes": 686,
+      "transformation": "byte_identical_copy",
+      "worktreeBranch": "p3-short-dependency",
+      "worktreeCommit": "14a166a97a50779307c8969cfa0583eb33b3a824",
+      "synthetic_mock": false,
+      "protocolHash": "a266e4cb45980b516d6d55b5df4f91fdadcf710c97de5b940ecaa1973ea9f01c",
+      "sourceHash": "9d1d8aaf7ab703c39702f518386873b091a4d1f3f0b967ba13dc0b5f856b193c"
+    },
+    {
+      "path": "p3c/report.md",
+      "source": ".worktrees/short-dependency/runs/p3c-pilot/report.md",
+      "sha256": "2d4ad3bf2e663055d6d69bd3b327d8d7fa271435a7d7c86118a8f31521e682e8",
+      "sourceSha256": "2d4ad3bf2e663055d6d69bd3b327d8d7fa271435a7d7c86118a8f31521e682e8",
+      "bytes": 8428,
+      "transformation": "byte_identical_copy",
+      "worktreeBranch": "p3-short-dependency",
+      "worktreeCommit": "14a166a97a50779307c8969cfa0583eb33b3a824",
+      "synthetic_mock": false,
+      "protocolHash": "a266e4cb45980b516d6d55b5df4f91fdadcf710c97de5b940ecaa1973ea9f01c",
+      "sourceHash": "9d1d8aaf7ab703c39702f518386873b091a4d1f3f0b967ba13dc0b5f856b193c"
+    },
+    {
+      "path": "p3c/scores.jsonl",
+      "source": ".worktrees/short-dependency/runs/p3c-pilot/scores.jsonl",
+      "sha256": "42aa91a788c8162fb497770e0eeb33ded1208b4ee13d8bc1eb0e6f2cbdf34c94",
+      "sourceSha256": "42aa91a788c8162fb497770e0eeb33ded1208b4ee13d8bc1eb0e6f2cbdf34c94",
+      "bytes": 85989,
+      "transformation": "byte_identical_copy",
+      "worktreeBranch": "p3-short-dependency",
+      "worktreeCommit": "14a166a97a50779307c8969cfa0583eb33b3a824",
+      "synthetic_mock": false,
+      "protocolHash": "a266e4cb45980b516d6d55b5df4f91fdadcf710c97de5b940ecaa1973ea9f01c",
+      "sourceHash": "9d1d8aaf7ab703c39702f518386873b091a4d1f3f0b967ba13dc0b5f856b193c"
+    },
+    {
+      "path": "p3c/summary.csv",
+      "source": ".worktrees/short-dependency/runs/p3c-pilot/summary.csv",
+      "sha256": "a6bb0b15efd59172cd3068d97ff60c3dfea82956038c510b80a39e7b5ff81db4",
+      "sourceSha256": "a6bb0b15efd59172cd3068d97ff60c3dfea82956038c510b80a39e7b5ff81db4",
+      "bytes": 29645,
+      "transformation": "byte_identical_copy",
+      "worktreeBranch": "p3-short-dependency",
+      "worktreeCommit": "14a166a97a50779307c8969cfa0583eb33b3a824",
+      "synthetic_mock": false,
+      "protocolHash": "a266e4cb45980b516d6d55b5df4f91fdadcf710c97de5b940ecaa1973ea9f01c",
+      "sourceHash": "9d1d8aaf7ab703c39702f518386873b091a4d1f3f0b967ba13dc0b5f856b193c"
+    },
+    {
       "path": "pilot/cases.jsonl",
       "source": "runs/verified-pilot-p1/cases.jsonl",
       "sha256": "212ebef5a5f19ce32b342b81517dcb82b810723bfbd616629fae99e24fee8f77",
@@ -1775,11 +1889,11 @@
     },
     {
       "path": "supporting/p3-source/README.md",
-      "sha256": "797e15e98c7936f367cc900355665fdfd42b819ec09c4c71f87a6669ec0a5d50",
-      "bytes": 2735,
+      "sha256": "939e2b6cae2d6fa0065d9537535bb67cebd2ea5b39c78512adab7d5bc77eee8f",
+      "bytes": 3941,
       "transformation": "new_publication_document_describing_p3_source_snapshot_and_hash_recomputation",
       "worktreeBranch": "p3-short-dependency",
-      "worktreeCommit": "d98fc14352ea11e25ed432b42f66649d7db61c1b"
+      "worktreeCommit": "14a166a97a50779307c8969cfa0583eb33b3a824"
     },
     {
       "path": "supporting/p3-source/bench/src/main/scala/locality/bench/cli/Main.scala",
@@ -1789,7 +1903,7 @@
       "bytes": 9506,
       "transformation": "byte_identical_copy",
       "worktreeBranch": "p3-short-dependency",
-      "worktreeCommit": "d98fc14352ea11e25ed432b42f66649d7db61c1b"
+      "worktreeCommit": "14a166a97a50779307c8969cfa0583eb33b3a824"
     },
     {
       "path": "supporting/p3-source/bench/src/main/scala/locality/bench/data/CaseFamily.scala",
@@ -1799,7 +1913,7 @@
       "bytes": 2070,
       "transformation": "byte_identical_copy",
       "worktreeBranch": "p3-short-dependency",
-      "worktreeCommit": "d98fc14352ea11e25ed432b42f66649d7db61c1b"
+      "worktreeCommit": "14a166a97a50779307c8969cfa0583eb33b3a824"
     },
     {
       "path": "supporting/p3-source/bench/src/main/scala/locality/bench/data/DatasetAudit.scala",
@@ -1809,7 +1923,7 @@
       "bytes": 10641,
       "transformation": "byte_identical_copy",
       "worktreeBranch": "p3-short-dependency",
-      "worktreeCommit": "d98fc14352ea11e25ed432b42f66649d7db61c1b"
+      "worktreeCommit": "14a166a97a50779307c8969cfa0583eb33b3a824"
     },
     {
       "path": "supporting/p3-source/bench/src/main/scala/locality/bench/data/Generator.scala",
@@ -1819,7 +1933,7 @@
       "bytes": 8326,
       "transformation": "byte_identical_copy",
       "worktreeBranch": "p3-short-dependency",
-      "worktreeCommit": "d98fc14352ea11e25ed432b42f66649d7db61c1b"
+      "worktreeCommit": "14a166a97a50779307c8969cfa0583eb33b3a824"
     },
     {
       "path": "supporting/p3-source/bench/src/main/scala/locality/bench/data/Seeds.scala",
@@ -1829,7 +1943,7 @@
       "bytes": 638,
       "transformation": "byte_identical_copy",
       "worktreeBranch": "p3-short-dependency",
-      "worktreeCommit": "d98fc14352ea11e25ed432b42f66649d7db61c1b"
+      "worktreeCommit": "14a166a97a50779307c8969cfa0583eb33b3a824"
     },
     {
       "path": "supporting/p3-source/bench/src/main/scala/locality/bench/lang/Ast.scala",
@@ -1839,7 +1953,7 @@
       "bytes": 1338,
       "transformation": "byte_identical_copy",
       "worktreeBranch": "p3-short-dependency",
-      "worktreeCommit": "d98fc14352ea11e25ed432b42f66649d7db61c1b"
+      "worktreeCommit": "14a166a97a50779307c8969cfa0583eb33b3a824"
     },
     {
       "path": "supporting/p3-source/bench/src/main/scala/locality/bench/lang/EventOracle.scala",
@@ -1849,7 +1963,7 @@
       "bytes": 2237,
       "transformation": "byte_identical_copy",
       "worktreeBranch": "p3-short-dependency",
-      "worktreeCommit": "d98fc14352ea11e25ed432b42f66649d7db61c1b"
+      "worktreeCommit": "14a166a97a50779307c8969cfa0583eb33b3a824"
     },
     {
       "path": "supporting/p3-source/bench/src/main/scala/locality/bench/lang/Lexicon.scala",
@@ -1859,17 +1973,17 @@
       "bytes": 1367,
       "transformation": "byte_identical_copy",
       "worktreeBranch": "p3-short-dependency",
-      "worktreeCommit": "d98fc14352ea11e25ed432b42f66649d7db61c1b"
+      "worktreeCommit": "14a166a97a50779307c8969cfa0583eb33b3a824"
     },
     {
       "path": "supporting/p3-source/bench/src/main/scala/locality/bench/lang/Parser.scala",
       "source": ".worktrees/short-dependency/bench/src/main/scala/locality/bench/lang/Parser.scala",
-      "sha256": "6c76f95ff504182fedea3f5ce011148e77ea6e1122b9ae16f7ec7f2e9c4a5c0c",
-      "sourceSha256": "6c76f95ff504182fedea3f5ce011148e77ea6e1122b9ae16f7ec7f2e9c4a5c0c",
-      "bytes": 8926,
+      "sha256": "f31a65b9dd2f424ed87530f678b062a3e0a812bdd608d64562efc2541b4f0d56",
+      "sourceSha256": "f31a65b9dd2f424ed87530f678b062a3e0a812bdd608d64562efc2541b4f0d56",
+      "bytes": 10147,
       "transformation": "byte_identical_copy",
       "worktreeBranch": "p3-short-dependency",
-      "worktreeCommit": "d98fc14352ea11e25ed432b42f66649d7db61c1b"
+      "worktreeCommit": "14a166a97a50779307c8969cfa0583eb33b3a824"
     },
     {
       "path": "supporting/p3-source/bench/src/main/scala/locality/bench/lang/ReferenceOracle.scala",
@@ -1879,27 +1993,27 @@
       "bytes": 3454,
       "transformation": "byte_identical_copy",
       "worktreeBranch": "p3-short-dependency",
-      "worktreeCommit": "d98fc14352ea11e25ed432b42f66649d7db61c1b"
+      "worktreeCommit": "14a166a97a50779307c8969cfa0583eb33b3a824"
     },
     {
       "path": "supporting/p3-source/bench/src/main/scala/locality/bench/lang/Renderer.scala",
       "source": ".worktrees/short-dependency/bench/src/main/scala/locality/bench/lang/Renderer.scala",
-      "sha256": "d1c7a6b9b62c378042f53008832ffd81d606ed8aa890062ffd5d2b8ec41af933",
-      "sourceSha256": "d1c7a6b9b62c378042f53008832ffd81d606ed8aa890062ffd5d2b8ec41af933",
-      "bytes": 3256,
+      "sha256": "91ae122e6b517993606f0ede6cccca26648b2b966678e1268d3c062479159b43",
+      "sourceSha256": "91ae122e6b517993606f0ede6cccca26648b2b966678e1268d3c062479159b43",
+      "bytes": 3423,
       "transformation": "byte_identical_copy",
       "worktreeBranch": "p3-short-dependency",
-      "worktreeCommit": "d98fc14352ea11e25ed432b42f66649d7db61c1b"
+      "worktreeCommit": "14a166a97a50779307c8969cfa0583eb33b3a824"
     },
     {
       "path": "supporting/p3-source/bench/src/main/scala/locality/bench/lang/Syntax.scala",
       "source": ".worktrees/short-dependency/bench/src/main/scala/locality/bench/lang/Syntax.scala",
-      "sha256": "c4415bfd11255e0a0b37210896618b5cefa795156a3fa4d06d61af1dbd100029",
-      "sourceSha256": "c4415bfd11255e0a0b37210896618b5cefa795156a3fa4d06d61af1dbd100029",
-      "bytes": 1274,
+      "sha256": "5fed16c8266b0895c9cd0af53bde9912c35d9642761aa2c2631b0c2d8e33a0db",
+      "sourceSha256": "5fed16c8266b0895c9cd0af53bde9912c35d9642761aa2c2631b0c2d8e33a0db",
+      "bytes": 1937,
       "transformation": "byte_identical_copy",
       "worktreeBranch": "p3-short-dependency",
-      "worktreeCommit": "d98fc14352ea11e25ed432b42f66649d7db61c1b"
+      "worktreeCommit": "14a166a97a50779307c8969cfa0583eb33b3a824"
     },
     {
       "path": "supporting/p3-source/bench/src/main/scala/locality/bench/prompt/AstTable.scala",
@@ -1909,7 +2023,7 @@
       "bytes": 5732,
       "transformation": "byte_identical_copy",
       "worktreeBranch": "p3-short-dependency",
-      "worktreeCommit": "d98fc14352ea11e25ed432b42f66649d7db61c1b"
+      "worktreeCommit": "14a166a97a50779307c8969cfa0583eb33b3a824"
     },
     {
       "path": "supporting/p3-source/bench/src/main/scala/locality/bench/prompt/Examples.scala",
@@ -1919,17 +2033,17 @@
       "bytes": 2952,
       "transformation": "byte_identical_copy",
       "worktreeBranch": "p3-short-dependency",
-      "worktreeCommit": "d98fc14352ea11e25ed432b42f66649d7db61c1b"
+      "worktreeCommit": "14a166a97a50779307c8969cfa0583eb33b3a824"
     },
     {
       "path": "supporting/p3-source/bench/src/main/scala/locality/bench/prompt/PromptBuilder.scala",
       "source": ".worktrees/short-dependency/bench/src/main/scala/locality/bench/prompt/PromptBuilder.scala",
-      "sha256": "1483380f439bc2a978d900db0527486d99377c3d9b8dcdaa3f0709152b40be21",
-      "sourceSha256": "1483380f439bc2a978d900db0527486d99377c3d9b8dcdaa3f0709152b40be21",
-      "bytes": 12427,
+      "sha256": "acf993bff9fbf3010edb40d564ec56f4d769e26fcf045105502222280905bc9c",
+      "sourceSha256": "acf993bff9fbf3010edb40d564ec56f4d769e26fcf045105502222280905bc9c",
+      "bytes": 13031,
       "transformation": "byte_identical_copy",
       "worktreeBranch": "p3-short-dependency",
-      "worktreeCommit": "d98fc14352ea11e25ed432b42f66649d7db61c1b"
+      "worktreeCommit": "14a166a97a50779307c8969cfa0583eb33b3a824"
     },
     {
       "path": "supporting/p3-source/bench/src/main/scala/locality/bench/report/Report.scala",
@@ -1939,7 +2053,7 @@
       "bytes": 26233,
       "transformation": "byte_identical_copy",
       "worktreeBranch": "p3-short-dependency",
-      "worktreeCommit": "d98fc14352ea11e25ed432b42f66649d7db61c1b"
+      "worktreeCommit": "14a166a97a50779307c8969cfa0583eb33b3a824"
     },
     {
       "path": "supporting/p3-source/bench/src/main/scala/locality/bench/run/Budget.scala",
@@ -1949,7 +2063,7 @@
       "bytes": 2171,
       "transformation": "byte_identical_copy",
       "worktreeBranch": "p3-short-dependency",
-      "worktreeCommit": "d98fc14352ea11e25ed432b42f66649d7db61c1b"
+      "worktreeCommit": "14a166a97a50779307c8969cfa0583eb33b3a824"
     },
     {
       "path": "supporting/p3-source/bench/src/main/scala/locality/bench/run/Freeze.scala",
@@ -1959,7 +2073,7 @@
       "bytes": 4600,
       "transformation": "byte_identical_copy",
       "worktreeBranch": "p3-short-dependency",
-      "worktreeCommit": "d98fc14352ea11e25ed432b42f66649d7db61c1b"
+      "worktreeCommit": "14a166a97a50779307c8969cfa0583eb33b3a824"
     },
     {
       "path": "supporting/p3-source/bench/src/main/scala/locality/bench/run/JsonSupport.scala",
@@ -1969,7 +2083,7 @@
       "bytes": 2330,
       "transformation": "byte_identical_copy",
       "worktreeBranch": "p3-short-dependency",
-      "worktreeCommit": "d98fc14352ea11e25ed432b42f66649d7db61c1b"
+      "worktreeCommit": "14a166a97a50779307c8969cfa0583eb33b3a824"
     },
     {
       "path": "supporting/p3-source/bench/src/main/scala/locality/bench/run/MockClient.scala",
@@ -1979,7 +2093,7 @@
       "bytes": 1532,
       "transformation": "byte_identical_copy",
       "worktreeBranch": "p3-short-dependency",
-      "worktreeCommit": "d98fc14352ea11e25ed432b42f66649d7db61c1b"
+      "worktreeCommit": "14a166a97a50779307c8969cfa0583eb33b3a824"
     },
     {
       "path": "supporting/p3-source/bench/src/main/scala/locality/bench/run/Planner.scala",
@@ -1989,7 +2103,7 @@
       "bytes": 13892,
       "transformation": "byte_identical_copy",
       "worktreeBranch": "p3-short-dependency",
-      "worktreeCommit": "d98fc14352ea11e25ed432b42f66649d7db61c1b"
+      "worktreeCommit": "14a166a97a50779307c8969cfa0583eb33b3a824"
     },
     {
       "path": "supporting/p3-source/bench/src/main/scala/locality/bench/run/Preflight.scala",
@@ -1999,7 +2113,7 @@
       "bytes": 6403,
       "transformation": "byte_identical_copy",
       "worktreeBranch": "p3-short-dependency",
-      "worktreeCommit": "d98fc14352ea11e25ed432b42f66649d7db61c1b"
+      "worktreeCommit": "14a166a97a50779307c8969cfa0583eb33b3a824"
     },
     {
       "path": "supporting/p3-source/bench/src/main/scala/locality/bench/run/Protocol.scala",
@@ -2009,7 +2123,7 @@
       "bytes": 6339,
       "transformation": "byte_identical_copy",
       "worktreeBranch": "p3-short-dependency",
-      "worktreeCommit": "d98fc14352ea11e25ed432b42f66649d7db61c1b"
+      "worktreeCommit": "14a166a97a50779307c8969cfa0583eb33b3a824"
     },
     {
       "path": "supporting/p3-source/bench/src/main/scala/locality/bench/run/Results.scala",
@@ -2019,7 +2133,7 @@
       "bytes": 4978,
       "transformation": "byte_identical_copy",
       "worktreeBranch": "p3-short-dependency",
-      "worktreeCommit": "d98fc14352ea11e25ed432b42f66649d7db61c1b"
+      "worktreeCommit": "14a166a97a50779307c8969cfa0583eb33b3a824"
     },
     {
       "path": "supporting/p3-source/bench/src/main/scala/locality/bench/run/RunStore.scala",
@@ -2029,7 +2143,7 @@
       "bytes": 3640,
       "transformation": "byte_identical_copy",
       "worktreeBranch": "p3-short-dependency",
-      "worktreeCommit": "d98fc14352ea11e25ed432b42f66649d7db61c1b"
+      "worktreeCommit": "14a166a97a50779307c8969cfa0583eb33b3a824"
     },
     {
       "path": "supporting/p3-source/bench/src/main/scala/locality/bench/run/Runner.scala",
@@ -2039,7 +2153,7 @@
       "bytes": 22180,
       "transformation": "byte_identical_copy",
       "worktreeBranch": "p3-short-dependency",
-      "worktreeCommit": "d98fc14352ea11e25ed432b42f66649d7db61c1b"
+      "worktreeCommit": "14a166a97a50779307c8969cfa0583eb33b3a824"
     },
     {
       "path": "supporting/p3-source/bench/src/main/scala/locality/bench/score/GenerationGrader.scala",
@@ -2049,7 +2163,7 @@
       "bytes": 1304,
       "transformation": "byte_identical_copy",
       "worktreeBranch": "p3-short-dependency",
-      "worktreeCommit": "d98fc14352ea11e25ed432b42f66649d7db61c1b"
+      "worktreeCommit": "14a166a97a50779307c8969cfa0583eb33b3a824"
     },
     {
       "path": "supporting/p3-source/bench/src/main/scala/locality/bench/score/LookupGrader.scala",
@@ -2059,7 +2173,7 @@
       "bytes": 811,
       "transformation": "byte_identical_copy",
       "worktreeBranch": "p3-short-dependency",
-      "worktreeCommit": "d98fc14352ea11e25ed432b42f66649d7db61c1b"
+      "worktreeCommit": "14a166a97a50779307c8969cfa0583eb33b3a824"
     },
     {
       "path": "supporting/p3-source/bench/src/main/scala/locality/bench/score/Score.scala",
@@ -2069,7 +2183,7 @@
       "bytes": 2903,
       "transformation": "byte_identical_copy",
       "worktreeBranch": "p3-short-dependency",
-      "worktreeCommit": "d98fc14352ea11e25ed432b42f66649d7db61c1b"
+      "worktreeCommit": "14a166a97a50779307c8969cfa0583eb33b3a824"
     },
     {
       "path": "supporting/p3-source/bench/src/main/scala/locality/bench/score/StackGrader.scala",
@@ -2079,7 +2193,7 @@
       "bytes": 1586,
       "transformation": "byte_identical_copy",
       "worktreeBranch": "p3-short-dependency",
-      "worktreeCommit": "d98fc14352ea11e25ed432b42f66649d7db61c1b"
+      "worktreeCommit": "14a166a97a50779307c8969cfa0583eb33b3a824"
     },
     {
       "path": "supporting/p3-source/bench/src/main/scala/locality/bench/stats/ClusterBootstrap.scala",
@@ -2089,7 +2203,7 @@
       "bytes": 1560,
       "transformation": "byte_identical_copy",
       "worktreeBranch": "p3-short-dependency",
-      "worktreeCommit": "d98fc14352ea11e25ed432b42f66649d7db61c1b"
+      "worktreeCommit": "14a166a97a50779307c8969cfa0583eb33b3a824"
     },
     {
       "path": "supporting/p3-source/bench/src/main/scala/locality/bench/stats/PairedAnalysis.scala",
@@ -2099,7 +2213,7 @@
       "bytes": 7107,
       "transformation": "byte_identical_copy",
       "worktreeBranch": "p3-short-dependency",
-      "worktreeCommit": "d98fc14352ea11e25ed432b42f66649d7db61c1b"
+      "worktreeCommit": "14a166a97a50779307c8969cfa0583eb33b3a824"
     },
     {
       "path": "supporting/p3-source/bench/src/test/scala/locality/bench/BenchTests.scala",
@@ -2109,7 +2223,7 @@
       "bytes": 1890,
       "transformation": "byte_identical_copy",
       "worktreeBranch": "p3-short-dependency",
-      "worktreeCommit": "d98fc14352ea11e25ed432b42f66649d7db61c1b"
+      "worktreeCommit": "14a166a97a50779307c8969cfa0583eb33b3a824"
     },
     {
       "path": "supporting/p3-source/bench/src/test/scala/locality/bench/CliTests.scala",
@@ -2119,17 +2233,17 @@
       "bytes": 2621,
       "transformation": "byte_identical_copy",
       "worktreeBranch": "p3-short-dependency",
-      "worktreeCommit": "d98fc14352ea11e25ed432b42f66649d7db61c1b"
+      "worktreeCommit": "14a166a97a50779307c8969cfa0583eb33b3a824"
     },
     {
       "path": "supporting/p3-source/bench/src/test/scala/locality/bench/CloseDiagnosticsTests.scala",
       "source": ".worktrees/short-dependency/bench/src/test/scala/locality/bench/CloseDiagnosticsTests.scala",
-      "sha256": "aa93021e8c0d252ed265376221a5705d0db6a5a62a190740f7e523a4d59aeffc",
-      "sourceSha256": "aa93021e8c0d252ed265376221a5705d0db6a5a62a190740f7e523a4d59aeffc",
-      "bytes": 11877,
+      "sha256": "9b70270c53befa13f5e5af9fad34fd43ca7ae545c72865bd79859b760e9c93a3",
+      "sourceSha256": "9b70270c53befa13f5e5af9fad34fd43ca7ae545c72865bd79859b760e9c93a3",
+      "bytes": 19021,
       "transformation": "byte_identical_copy",
       "worktreeBranch": "p3-short-dependency",
-      "worktreeCommit": "d98fc14352ea11e25ed432b42f66649d7db61c1b"
+      "worktreeCommit": "14a166a97a50779307c8969cfa0583eb33b3a824"
     },
     {
       "path": "supporting/p3-source/bench/src/test/scala/locality/bench/DistributionTests.scala",
@@ -2139,7 +2253,7 @@
       "bytes": 2773,
       "transformation": "byte_identical_copy",
       "worktreeBranch": "p3-short-dependency",
-      "worktreeCommit": "d98fc14352ea11e25ed432b42f66649d7db61c1b"
+      "worktreeCommit": "14a166a97a50779307c8969cfa0583eb33b3a824"
     },
     {
       "path": "supporting/p3-source/bench/src/test/scala/locality/bench/FreezeTests.scala",
@@ -2149,7 +2263,7 @@
       "bytes": 4070,
       "transformation": "byte_identical_copy",
       "worktreeBranch": "p3-short-dependency",
-      "worktreeCommit": "d98fc14352ea11e25ed432b42f66649d7db61c1b"
+      "worktreeCommit": "14a166a97a50779307c8969cfa0583eb33b3a824"
     },
     {
       "path": "supporting/p3-source/bench/src/test/scala/locality/bench/GeneratorTests.scala",
@@ -2159,7 +2273,7 @@
       "bytes": 4263,
       "transformation": "byte_identical_copy",
       "worktreeBranch": "p3-short-dependency",
-      "worktreeCommit": "d98fc14352ea11e25ed432b42f66649d7db61c1b"
+      "worktreeCommit": "14a166a97a50779307c8969cfa0583eb33b3a824"
     },
     {
       "path": "supporting/p3-source/bench/src/test/scala/locality/bench/ImportTests.scala",
@@ -2169,7 +2283,7 @@
       "bytes": 34665,
       "transformation": "byte_identical_copy",
       "worktreeBranch": "p3-short-dependency",
-      "worktreeCommit": "d98fc14352ea11e25ed432b42f66649d7db61c1b"
+      "worktreeCommit": "14a166a97a50779307c8969cfa0583eb33b3a824"
     },
     {
       "path": "supporting/p3-source/bench/src/test/scala/locality/bench/OracleTests.scala",
@@ -2179,17 +2293,17 @@
       "bytes": 2213,
       "transformation": "byte_identical_copy",
       "worktreeBranch": "p3-short-dependency",
-      "worktreeCommit": "d98fc14352ea11e25ed432b42f66649d7db61c1b"
+      "worktreeCommit": "14a166a97a50779307c8969cfa0583eb33b3a824"
     },
     {
       "path": "supporting/p3-source/bench/src/test/scala/locality/bench/PromptTests.scala",
       "source": ".worktrees/short-dependency/bench/src/test/scala/locality/bench/PromptTests.scala",
-      "sha256": "ba40c661850301191ece3033c7bcebc8fe1a889d2374524a60b36fbcc97fba5c",
-      "sourceSha256": "ba40c661850301191ece3033c7bcebc8fe1a889d2374524a60b36fbcc97fba5c",
-      "bytes": 5788,
+      "sha256": "a27ebff5dcd1b11a3ed26b9c562d0490db5159eb24af5fcddc29c8280d8008e8",
+      "sourceSha256": "a27ebff5dcd1b11a3ed26b9c562d0490db5159eb24af5fcddc29c8280d8008e8",
+      "bytes": 7069,
       "transformation": "byte_identical_copy",
       "worktreeBranch": "p3-short-dependency",
-      "worktreeCommit": "d98fc14352ea11e25ed432b42f66649d7db61c1b"
+      "worktreeCommit": "14a166a97a50779307c8969cfa0583eb33b3a824"
     },
     {
       "path": "supporting/p3-source/bench/src/test/scala/locality/bench/ReportTests.scala",
@@ -2199,7 +2313,7 @@
       "bytes": 3911,
       "transformation": "byte_identical_copy",
       "worktreeBranch": "p3-short-dependency",
-      "worktreeCommit": "d98fc14352ea11e25ed432b42f66649d7db61c1b"
+      "worktreeCommit": "14a166a97a50779307c8969cfa0583eb33b3a824"
     },
     {
       "path": "supporting/p3-source/bench/src/test/scala/locality/bench/RunnerSafetyTests.scala",
@@ -2209,17 +2323,17 @@
       "bytes": 16521,
       "transformation": "byte_identical_copy",
       "worktreeBranch": "p3-short-dependency",
-      "worktreeCommit": "d98fc14352ea11e25ed432b42f66649d7db61c1b"
+      "worktreeCommit": "14a166a97a50779307c8969cfa0583eb33b3a824"
     },
     {
       "path": "supporting/p3-source/bench/src/test/scala/locality/bench/RunnerTests.scala",
       "source": ".worktrees/short-dependency/bench/src/test/scala/locality/bench/RunnerTests.scala",
-      "sha256": "a055b11d1069496198e5989c4c6d153b8f18ae2744115baab186f2350732a9a4",
-      "sourceSha256": "a055b11d1069496198e5989c4c6d153b8f18ae2744115baab186f2350732a9a4",
-      "bytes": 8283,
+      "sha256": "46f367279a44fa6476294f788d5ddad5928216858fd7ac577455f1b747a638a6",
+      "sourceSha256": "46f367279a44fa6476294f788d5ddad5928216858fd7ac577455f1b747a638a6",
+      "bytes": 8186,
       "transformation": "byte_identical_copy",
       "worktreeBranch": "p3-short-dependency",
-      "worktreeCommit": "d98fc14352ea11e25ed432b42f66649d7db61c1b"
+      "worktreeCommit": "14a166a97a50779307c8969cfa0583eb33b3a824"
     },
     {
       "path": "supporting/p3-source/bench/src/test/scala/locality/bench/ScoreTests.scala",
@@ -2229,7 +2343,7 @@
       "bytes": 4395,
       "transformation": "byte_identical_copy",
       "worktreeBranch": "p3-short-dependency",
-      "worktreeCommit": "d98fc14352ea11e25ed432b42f66649d7db61c1b"
+      "worktreeCommit": "14a166a97a50779307c8969cfa0583eb33b3a824"
     },
     {
       "path": "supporting/p3-source/bench/src/test/scala/locality/bench/StatsTests.scala",
@@ -2239,17 +2353,17 @@
       "bytes": 3980,
       "transformation": "byte_identical_copy",
       "worktreeBranch": "p3-short-dependency",
-      "worktreeCommit": "d98fc14352ea11e25ed432b42f66649d7db61c1b"
+      "worktreeCommit": "14a166a97a50779307c8969cfa0583eb33b3a824"
     },
     {
       "path": "supporting/p3-source/bench/src/test/scala/locality/bench/SyntaxTests.scala",
       "source": ".worktrees/short-dependency/bench/src/test/scala/locality/bench/SyntaxTests.scala",
-      "sha256": "897937b4d02c6b1c4ee3136003dda9845c4c875dbfbe2aa6075a4a3c76c01a3d",
-      "sourceSha256": "897937b4d02c6b1c4ee3136003dda9845c4c875dbfbe2aa6075a4a3c76c01a3d",
-      "bytes": 14512,
+      "sha256": "b6b5ad4c94236da2aa034b9047ef21a0961d5d697110d92ceba9ce85104115d2",
+      "sourceSha256": "b6b5ad4c94236da2aa034b9047ef21a0961d5d697110d92ceba9ce85104115d2",
+      "bytes": 26340,
       "transformation": "byte_identical_copy",
       "worktreeBranch": "p3-short-dependency",
-      "worktreeCommit": "d98fc14352ea11e25ed432b42f66649d7db61c1b"
+      "worktreeCommit": "14a166a97a50779307c8969cfa0583eb33b3a824"
     },
     {
       "path": "supporting/p3-source/bench/src/test/scala/locality/bench/TableTests.scala",
@@ -2259,7 +2373,7 @@
       "bytes": 2268,
       "transformation": "byte_identical_copy",
       "worktreeBranch": "p3-short-dependency",
-      "worktreeCommit": "d98fc14352ea11e25ed432b42f66649d7db61c1b"
+      "worktreeCommit": "14a166a97a50779307c8969cfa0583eb33b3a824"
     },
     {
       "path": "supporting/p3-source/bench/src/test/scala/locality/bench/TaskTests.scala",
@@ -2269,7 +2383,7 @@
       "bytes": 1064,
       "transformation": "byte_identical_copy",
       "worktreeBranch": "p3-short-dependency",
-      "worktreeCommit": "d98fc14352ea11e25ed432b42f66649d7db61c1b"
+      "worktreeCommit": "14a166a97a50779307c8969cfa0583eb33b3a824"
     },
     {
       "path": "supporting/p3-source/bench/src/test/scala/locality/bench/run/PreflightTests.scala",
@@ -2279,7 +2393,7 @@
       "bytes": 17384,
       "transformation": "byte_identical_copy",
       "worktreeBranch": "p3-short-dependency",
-      "worktreeCommit": "d98fc14352ea11e25ed432b42f66649d7db61c1b"
+      "worktreeCommit": "14a166a97a50779307c8969cfa0583eb33b3a824"
     },
     {
       "path": "supporting/p3-source/build.sbt",
@@ -2289,17 +2403,17 @@
       "bytes": 1085,
       "transformation": "byte_identical_copy",
       "worktreeBranch": "p3-short-dependency",
-      "worktreeCommit": "d98fc14352ea11e25ed432b42f66649d7db61c1b"
+      "worktreeCommit": "14a166a97a50779307c8969cfa0583eb33b3a824"
     },
     {
       "path": "supporting/p3-source/configs/p3.md",
       "source": ".worktrees/short-dependency/configs/p3.md",
-      "sha256": "1a3afe3f8e311cf296cdf4f7f49daa04106464d6c798c74aeffbfc9e020e9697",
-      "sourceSha256": "1a3afe3f8e311cf296cdf4f7f49daa04106464d6c798c74aeffbfc9e020e9697",
-      "bytes": 573,
+      "sha256": "6362576c0b641498ab236ab3c87fff416e369b7e13119a7ec231ed01c82e7932",
+      "sourceSha256": "6362576c0b641498ab236ab3c87fff416e369b7e13119a7ec231ed01c82e7932",
+      "bytes": 951,
       "transformation": "byte_identical_copy",
       "worktreeBranch": "p3-short-dependency",
-      "worktreeCommit": "d98fc14352ea11e25ed432b42f66649d7db61c1b"
+      "worktreeCommit": "14a166a97a50779307c8969cfa0583eb33b3a824"
     },
     {
       "path": "supporting/p3-source/configs/p3a-pilot.json",
@@ -2309,7 +2423,7 @@
       "bytes": 385,
       "transformation": "byte_identical_copy",
       "worktreeBranch": "p3-short-dependency",
-      "worktreeCommit": "d98fc14352ea11e25ed432b42f66649d7db61c1b"
+      "worktreeCommit": "14a166a97a50779307c8969cfa0583eb33b3a824"
     },
     {
       "path": "supporting/p3-source/configs/p3b-fq-pilot.json",
@@ -2319,7 +2433,7 @@
       "bytes": 414,
       "transformation": "byte_identical_copy",
       "worktreeBranch": "p3-short-dependency",
-      "worktreeCommit": "d98fc14352ea11e25ed432b42f66649d7db61c1b"
+      "worktreeCommit": "14a166a97a50779307c8969cfa0583eb33b3a824"
     },
     {
       "path": "supporting/p3-source/configs/p3b-short-pilot.json",
@@ -2329,17 +2443,27 @@
       "bytes": 417,
       "transformation": "byte_identical_copy",
       "worktreeBranch": "p3-short-dependency",
-      "worktreeCommit": "d98fc14352ea11e25ed432b42f66649d7db61c1b"
+      "worktreeCommit": "14a166a97a50779307c8969cfa0583eb33b3a824"
+    },
+    {
+      "path": "supporting/p3-source/configs/p3c-pilot.json",
+      "source": ".worktrees/short-dependency/configs/p3c-pilot.json",
+      "sha256": "764c1b1223e86002fa6563d6dbef490d3ecc609e357ce90a32b19f0f41f8c771",
+      "sourceSha256": "764c1b1223e86002fa6563d6dbef490d3ecc609e357ce90a32b19f0f41f8c771",
+      "bytes": 399,
+      "transformation": "byte_identical_copy",
+      "worktreeBranch": "p3-short-dependency",
+      "worktreeCommit": "14a166a97a50779307c8969cfa0583eb33b3a824"
     },
     {
       "path": "supporting/p3-source/docs/p3-short-dependency-design.md",
       "source": ".worktrees/short-dependency/docs/p3-short-dependency-design.md",
-      "sha256": "a5c01c6850821e35e148d5c35e09ed03a3f870371708ca5e9abd871438460661",
-      "sourceSha256": "a5c01c6850821e35e148d5c35e09ed03a3f870371708ca5e9abd871438460661",
-      "bytes": 4945,
+      "sha256": "a9c09d5347a49bedd12e7d78bac17040b5502e32bad1d12f2eaac34ab59cda96",
+      "sourceSha256": "a9c09d5347a49bedd12e7d78bac17040b5502e32bad1d12f2eaac34ab59cda96",
+      "bytes": 6990,
       "transformation": "byte_identical_copy",
       "worktreeBranch": "p3-short-dependency",
-      "worktreeCommit": "d98fc14352ea11e25ed432b42f66649d7db61c1b"
+      "worktreeCommit": "14a166a97a50779307c8969cfa0583eb33b3a824"
     },
     {
       "path": "supporting/p3-source/llm-core/src/main/scala/locality/llm/CountDiagnostics.scala",
@@ -2349,7 +2473,7 @@
       "bytes": 373,
       "transformation": "byte_identical_copy",
       "worktreeBranch": "p3-short-dependency",
-      "worktreeCommit": "d98fc14352ea11e25ed432b42f66649d7db61c1b"
+      "worktreeCommit": "14a166a97a50779307c8969cfa0583eb33b3a824"
     },
     {
       "path": "supporting/p3-source/llm-core/src/main/scala/locality/llm/HttpTransport.scala",
@@ -2359,7 +2483,7 @@
       "bytes": 6735,
       "transformation": "byte_identical_copy",
       "worktreeBranch": "p3-short-dependency",
-      "worktreeCommit": "d98fc14352ea11e25ed432b42f66649d7db61c1b"
+      "worktreeCommit": "14a166a97a50779307c8969cfa0583eb33b3a824"
     },
     {
       "path": "supporting/p3-source/llm-core/src/main/scala/locality/llm/Model.scala",
@@ -2369,7 +2493,7 @@
       "bytes": 1266,
       "transformation": "byte_identical_copy",
       "worktreeBranch": "p3-short-dependency",
-      "worktreeCommit": "d98fc14352ea11e25ed432b42f66649d7db61c1b"
+      "worktreeCommit": "14a166a97a50779307c8969cfa0583eb33b3a824"
     },
     {
       "path": "supporting/p3-source/llm-core/src/main/scala/locality/llm/OpenAiResponsesClient.scala",
@@ -2379,7 +2503,7 @@
       "bytes": 10664,
       "transformation": "byte_identical_copy",
       "worktreeBranch": "p3-short-dependency",
-      "worktreeCommit": "d98fc14352ea11e25ed432b42f66649d7db61c1b"
+      "worktreeCommit": "14a166a97a50779307c8969cfa0583eb33b3a824"
     },
     {
       "path": "supporting/p3-source/llm-core/src/main/scala/locality/llm/ResponsesRequestJson.scala",
@@ -2389,7 +2513,7 @@
       "bytes": 1138,
       "transformation": "byte_identical_copy",
       "worktreeBranch": "p3-short-dependency",
-      "worktreeCommit": "d98fc14352ea11e25ed432b42f66649d7db61c1b"
+      "worktreeCommit": "14a166a97a50779307c8969cfa0583eb33b3a824"
     },
     {
       "path": "supporting/p3-source/llm-core/src/main/scala/locality/llm/RetryPolicy.scala",
@@ -2399,7 +2523,7 @@
       "bytes": 2469,
       "transformation": "byte_identical_copy",
       "worktreeBranch": "p3-short-dependency",
-      "worktreeCommit": "d98fc14352ea11e25ed432b42f66649d7db61c1b"
+      "worktreeCommit": "14a166a97a50779307c8969cfa0583eb33b3a824"
     },
     {
       "path": "supporting/p3-source/llm-core/src/main/scala/locality/llm/json/Json.scala",
@@ -2409,7 +2533,7 @@
       "bytes": 1051,
       "transformation": "byte_identical_copy",
       "worktreeBranch": "p3-short-dependency",
-      "worktreeCommit": "d98fc14352ea11e25ed432b42f66649d7db61c1b"
+      "worktreeCommit": "14a166a97a50779307c8969cfa0583eb33b3a824"
     },
     {
       "path": "supporting/p3-source/llm-core/src/main/scala/locality/llm/json/JsonParser.scala",
@@ -2419,7 +2543,7 @@
       "bytes": 5500,
       "transformation": "byte_identical_copy",
       "worktreeBranch": "p3-short-dependency",
-      "worktreeCommit": "d98fc14352ea11e25ed432b42f66649d7db61c1b"
+      "worktreeCommit": "14a166a97a50779307c8969cfa0583eb33b3a824"
     },
     {
       "path": "supporting/p3-source/llm-core/src/main/scala/locality/llm/json/JsonWriter.scala",
@@ -2429,7 +2553,7 @@
       "bytes": 2352,
       "transformation": "byte_identical_copy",
       "worktreeBranch": "p3-short-dependency",
-      "worktreeCommit": "d98fc14352ea11e25ed432b42f66649d7db61c1b"
+      "worktreeCommit": "14a166a97a50779307c8969cfa0583eb33b3a824"
     },
     {
       "path": "supporting/p3-source/llm-core/src/test/scala/locality/llm/AllTests.scala",
@@ -2439,7 +2563,7 @@
       "bytes": 1310,
       "transformation": "byte_identical_copy",
       "worktreeBranch": "p3-short-dependency",
-      "worktreeCommit": "d98fc14352ea11e25ed432b42f66649d7db61c1b"
+      "worktreeCommit": "14a166a97a50779307c8969cfa0583eb33b3a824"
     },
     {
       "path": "supporting/p3-source/llm-core/src/test/scala/locality/llm/HttpTests.scala",
@@ -2449,7 +2573,7 @@
       "bytes": 15554,
       "transformation": "byte_identical_copy",
       "worktreeBranch": "p3-short-dependency",
-      "worktreeCommit": "d98fc14352ea11e25ed432b42f66649d7db61c1b"
+      "worktreeCommit": "14a166a97a50779307c8969cfa0583eb33b3a824"
     },
     {
       "path": "supporting/p3-source/llm-core/src/test/scala/locality/llm/JsonTests.scala",
@@ -2459,7 +2583,7 @@
       "bytes": 2987,
       "transformation": "byte_identical_copy",
       "worktreeBranch": "p3-short-dependency",
-      "worktreeCommit": "d98fc14352ea11e25ed432b42f66649d7db61c1b"
+      "worktreeCommit": "14a166a97a50779307c8969cfa0583eb33b3a824"
     },
     {
       "path": "supporting/p3-source/llm-core/src/test/scala/locality/llm/ResponseTests.scala",
@@ -2469,7 +2593,7 @@
       "bytes": 5565,
       "transformation": "byte_identical_copy",
       "worktreeBranch": "p3-short-dependency",
-      "worktreeCommit": "d98fc14352ea11e25ed432b42f66649d7db61c1b"
+      "worktreeCommit": "14a166a97a50779307c8969cfa0583eb33b3a824"
     },
     {
       "path": "supporting/p3-source/project/build.properties",
@@ -2479,17 +2603,17 @@
       "bytes": 20,
       "transformation": "byte_identical_copy",
       "worktreeBranch": "p3-short-dependency",
-      "worktreeCommit": "d98fc14352ea11e25ed432b42f66649d7db61c1b"
+      "worktreeCommit": "14a166a97a50779307c8969cfa0583eb33b3a824"
     },
     {
       "path": "supporting/p3.md",
       "source": ".worktrees/short-dependency/configs/p3.md",
-      "sha256": "1a3afe3f8e311cf296cdf4f7f49daa04106464d6c798c74aeffbfc9e020e9697",
-      "sourceSha256": "1a3afe3f8e311cf296cdf4f7f49daa04106464d6c798c74aeffbfc9e020e9697",
-      "bytes": 573,
+      "sha256": "6362576c0b641498ab236ab3c87fff416e369b7e13119a7ec231ed01c82e7932",
+      "sourceSha256": "6362576c0b641498ab236ab3c87fff416e369b7e13119a7ec231ed01c82e7932",
+      "bytes": 951,
       "transformation": "byte_identical_copy",
       "worktreeBranch": "p3-short-dependency",
-      "worktreeCommit": "d98fc14352ea11e25ed432b42f66649d7db61c1b"
+      "worktreeCommit": "14a166a97a50779307c8969cfa0583eb33b3a824"
     },
     {
       "path": "supporting/p3a-pilot.json",
@@ -2520,6 +2644,16 @@
       "transformation": "byte_identical_copy",
       "worktreeBranch": "p3-short-dependency",
       "worktreeCommit": "d98fc14352ea11e25ed432b42f66649d7db61c1b"
+    },
+    {
+      "path": "supporting/p3c-pilot.json",
+      "source": ".worktrees/short-dependency/configs/p3c-pilot.json",
+      "sha256": "764c1b1223e86002fa6563d6dbef490d3ecc609e357ce90a32b19f0f41f8c771",
+      "sourceSha256": "764c1b1223e86002fa6563d6dbef490d3ecc609e357ce90a32b19f0f41f8c771",
+      "bytes": 399,
+      "transformation": "byte_identical_copy",
+      "worktreeBranch": "p3-short-dependency",
+      "worktreeCommit": "14a166a97a50779307c8969cfa0583eb33b3a824"
     },
     {
       "path": "supporting/pilot-named-end-ast-to-source-prompt.txt",

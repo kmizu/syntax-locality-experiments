@@ -6,8 +6,11 @@ object SyntaxTests:
   def run(): Unit =
     val program = Program(Vector(Stmt.Scope(Kind.FuncScope, "n_abcdefgh", Vector(Stmt.Let("x_a", 1234)))))
     val endings = Vector("}", "end", "end func", "end func n_abcdefgh", "end junk z_aaaaaaaa", "end 1")
-    assert(SyntaxStyle.values.toVector == SyntaxStyle.original ++ Vector(SyntaxStyle.DepthEnd, SyntaxStyle.Indent), "seven styles in fixed order")
-    for (style, ending) <- SyntaxStyle.values.toVector.filterNot(_ == SyntaxStyle.Indent).zip(endings) do
+    assert(SyntaxStyle.values.toVector == SyntaxStyle.original ++ Vector(SyntaxStyle.DepthEnd, SyntaxStyle.Indent, SyntaxStyle.IndentNamedEnd, SyntaxStyle.IndentGenericEnd), "nine styles in fixed order")
+    assert(SyntaxStyle.original.size == 5 && SyntaxStyle.values.count(_.indented) == 3 && SyntaxStyle.values.count(!_.closingLine) == 1)
+    val unindented = SyntaxStyle.values.toVector.filterNot(_.indented)
+    assert(unindented.size == endings.size, "every unindented style has a golden ending")
+    for (style, ending) <- unindented.zip(endings) do
       val spec = RenderSpec(style, Lexicon.natural)
       val opening = if style == SyntaxStyle.Braces then "func n_abcdefgh {" else "func n_abcdefgh"
       val expected = s"$opening\nlet x_a 1234\n$ending\n"
@@ -41,6 +44,7 @@ object SyntaxTests:
     })
     depthEnd()
     indent()
+    combined()
     metamorphic()
     CloseDiagnosticsTests.parser()
     ImportTests.parser()
@@ -159,6 +163,125 @@ object SyntaxTests:
       val cut = CutPoint(count, "q_abcdefgh", "x_a")
       val deepPrefix = Parser.parsePrefix(Renderer.renderPrefix(sixteen, cut, spec), spec).toOption.get
       assert(EventOracle.observe(deepPrefix) == ReferenceOracle.observe(sixteen, cut), s"depth-16 prefix $count")
+
+  /** Combined cues H/I: significant indentation plus a named or generic closing line; both must agree. */
+  private def combined(): Unit =
+    val named = RenderSpec(SyntaxStyle.IndentNamedEnd, Lexicon.natural)
+    val generic = RenderSpec(SyntaxStyle.IndentGenericEnd, Lexicon.natural)
+    val namedGolden =
+      "let x_a 1000\nunit n_outeraaa\n  let x_a 2000\n  func n_middleaa\n    let x_a 3000\n    area n_inneraaa\n      nop p_abcdefgh\n    end area n_inneraaa\n    nop p_ijklmnop\n  end func n_middleaa\n" +
+        "  area n_emptyaaa\n  end area n_emptyaaa\n  let x_b 4000\nend unit n_outeraaa\nnop p_qrstuvwx\n"
+    val genericGolden =
+      "let x_a 1000\nunit n_outeraaa\n  let x_a 2000\n  func n_middleaa\n    let x_a 3000\n    area n_inneraaa\n      nop p_abcdefgh\n    end\n    nop p_ijklmnop\n  end\n" +
+        "  area n_emptyaaa\n  end\n  let x_b 4000\nend\nnop p_qrstuvwx\n"
+    assert(Renderer.renderProgram(nested, named) == namedGolden, "indent_named_end golden")
+    assert(Renderer.renderProgram(nested, generic) == genericGolden, "indent_generic_end golden")
+    for spec <- Vector(named, generic) do
+      assert(Renderer.renderProgram(nested, spec.copy(indentation = false)) == Renderer.renderProgram(nested, spec.copy(indentation = true)), "combined styles ignore the indentation flag")
+      assert(Parser.parseProgram(Renderer.renderProgram(nested, spec), spec) == Right(nested), s"${spec.style} round trip")
+      // The combined renderings are the indent rendering with closing lines inserted, and the closer-style rendering with indentation added.
+      val indentOnly = Renderer.renderProgram(nested, RenderSpec(SyntaxStyle.Indent, Lexicon.natural))
+      assert(Renderer.renderProgram(nested, spec).linesIterator.filterNot(_.trim.startsWith("end")).mkString("", "\n", "\n") == indentOnly, s"${spec.style} keeps the indent layout")
+      val flatStyle = if spec.style == SyntaxStyle.IndentNamedEnd then SyntaxStyle.NamedEnd else SyntaxStyle.GenericEnd
+      assert(Renderer.renderProgram(nested, spec).linesIterator.map(_.trim).mkString("", "\n", "\n") == Renderer.renderProgram(nested, RenderSpec(flatStyle, Lexicon.natural)), s"${spec.style} keeps the closer lines")
+      for lexicon <- Lexicon.fixedNonce do
+        val nonce = spec.copy(lexicon = lexicon)
+        assert(Parser.parseProgram(Renderer.renderProgram(nested, nonce), nonce) == Right(nested), s"${spec.style} nonce round trip ${lexicon.setId}")
+      // Trailing whitespace, CRLF, and blank lines are tolerated; the empty block still needs its closing line.
+      val closingEmpty = if spec.style == SyntaxStyle.IndentNamedEnd then "end area n_emptyaaa" else "end"
+      val closingOuter = if spec.style == SyntaxStyle.IndentNamedEnd then "end unit n_outeraaa" else "end"
+      assert(Parser.parseProgram(s"unit n_outeraaa\r\n  area n_emptyaaa \t\r\n  $closingEmpty\r\n\r\n  let x_b 4000\r\n$closingOuter\r\n", spec) ==
+        Right(Program(Vector(Stmt.Scope(Kind.UnitScope, "n_outeraaa", Vector(Stmt.Scope(Kind.AreaScope, "n_emptyaaa", Vector.empty), Stmt.Let("x_b", 4000)))))))
+      // Prefix mode through every cut point: the probe sits at the current depth and no dedent is needed.
+      val events = locality.bench.data.Generator.events(nested)
+      for count <- 0 to events.size do
+        val cut = CutPoint(count, "q_abcdefgh", "x_a")
+        val prefix = Renderer.renderPrefix(nested, cut, spec)
+        val parsed = Parser.parsePrefix(prefix, spec).toOption.getOrElse(throw new AssertionError(s"${spec.style} prefix $count rejected: ${Parser.parsePrefix(prefix, spec)}"))
+        assert(parsed.events == events.take(count), s"${spec.style} prefix events $count")
+        if count > 0 then assert(EventOracle.observe(parsed) == ReferenceOracle.observe(nested, cut), s"${spec.style} prefix oracle $count")
+        assert(Parser.parseProgram(prefix, spec).swap.toOption.get.code == "unexpected_probe")
+      assert(Parser.parsePrefix("unit n_outeraaa\n  let x_a 1234\n", spec).swap.toOption.get.code == "missing_probe")
+      assert(Parser.parsePrefix(s"unit n_outeraaa\n  let x_a 1234\n$closingOuter\nprobe q_abcdefgh x_a\n  nop p_abcdefgh\n", spec).swap.toOption.get.code == "after_probe")
+      val sixteen = deep(16)
+      val rendered = Renderer.renderProgram(sixteen, spec)
+      assert(rendered.linesIterator.exists(_.startsWith("  " * 16 + "nop ")) && !rendered.linesIterator.exists(_.startsWith("  " * 17)))
+      assert(rendered.linesIterator.count(_.trim.startsWith("end")) == 16 && rendered.linesIterator.exists(_.startsWith("  " * 15 + "end")))
+      assert(Parser.parseProgram(rendered, spec) == Right(sixteen), s"depth-16 ${spec.style} round trip")
+      val deepEvents = locality.bench.data.Generator.events(sixteen)
+      for count <- Vector(deepEvents.size - 1, deepEvents.size - 8, deepEvents.size - 16, deepEvents.size) do
+        val cut = CutPoint(count, "q_abcdefgh", "x_a")
+        val deepPrefix = Parser.parsePrefix(Renderer.renderPrefix(sixteen, cut, spec), spec).toOption.get
+        assert(EventOracle.observe(deepPrefix) == ReferenceOracle.observe(sixteen, cut), s"depth-16 ${spec.style} prefix $count")
+    val prefix10 = Renderer.renderPrefix(nested, CutPoint(10, "q_abcdefgh", "x_a"), named)
+    assert(prefix10.endsWith("      nop p_abcdefgh\n    end area n_inneraaa\n    nop p_ijklmnop\n  end func n_middleaa\n  probe q_abcdefgh x_a\n"), prefix10)
+    // Cross-style AST equality against every other style under all nine lexicons.
+    for lexicon <- Lexicon.natural +: Lexicon.fixedNonce; program <- Vector(nested, deep(16)) do
+      val fromCombined = Vector(SyntaxStyle.IndentNamedEnd, SyntaxStyle.IndentGenericEnd).map { style =>
+        val spec = RenderSpec(style, lexicon)
+        Parser.parseProgram(Renderer.renderProgram(program, spec), spec)
+      }
+      val fromOthers = SyntaxStyle.values.toVector.filterNot(s => s.indented && s.closingLine).map { style =>
+        val spec = RenderSpec(style, lexicon)
+        Parser.parseProgram(Renderer.renderProgram(program, spec), spec)
+      }
+      assert((fromCombined ++ fromOthers).distinct == Vector(Right(program)), s"combined styles disagree with the others under ${lexicon.setId}")
+    def reject(spec: RenderSpec)(text: String, code: String, line: Int): Unit =
+      for parsed <- Vector(Parser.parseProgram(text, spec), Parser.parsePrefix(text + "probe q_abcdefgh x_a\n", spec)) do
+        val error = parsed.swap.toOption.getOrElse(throw new AssertionError(s"${spec.style} accepted: $text"))
+        assert(error.code == code && error.line == line && error.column == 1, s"${spec.style}: $text -> $error (expected $code line $line)")
+    val rejectNamed = reject(named)
+    val rejectGeneric = reject(generic)
+    // New codes: a dedent without a closing line, and a closing line at the wrong indentation.
+    rejectNamed("unit n_outeraaa\n  let x_a 1234\nnop p_abcdefgh\n", "missing_close", 3)
+    rejectNamed("unit n_outeraaa\nlet x_a 1234\nend unit n_outeraaa\n", "missing_close", 2)
+    rejectNamed("unit n_outeraaa\n  func n_middleaa\n    let x_a 1234\n  nop p_abcdefgh\n", "missing_close", 4)
+    rejectNamed("unit n_outeraaa\n  func n_middleaa\n    let x_a 1234\n  end func n_middleaa\nnop p_abcdefgh\n", "missing_close", 5)
+    rejectNamed("unit n_outeraaa\n  func n_middleaa\n    let x_a 1234\nnop p_abcdefgh\n", "missing_close", 4)
+    rejectGeneric("unit n_outeraaa\n  let x_a 1234\nnop p_abcdefgh\n", "missing_close", 3)
+    rejectGeneric("unit n_outeraaa\n  func n_middleaa\n    let x_a 1234\n  end\nnop p_abcdefgh\n", "missing_close", 5)
+    rejectNamed("unit n_outeraaa\n  let x_a 1234\n  end unit n_outeraaa\n", "close_indent_mismatch", 3)
+    rejectNamed("unit n_outeraaa\n  let x_a 1234\n    end unit n_outeraaa\n", "close_indent_mismatch", 3)
+    rejectNamed("unit n_outeraaa\n  func n_middleaa\n    let x_a 1234\nend func n_middleaa\n", "close_indent_mismatch", 4)
+    rejectNamed("unit n_outeraaa\n  func n_middleaa\n    let x_a 1234\n    end func n_middleaa\n", "close_indent_mismatch", 4)
+    rejectNamed("unit n_outeraaa\n  func n_middleaa\n    let x_a 1234\n  end func n_middleaa\n  end unit n_outeraaa\n", "close_indent_mismatch", 5)
+    rejectGeneric("unit n_outeraaa\n  let x_a 1234\n  end\n", "close_indent_mismatch", 3)
+    rejectGeneric("unit n_outeraaa\n  func n_middleaa\n    let x_a 1234\nend\n", "close_indent_mismatch", 4)
+    // Indentation errors are reported exactly as in the indent style, on closing lines too.
+    for r <- Vector(rejectNamed, rejectGeneric) do
+      r("unit n_outeraaa\n\tlet x_a 1234\n", "invalid_indent", 2)
+      r("unit n_outeraaa\n \tlet x_a 1234\n", "invalid_indent", 2)
+      r("unit n_outeraaa\n   let x_a 1234\n", "invalid_indent", 2)
+      r(" let x_a 1234\n", "invalid_indent", 1)
+      r("unit n_outeraaa\n  let x_a 1234\n   end\n", "invalid_indent", 3)
+      r("  let x_a 1234\n", "unexpected_indent", 1)
+      r("unit n_outeraaa\n    let x_a 1234\n", "unexpected_indent", 2)
+      r("unit n_outeraaa\n  let x_a 1234\n    nop p_abcdefgh\n", "unexpected_indent", 3)
+      r("unit n_outeraaa\n  func n_middleaa\n    let x_a 1234\n   nop p_abcdefgh\n", "invalid_dedent", 4)
+      r("unit n_outeraaa\n  func n_middleaa\n    let x_a 1234\n nop p_abcdefgh\n", "invalid_dedent", 4)
+      r("unit n_outeraaa\n  func n_middleaa\n    let x_a 1234\n end\n", "invalid_dedent", 4)
+      r("unit n_outeraaa {\n  let x_a 1234\n", "invalid_open", 1)
+      r("unit n_outeraaa\n  let x_a 1234\n  unsupported\n", "unknown_statement", 3)
+    // Label errors follow the explicit-closer styles once the indentation is right.
+    rejectNamed("unit n_outeraaa\n  let x_a 1234\nend func n_outeraaa\n", "close_kind_mismatch", 3)
+    rejectNamed("unit n_outeraaa\n  let x_a 1234\nend unit n_ijklmnop\n", "close_name_mismatch", 3)
+    rejectNamed("unit n_outeraaa\n  let x_a 1234\nend area n_ijklmnop\n", "close_kind_mismatch", 3)
+    for bad <- Vector("end", "end unit", "end unit n_outeraaa extra", "}", "} unit n_outeraaa", "end 1") do
+      rejectNamed(s"unit n_outeraaa\n  let x_a 1234\n$bad\n", "close_mismatch", 3)
+    for bad <- Vector("end unit n_outeraaa", "end unit", "}", "end 1") do
+      rejectGeneric(s"unit n_outeraaa\n  let x_a 1234\n$bad\n", "close_mismatch", 3)
+    // Underflow and unclosed scopes behave as in the other closer styles; end of input never closes a block.
+    for (spec, r, closing) <- Vector((named, rejectNamed, "end unit n_outeraaa"), (generic, rejectGeneric, "end")) do
+      r(s"$closing\n", "underflow", 1)
+      r(s"  $closing\n", "underflow", 1)
+      r(s"unit n_outeraaa\n  let x_a 1234\n$closing\n$closing\n", "underflow", 4)
+      val unclosed = Parser.parseProgram("unit n_outeraaa\n  let x_a 1234\n", spec).swap.toOption.get
+      assert(unclosed.code == "unclosed_scope" && unclosed.line == 3, s"${spec.style}: $unclosed")
+      assert(Parser.parseProgram("unit n_outeraaa\n", spec).swap.toOption.get.code == "unclosed_scope")
+      assert(Parser.parseProgram("unit n_outeraaa\n  func n_middleaa\n    let x_a 1234\n", spec).swap.toOption.get.code == "unclosed_scope")
+      assert(Parser.parsePrefix("unit n_outeraaa\n  let x_a 1234\n  probe q_abcdefgh x_a\n", spec).isRight, "open blocks are intentional in a prefix")
+      assert(Parser.parsePrefix("unit n_outeraaa\n  let x_a 1234\nprobe q_abcdefgh x_a\n", spec).swap.toOption.get.code == "missing_close")
+      assert(Parser.parsePrefix("unit n_outeraaa\n  let x_a 1234\n    probe q_abcdefgh x_a\n", spec).swap.toOption.get.code == "unexpected_indent")
 
   /** Renaming consistency: the same AST (and its renamed variant) parses to the same Program from every style's rendering. */
   private def metamorphic(): Unit =

@@ -8,6 +8,15 @@ enum SyntaxStyle(val id: String):
   case PaddedEnd extends SyntaxStyle("padded_end")
   case DepthEnd extends SyntaxStyle("depth_end")
   case Indent extends SyntaxStyle("indent")
+  case IndentNamedEnd extends SyntaxStyle("indent_named_end")
+  case IndentGenericEnd extends SyntaxStyle("indent_generic_end")
+
+  /** Leading whitespace is structure: every body line sits exactly two spaces deeper than its opener. */
+  def indented: Boolean = this == Indent || this == IndentNamedEnd || this == IndentGenericEnd
+  /** Every block ends with an explicit closing line; only the pure indent style closes blocks by dedent. */
+  def closingLine: Boolean = this != Indent
+  /** The closing line repeats the opener's kind keyword and name (`named_end` and its indented variant). */
+  def namedClose: Boolean = this == NamedEnd || this == IndentNamedEnd
 
 object SyntaxStyle:
   def fromId(id: String): Option[SyntaxStyle] = values.find(_.id == id)

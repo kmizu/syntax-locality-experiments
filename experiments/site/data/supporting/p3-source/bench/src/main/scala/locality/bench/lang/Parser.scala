@@ -12,7 +12,9 @@ object Parser:
     parse(source, spec, true).flatMap(_.prefix.toRight(ParseError("missing_probe", 1, 1, "Prefix requires a final probe")))
 
   private def parse(source: String, spec: RenderSpec, prefixMode: Boolean): Either[ParseError, Result] = boundary:
-    val indentStyle = spec.style == SyntaxStyle.Indent
+    val indentStyle = spec.style.indented
+    // Combined styles check both cues: indentation must be exact, and a block closes only through its closing line.
+    val closingLines = spec.style.closingLine
     var frames = Vector(Frame(None, "", Vector.empty, Set.empty))
     var events = Vector.empty[ParsedEvent]
     var probe: Option[ParsedPrefix] = None
@@ -35,20 +37,30 @@ object Parser:
       val line = if indentStyle then withoutReturn.replaceAll("[ \\t]+$", "") else withoutReturn.trim
       if line.nonEmpty then
         if probe.nonEmpty then break(failure("after_probe", number, "Statements after probe are forbidden"))
+        val words = line.trim.split("[ \\t]+", -1).toVector
+        val first = words.head
+        // A closing line is any line led by a closer token; its label is checked only after its indentation.
+        val closer = closingLines && (first == "}" || first == spec.lexicon.end)
         if indentStyle then
           val leading = line.takeWhile(c => c == ' ' || c == '\t')
           if leading.contains('\t') then break(failure("invalid_indent", number, "Tab characters are not allowed in indentation"))
           val width = leading.length
           // Every open frame's body sits at exactly two spaces per nesting level; frames.size - 1 is the current depth.
           val currentWidth = 2 * (frames.size - 1)
+          if closer && frames.size == 1 then break(failure("underflow", number, "Close in global scope"))
           if width > currentWidth then
             if width % 2 != 0 then break(failure("invalid_indent", number, s"Indentation of $width spaces is not a multiple of two"))
+            if closer then break(failure("close_indent_mismatch", number, s"Closing line indented by $width spaces; expected ${currentWidth - 2}"))
             break(failure("unexpected_indent", number, s"Unexpected indentation of $width spaces; expected $currentWidth"))
           else if width < currentWidth then
             if width % 2 != 0 then break(failure("invalid_dedent", number, s"Dedent to $width spaces does not match an open block level"))
-            while 2 * (frames.size - 1) > width do closeInnermost()
-        val words = line.trim.split("[ \\t]+", -1).toVector
-        val first = words.head
+            if closer then
+              if width != currentWidth - 2 then break(failure("close_indent_mismatch", number, s"Closing line indented by $width spaces; expected ${currentWidth - 2}"))
+            else if closingLines then break(failure("missing_close", number, s"Dedent to $width spaces without a closing line for the open block"))
+            else while 2 * (frames.size - 1) > width do closeInnermost()
+          else if closer then
+            // A closing line at body indentation belongs to no block opened at that level.
+            break(failure("close_indent_mismatch", number, s"Closing line indented by $width spaces; expected ${currentWidth - 2}"))
         if first == "probe" then
           if !prefixMode then break(failure("unexpected_probe", number, "Full programs cannot contain probe"))
           if words.size != 3 || !words(1).matches("q_[a-z]{8}") || !words(2).matches("x_[a-f]") then
@@ -87,33 +99,33 @@ object Parser:
           val kind = spec.lexicon.kind(first).get
           frames :+= Frame(Some(kind), words(1), Vector.empty, Set.empty)
           events :+= ParsedEvent.Open(kind, words(1))
-        else if !indentStyle && (first == "}" || first == spec.lexicon.end) then
+        else if closer then
           if frames.size == 1 then break(failure("underflow", number, "Close in global scope"))
           val closing = frames.last
           val expected = spec.style match
             case SyntaxStyle.Braces => Vector("}")
-            case SyntaxStyle.GenericEnd => Vector(spec.lexicon.end)
+            case SyntaxStyle.GenericEnd | SyntaxStyle.IndentGenericEnd => Vector(spec.lexicon.end)
             case SyntaxStyle.TypedEnd => Vector(spec.lexicon.end, spec.lexicon.keyword(closing.kind.get))
-            case SyntaxStyle.NamedEnd => Vector(spec.lexicon.end, spec.lexicon.keyword(closing.kind.get), closing.name)
+            case SyntaxStyle.NamedEnd | SyntaxStyle.IndentNamedEnd => Vector(spec.lexicon.end, spec.lexicon.keyword(closing.kind.get), closing.name)
             case SyntaxStyle.PaddedEnd => Vector(spec.lexicon.end, "junk", "z_aaaaaaaa")
             case SyntaxStyle.DepthEnd => Vector(spec.lexicon.end, (frames.size - 1).toString)
             case SyntaxStyle.Indent => throw new IllegalStateException("indent style has no closing line")
           if words != expected then
-            val labelled = spec.style == SyntaxStyle.TypedEnd || spec.style == SyntaxStyle.NamedEnd
+            val labelled = spec.style == SyntaxStyle.TypedEnd || spec.style.namedClose
             val wellFormed = labelled && first == spec.lexicon.end && words.size == expected.size &&
               spec.lexicon.kind(words(1)).nonEmpty &&
-              (spec.style != SyntaxStyle.NamedEnd || words(2).matches("n_[a-z]{8}"))
+              (!spec.style.namedClose || words(2).matches("n_[a-z]{8}"))
             val depthFormed = spec.style == SyntaxStyle.DepthEnd && first == spec.lexicon.end && words.size == 2 && words(1).matches("0|[1-9][0-9]*")
             val code =
               if wellFormed && words(1) != expected(1) then "close_kind_mismatch"
-              else if wellFormed && spec.style == SyntaxStyle.NamedEnd && words(2) != closing.name then "close_name_mismatch"
+              else if wellFormed && spec.style.namedClose && words(2) != closing.name then "close_name_mismatch"
               else if depthFormed then "close_depth_mismatch"
               else "close_mismatch"
             break(failure(code, number, s"Expected ${expected.mkString(" ")}"))
           closeInnermost()
         else break(failure("unknown_statement", number, "Unknown or unsupported statement"))
-    if indentStyle && !prefixMode then
-      // End of input closes every open indentation block.
+    if !closingLines && !prefixMode then
+      // End of input closes every open indentation block; combined styles still require their closing lines.
       while frames.size > 1 do closeInnermost()
     if !prefixMode && frames.size != 1 then failure("unclosed_scope", sourceLines.size, "Full program ends with open scopes")
     else if prefixMode && probe.isEmpty then failure("missing_probe", sourceLines.size, "Prefix requires a final probe")

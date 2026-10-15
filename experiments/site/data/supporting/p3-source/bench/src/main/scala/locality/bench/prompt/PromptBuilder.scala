@@ -133,8 +133,11 @@ object PromptBuilder:
       case SyntaxStyle.PaddedEnd => s"Close the innermost open block with ${l.end} junk z_aaaaaaaa on one line. The suffix junk z_aaaaaaaa is identical for every block and carries no scope information.\n"
       case SyntaxStyle.DepthEnd => s"Close the innermost open block with ${l.end} K on one line. K is the nesting depth of the block being closed: 1 for a block opened at top level, 2 for a block opened directly inside a depth 1 block, and so on.\n"
       case SyntaxStyle.Indent => "Blocks have no closing line; see the indentation rule below.\n"
+      case SyntaxStyle.IndentNamedEnd => s"Close the innermost open block with ${l.end} KIND NAME on its own line, indented exactly like that block's opening line. KIND and NAME must repeat the block's opening keyword and name.\n"
+      case SyntaxStyle.IndentGenericEnd => s"Close the innermost open block with ${l.end} on its own line, indented exactly like that block's opening line.\n"
     val layout = spec.style match
       case SyntaxStyle.Indent => "Indentation is significant. Each line inside a block is indented by exactly two more spaces than the line that opened the block; top-level lines are not indented. A block ends when a line with less indentation appears or when the program ends. There is no closing line.\n"
+      case SyntaxStyle.IndentNamedEnd | SyntaxStyle.IndentGenericEnd => "Indentation is significant. Each line inside a block is indented by exactly two more spaces than the line that opened the block; top-level lines are not indented. The closing line of a block uses the same indentation as its opening line, and indentation and closing lines must agree.\n"
       case _ => "Indentation has no meaning; scope is determined solely by explicit opening and closing lines.\n"
     kinds + opening + closing +
       s"KIND is one of ${l.unit}, ${l.func}, ${l.area}; NAME is n_ followed by exactly eight lowercase letters and is unique in the program.\n" +

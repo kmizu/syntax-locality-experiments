@@ -36,6 +36,15 @@ object PromptTests:
             assert(grammar.contains("Use one statement per line. Indentation is significant. Each line inside a block is indented by exactly two more spaces than the line that opened the block; top-level lines are not indented. A block ends when a line with less indentation appears or when the program ends. There is no closing line.\n"))
             assert(!grammar.contains("Indentation has no meaning"))
             assert(built.metrics.closeStart.isEmpty && built.metrics.closeEnd.isEmpty, "indent style has no closing span")
+          case SyntaxStyle.IndentNamedEnd | SyntaxStyle.IndentGenericEnd =>
+            val closing = if test.spec.style == SyntaxStyle.IndentNamedEnd then
+              "Close the innermost open block with end KIND NAME on its own line, indented exactly like that block's opening line. KIND and NAME must repeat the block's opening keyword and name.\n"
+            else "Close the innermost open block with end on its own line, indented exactly like that block's opening line.\n"
+            assert(grammar.contains("Open a block with KIND NAME on one line.\n" + closing), s"${test.spec.style} closing sentence")
+            assert(grammar.contains("Use one statement per line. Indentation is significant. Each line inside a block is indented by exactly two more spaces than the line that opened the block; top-level lines are not indented. The closing line of a block uses the same indentation as its opening line, and indentation and closing lines must agree.\n"))
+            assert(!grammar.contains("Indentation has no meaning") && !grammar.contains("There is no closing line") && !grammar.contains("when the program ends"))
+            if task != Task.AstToSource && test.view.contains(View.AfterClose) then
+              assert(built.metrics.closeStart.isDefined && built.metrics.closeEnd.isDefined, s"${test.spec.style} has a closing span")
           case _ =>
             assert(grammar.contains("Indentation has no meaning; scope is determined solely by explicit opening and closing lines.\n"))
         if task != Task.AstToSource then

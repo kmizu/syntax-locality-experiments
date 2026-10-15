@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAtUtc": "2026-10-14T14:20:00.0000000Z",
+  "generatedAtUtc": "2026-10-15T01:30:00.0000000Z",
   "synthetic_mock": false,
   "syntheticLanguageExamples": true,
   "resultSource": "Saved Scala-graded reports and CSVs; no new grades or statistical estimates were computed for publication.",
@@ -208,9 +208,14 @@
     "worktreeBranch": "p3-short-dependency",
     "worktreeCommits": [
       "6aed57575a56abcbd2dc111a535db1535a54a836",
-      "d98fc14352ea11e25ed432b42f66649d7db61c1b"
+      "d98fc14352ea11e25ed432b42f66649d7db61c1b",
+      "39d69491f2fc8cd5bcd5086327aeed82ace34506",
+      "14a166a97a50779307c8969cfa0583eb33b3a824"
     ],
     "sourceHash": "f57b680ff77f4a0b4190ede060a71f008bb1671a65d82f100fc9e6a5ffa4aff0",
+    "sourceHashScope": "p3a, p3b-fq and p3b-short (worktree at d98fc14; earlier snapshot, recomputation matched)",
+    "p3cSourceHash": "9d1d8aaf7ab703c39702f518386873b091a4d1f3f0b967ba13dc0b5f856b193c",
+    "p3cSourceHashScope": "p3c (worktree at 14a166a; the published supporting/p3-source/ snapshot, recomputation matched)",
     "sourceHashRecomputedFromPublishedSnapshot": true,
     "sourceSnapshot": "supporting/p3-source/README.md",
     "publicRootSourcesContainP3Code": false,
@@ -234,11 +239,13 @@
     ],
     "samplingUnit": "structural_family",
     "preflight": "p3-preflight/capabilities.json",
+    "preflightP3c": "p3c-preflight/capabilities.json",
     "design": "docs/p3-short-dependency-design.md",
     "configs": [
       "supporting/p3a-pilot.json",
       "supporting/p3b-fq-pilot.json",
       "supporting/p3b-short-pilot.json",
+      "supporting/p3c-pilot.json",
       "supporting/p3.md"
     ],
     "inferentialCiStatus": "not_computed",
@@ -313,7 +320,81 @@
         },
         "protocolHash": "256e503ae744e165c61804b9f6cf92e13073bd66e8f66069f4799f0cd3d4c9d0",
         "report": "p3b-short/report.md"
+      },
+      "p3c": {
+        "planned": 288,
+        "terminal": 288,
+        "modelEvaluable": 288,
+        "correct": 255,
+        "infrastructureMissing": 0,
+        "families": 36,
+        "familiesIdenticalToP3a": true,
+        "tasks": [
+          "ast_to_source"
+        ],
+        "styles": [
+          "named_end",
+          "indent",
+          "indent_named_end",
+          "indent_generic_end"
+        ],
+        "strictCorrectOf72": {
+          "named_end": 67,
+          "indent": 64,
+          "indent_named_end": 64,
+          "indent_generic_end": 60
+        },
+        "depth16Filler128CorrectOf8": {
+          "named_end": 7,
+          "indent": 7,
+          "indent_named_end": 7,
+          "indent_generic_end": 3
+        },
+        "failureBreakdown": {
+          "valid_syntax_wrong_ast": 30,
+          "invalid_generated_syntax": 3,
+          "invalid_generated_syntax_parse_error_code": "invalid_nop",
+          "indentation_or_closing_line_parse_errors_in_combined_styles": 0
+        },
+        "protocolHash": "a266e4cb45980b516d6d55b5df4f91fdadcf710c97de5b940ecaa1973ea9f01c",
+        "sourceHash": "9d1d8aaf7ab703c39702f518386873b091a4d1f3f0b967ba13dc0b5f856b193c",
+        "report": "p3c/report.md"
       }
+    },
+    "pairedDiscordanceP3c": {
+      "pairing": "named_end versus each other style within p3c; familyId + lexicalRegime + depth + filler; model-evaluable pairs only",
+      "named_end_vs_indent_named_end": {
+        "pairs": 72,
+        "bothCorrect": 61,
+        "namedEndOnly": 6,
+        "otherOnly": 3,
+        "bothWrong": 2
+      },
+      "named_end_vs_indent": {
+        "pairs": 72,
+        "bothCorrect": 60,
+        "namedEndOnly": 7,
+        "otherOnly": 4,
+        "bothWrong": 1
+      },
+      "named_end_vs_indent_generic_end": {
+        "pairs": 72,
+        "bothCorrect": 56,
+        "namedEndOnly": 11,
+        "otherOnly": 4,
+        "bothWrong": 1
+      }
+    },
+    "replicateAgreementNamedEnd": {
+      "pairing": "p3a named_end versus p3c named_end; identical 72 requests matched by requestHash (same AST, rendering, examples and lexicon); separate generations",
+      "pairs": 72,
+      "p3aCorrect": 62,
+      "p3cCorrect": 67,
+      "bothCorrect": 59,
+      "p3aOnlyCorrect": 3,
+      "p3cOnlyCorrect": 8,
+      "bothWrong": 2,
+      "interpretation": "Single-replicate differences of roughly five per 72 are within run-to-run variation."
     },
     "pairedDiscordance": {
       "pairing": "familyId + task + view + lexicalRegime; model-evaluable pairs only",
@@ -339,7 +420,7 @@
         "bothWrong": 0
       }
     },
-    "note": "Three live exploratory P3 pilots executed on 2026-10-14 from the isolated p3-short-dependency worktree after preflight p3-preflight/capabilities.json passed. Every planned trial is terminal with zero infrastructure missingness, zero refusal and zero incomplete; synthetic_mock=false. One replicate, no frozen confirmatory plan, no confidence intervals; differences are descriptive. Short-distance cues alone (G depth_end) do not reach D named_end; redundant explicit information (D, fq import paths) performs best in this pilot; filler 128 lowers D/G/F at depth >= 8. Not evidence that the short-dependency hypothesis is supported. Raw trials/ bodies, budget and usage ledgers remain private; cases, scores, summaries, paired comparisons, errors, reports, failure inputs and protocols are published byte-identically. P3 is not pooled with P1, main or P2."
+    "note": "Three live exploratory P3 pilots executed on 2026-10-14 from the isolated p3-short-dependency worktree after preflight p3-preflight/capabilities.json passed, and a fourth (p3c, combined indentation + closing-line cues: indent_named_end H and indent_generic_end I with named_end D and indent F re-run on P3a's 36 families) on 2026-10-15 after preflight p3c-preflight/capabilities.json passed. Every planned trial is terminal with zero infrastructure missingness, zero refusal and zero incomplete; synthetic_mock=false. One replicate, no frozen confirmatory plan, no confidence intervals; differences are descriptive. Short-distance cues alone (G depth_end) do not reach D named_end; redundant explicit information (D, fq import paths) performs best in this pilot; filler 128 lowers D/G/F at depth >= 8. Combining indentation with named closers (H) did not improve on named closers alone in p3c (64 vs 67 of 72), and the identical named_end requests scored 62 in p3a and 67 in p3c, so single-replicate differences of about five per 72 are within run-to-run variation. Not evidence that the short-dependency hypothesis is supported. Raw trials/ bodies, budget and usage ledgers remain private; cases, scores, summaries, paired comparisons, errors, reports, failure inputs and protocols are published byte-identically. P3 runs are not pooled with P1, main, P2 or each other."
   },
   "promptExemplar": {
     "trialId": "024fb909d07dabef1ff984148793631a0780afdb01b69520a4154755b8637602",

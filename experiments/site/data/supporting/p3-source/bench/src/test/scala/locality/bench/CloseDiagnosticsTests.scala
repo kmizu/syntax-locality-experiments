@@ -58,6 +58,7 @@ object CloseDiagnosticsTests:
     }
     depthEnd(lexicons)
     indent(lexicons)
+    combined(lexicons)
 
   def depthEnd(lexicons: Vector[Lexicon] = allLexicons): Unit =
     lexicons.foreach { lexicon =>
@@ -91,6 +92,57 @@ object CloseDiagnosticsTests:
       checkError(s"${lexicon.unit} n_abcdefgh\n  ${lexicon.func} n_ijklmnop\n    ${lexicon.let} x_a 1234\n   ${lexicon.nop} p_abcdefgh\n", spec, "invalid_dedent", 4)
       checkError(s"${lexicon.unit} n_abcdefgh\n  ${lexicon.func} n_ijklmnop\n    ${lexicon.let} x_a 1234\n ${lexicon.nop} p_abcdefgh\n", spec, "invalid_dedent", 4)
       checkError(s"${lexicon.func} n_abcdefgh {\n", spec, "invalid_open", 1)
+    }
+
+  /** Indented sources for the combined styles; `closing` is the closing-line text for the single block. */
+  private def indentedSource(lexicon: Lexicon, closing: String): String =
+    s"${lexicon.func} n_abcdefgh\n  ${lexicon.let} x_a 1234\n$closing\n"
+
+  def combined(lexicons: Vector[Lexicon] = allLexicons): Unit =
+    lexicons.foreach { lexicon =>
+      val named = RenderSpec(SyntaxStyle.IndentNamedEnd, lexicon)
+      val generic = RenderSpec(SyntaxStyle.IndentGenericEnd, lexicon)
+      val namedClose = s"${lexicon.end} ${lexicon.func} n_abcdefgh"
+      assert(Parser.parseProgram(indentedSource(lexicon, namedClose), named) == Right(gold))
+      assert(Parser.parseProgram(indentedSource(lexicon, lexicon.end), generic) == Right(gold))
+      for (spec, closing) <- Vector((named, namedClose), (generic, lexicon.end)) do
+        // The closing line must sit at the opener's indentation, not the body's or deeper.
+        checkError(indentedSource(lexicon, s"  $closing"), spec, "close_indent_mismatch")
+        checkError(indentedSource(lexicon, s"    $closing"), spec, "close_indent_mismatch")
+        checkError(indentedSource(lexicon, s"   $closing"), spec, "invalid_indent")
+        // A dedent closes nothing without a closing line, including an unindented body and the end of input.
+        checkError(indentedSource(lexicon, s"${lexicon.nop} p_abcdefgh"), spec, "missing_close")
+        checkError(s"${lexicon.func} n_abcdefgh\n${lexicon.let} x_a 1234\n$closing\n", spec, "missing_close", 2)
+        val unclosed = Parser.parseProgram(s"${lexicon.func} n_abcdefgh\n  ${lexicon.let} x_a 1234\n", spec).swap.toOption.get
+        assert(unclosed.code == "unclosed_scope" && unclosed.line == 3 && unclosed.column == 1, s"${spec.style}: $unclosed")
+        assert(Parser.parsePrefix(s"${lexicon.func} n_abcdefgh\n  ${lexicon.let} x_a 1234\n  probe q_abcdefgh x_a\n", spec).isRight, "Open scopes are intentional in a reading prefix")
+        checkError(s"$closing\n", spec, "underflow", 1)
+        checkError(s"  $closing\n", spec, "underflow", 1)
+        // Inherited indentation codes.
+        checkError(s"${lexicon.func} n_abcdefgh\n\t${lexicon.let} x_a 1234\n", spec, "invalid_indent", 2)
+        checkError(s"${lexicon.func} n_abcdefgh\n   ${lexicon.let} x_a 1234\n", spec, "invalid_indent", 2)
+        checkError(s"${lexicon.func} n_abcdefgh\n    ${lexicon.let} x_a 1234\n", spec, "unexpected_indent", 2)
+        checkError(indentedSource(lexicon, s"    ${lexicon.nop} p_abcdefgh"), spec, "unexpected_indent")
+        checkError(s"${lexicon.unit} n_abcdefgh\n  ${lexicon.func} n_ijklmnop\n    ${lexicon.let} x_a 1234\n   ${lexicon.nop} p_abcdefgh\n", spec, "invalid_dedent", 4)
+        checkError(s"${lexicon.unit} n_abcdefgh\n  ${lexicon.func} n_ijklmnop\n    ${lexicon.let} x_a 1234\n $closing\n", spec, "invalid_dedent", 4)
+        checkError(s"${lexicon.func} n_abcdefgh {\n  ${lexicon.let} x_a 1234\n", spec, "invalid_open", 1)
+        checkError(indentedSource(lexicon, closing) + "unsupported\n", spec, "unknown_statement", 4)
+      // Inherited label codes: H follows named_end, I follows generic_end.
+      checkError(indentedSource(lexicon, s"${lexicon.end} ${lexicon.area} n_abcdefgh"), named, "close_kind_mismatch")
+      checkError(indentedSource(lexicon, s"${lexicon.end} ${lexicon.func} n_ijklmnop"), named, "close_name_mismatch")
+      checkError(indentedSource(lexicon, s"${lexicon.end} ${lexicon.area} n_ijklmnop"), named, "close_kind_mismatch")
+      for ending <- Vector(lexicon.end, s"${lexicon.end} ${lexicon.area}", s"${lexicon.end} ${lexicon.func} n_bad", s"${lexicon.end} ${lexicon.area} n_ijklmnop extra", s"${lexicon.end} unknownkind n_abcdefgh", "}", s"} ${lexicon.func} n_abcdefgh", s"${lexicon.end} 1") do
+        checkError(indentedSource(lexicon, ending), named, "close_mismatch")
+      for ending <- Vector(s"${lexicon.end} ${lexicon.func}", s"${lexicon.end} ${lexicon.func} n_abcdefgh", "}", s"${lexicon.end} 1") do
+        checkError(indentedSource(lexicon, ending), generic, "close_mismatch")
+      // Precedence with nesting: the indentation of the closing line is checked before its label.
+      val start = s"${lexicon.unit} n_abcdefgh\n  ${lexicon.func} n_ijklmnop\n    ${lexicon.let} x_a 1234\n"
+      checkError(start + s"  ${lexicon.end} ${lexicon.func} n_qrstuvwx\n${lexicon.end} ${lexicon.unit} n_abcdefgh\n", named, "close_name_mismatch", 4)
+      checkError(start + s"  ${lexicon.end} ${lexicon.func} n_ijklmnop\n  ${lexicon.end} ${lexicon.unit} n_abcdefgh\n", named, "close_indent_mismatch", 5)
+      checkError(start + s"${lexicon.end} ${lexicon.area} n_ijklmnop\n", named, "close_indent_mismatch", 4)
+      assert(Parser.parseProgram(start + s"  ${lexicon.end} ${lexicon.func} n_ijklmnop\n${lexicon.end} ${lexicon.unit} n_abcdefgh\n", named).isRight)
+      assert(Parser.parseProgram(start + s"  ${lexicon.end}\n${lexicon.end}\n", generic).isRight)
+      checkError(start + s"${lexicon.end}\n${lexicon.end}\n", generic, "close_indent_mismatch", 4)
     }
 
   def grading(lexicons: Vector[Lexicon] = allLexicons): Unit =
@@ -137,6 +189,27 @@ object CloseDiagnosticsTests:
       }
       val indentGold = s"${lexicon.func} n_abcdefgh\n  ${lexicon.let} x_a 1234\n"
       assert(GenerationGrader.grade(gold, GradingResponse("completed", indentGold), indentSpec).strictCorrect)
+      // Combined styles: a closing line at the wrong indentation, and a dedent without a closing line.
+      for (style, closing) <- Vector((SyntaxStyle.IndentNamedEnd, s"${lexicon.end} ${lexicon.func} n_abcdefgh"), (SyntaxStyle.IndentGenericEnd, lexicon.end)) do
+        val spec = RenderSpec(style, lexicon)
+        assert(GenerationGrader.grade(gold, GradingResponse("completed", indentGold + closing + "\n"), spec).strictCorrect, s"$style gold")
+        val combinedErrors = Vector(
+          (indentGold + s"  $closing\n", "close_indent_mismatch", "3"),
+          (s"${lexicon.unit} n_ijklmnop\n  ${lexicon.func} n_abcdefgh\n    ${lexicon.let} x_a 1234\n${lexicon.end}${if style == SyntaxStyle.IndentNamedEnd then s" ${lexicon.func} n_abcdefgh" else ""}\n", "close_indent_mismatch", "4"),
+          (indentGold + s"${lexicon.nop} p_abcdefgh\n$closing\n", "missing_close", "3"),
+          (s"${lexicon.func} n_abcdefgh\n${lexicon.let} x_a 1234\n$closing\n", "missing_close", "2"),
+          (indentGold, "unclosed_scope", "3"),
+          (s"${lexicon.func} n_abcdefgh\n    ${lexicon.let} x_a 1234\n$closing\n", "unexpected_indent", "2")
+        )
+        combinedErrors.foreach { (text, code, line) =>
+          val score = GenerationGrader.grade(gold, GradingResponse("completed", text), spec)
+          assert(score.outcome == Outcome.InvalidGeneratedSyntax && !score.strictCorrect && score.syntaxValid.contains(false), s"$style $code: $score")
+          assert(score.diagnostics == Map("parse_error_code" -> code, "parse_error_line" -> line, "parse_error_column" -> "1"), s"$style grading $code: ${score.diagnostics}")
+        }
+      val namedCombined = GenerationGrader.grade(gold, GradingResponse("completed", indentGold + s"${lexicon.end} ${lexicon.area} n_abcdefgh\n"), RenderSpec(SyntaxStyle.IndentNamedEnd, lexicon))
+      assert(namedCombined.diagnostics.get("parse_error_code").contains("close_kind_mismatch"))
+      val genericCombined = GenerationGrader.grade(gold, GradingResponse("completed", indentGold + s"${lexicon.end} ${lexicon.func} n_abcdefgh\n"), RenderSpec(SyntaxStyle.IndentGenericEnd, lexicon))
+      assert(genericCombined.diagnostics.get("parse_error_code").contains("close_mismatch"))
       // Dropping the indentation moves the binding to the global scope: valid syntax, different AST.
       val flattened = GenerationGrader.grade(gold, GradingResponse("completed", s"${lexicon.func} n_abcdefgh\n${lexicon.let} x_a 1234\n"), indentSpec)
       assert(flattened.outcome == Outcome.ValidSyntaxWrongAst && flattened.syntaxValid.contains(true))
@@ -163,6 +236,7 @@ object CloseDiagnosticsTests:
         case "malformed" => malformed(lexicons)
         case "depth" => depthEnd(lexicons)
         case "indent" => indent(lexicons)
+        case "combined" => combined(lexicons)
         case "grading" => grading(lexicons)
         case other => throw new IllegalArgumentException(s"Unknown diagnostic test: $other")
     println("PASS close diagnostics")

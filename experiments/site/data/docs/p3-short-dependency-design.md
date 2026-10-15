@@ -1,6 +1,6 @@
 # P3 design: short-distance dependencies in generation
 
-Status: design approved by the user on 2026-10-14; implementation in progress in the isolated `p3-short-dependency` worktree. Nothing here authorizes HTTP, changes the frozen main plan, or pools P3 with earlier runs. All P3 results are exploratory until a separately frozen testing plan exists.
+Status: design approved by the user on 2026-10-14. P3a and P3b were executed live on 2026-10-14 as exploratory one-replicate pilots (see `docs/progress.md`); P3c is implemented and unexecuted. Nothing here authorizes HTTP, changes the frozen main plan, or pools P3 with earlier runs. All P3 results are exploratory until a separately frozen testing plan exists.
 
 ## Hypothesis
 
@@ -47,6 +47,19 @@ Language extension shared by every style (AST and semantics identical across qua
 Tasks: T1 `scope_lookup` where the probed value is determined by an import (after-close and before-close views retained), and T3 `ast_to_source` with `IMPORT` rows in the neutral table (`tag=IMPORT`, `name=target module`). Diagnostics: `import_path_mismatch` (fq path with a wrong ancestor chain), `import_unknown_module`, `import_open_module`, `invalid_import`.
 
 Grid: closer style fixed to `named_end`, qualification `fq` vs `short`, same depth/filler/regime/family grid as P3a. A full cross with B/D/G/F is not planned; if later wanted it needs its own plan.
+
+## P3c: combined cues
+
+P3a confounds two things in the `indent` style F: indentation carries the structure, and there is no closing line at all. P3c separates them with a 2×2 over (indentation meaningful or not) × (closer none / generic / named):
+
+| | closer none | closer `end` (generic) | closer `end KIND NAME` (named) |
+| --- | --- | --- | --- |
+| indentation has no meaning | — (no such grammar; a block needs some closer) | `generic_end` (B, from P3a) | `named_end` (D) |
+| indentation significant, two spaces per level | `indent` (F) | `indent_generic_end` (I) | `indent_named_end` (H) |
+
+In H and I both cues are checked by the parser and must agree: every body line is indented exactly two spaces deeper than its opener, the closing line sits at the opener's indentation, and a block closes only through its closing line. A dedent without a closing line is `missing_close`; a closing line at any other indentation is `close_indent_mismatch`; wrong labels reuse `close_mismatch` / `close_kind_mismatch` / `close_name_mismatch` (H) or `close_mismatch` (I); indentation faults reuse `invalid_indent`, `unexpected_indent`, `invalid_dedent`; an open block at end of input is `unclosed_scope` as in every closer style. The prompt states both rules and that they must agree. AST, names, values, semantics, examples, and lexical mapping are shared with every other style.
+
+`configs/p3c-pilot.json` runs D, F, H, I on P3a's grid (T3, depths [4, 8, 16], generation fillers [0, 32, 128], natural + nonce, one replicate, eight fixed examples) with P3a's master seed 2026101401, so its 36 structural families are the P3a families by seed. That allows a descriptive family-level comparison of H/I against P3a's B/D/G/F cells; it does not pool the two runs, and B and G are not re-run. Predictions: if the P3a F advantage comes from the local indentation cue, I ≥ B and H ≈ D or better; if it comes from having no closing line to get wrong, H and I fall back toward D and B.
 
 ## Invariants carried over
 
